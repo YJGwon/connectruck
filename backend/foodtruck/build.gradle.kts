@@ -32,6 +32,9 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 
+	// flyway
+	implementation("org.flywaydb:flyway-core")
+
 	// h2 db
 	runtimeOnly("com.h2database:h2")
 
