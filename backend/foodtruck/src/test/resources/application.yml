@@ -1,16 +1,27 @@
 spring:
-# jpa
+  # jpa
   jpa:
+    show_sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
     hibernate:
       ddl-auto: validate
-# h2 in-memory db
+  # h2 in-memory db
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
-# disable test db replace
+  # disable test db replace
   test:
     database:
       replace: NONE
+
+logging:
+  level:
+    # enable hibernate sql parameter log
+    org.hibernate:
+      SQL: DEBUG
+      orm.jdbc.bind: TRACE
+
+connectruck:
+  cors:
+    allowed-origin: http://localhost:8080

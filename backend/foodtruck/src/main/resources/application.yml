@@ -1,11 +1,11 @@
 spring:
   profiles:
     active: local
-# jpa
+  # jpa
   jpa:
+    show_sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
     hibernate:
       ddl-auto: validate
