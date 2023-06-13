@@ -40,7 +40,9 @@ dependencies {
 
 	// spring test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-}
+
+	// rest-assured
+	testImplementation("io.rest-assured:rest-assured:5.3.0")}
 
 tasks.withType<Test> {
 	useJUnitPlatform()

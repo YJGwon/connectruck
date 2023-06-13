@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.fixture;
+package com.connectruck.foodtruck.common.fixture;
 
 import com.connectruck.foodtruck.truck.domain.Truck;
 import java.time.LocalTime;
