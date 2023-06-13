@@ -72,7 +72,11 @@ class TruckList extends React.Component {
 
         {trucks.map((truck, index) => (
           <div className="truck-listing" key={index}>
-            <img className="truck-thumbnail" src={truck.thumbnail} alt={truck.name} />
+            <img 
+              className="truck-thumbnail" 
+              src={truck.thumbnail || 'https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png'} 
+              alt={truck.name} 
+            />
             <div className="truck-info">
                 <h2 className="truck-name">{truck.name}</h2>
                 <p className="truck-location">Location: {truck.location}</p>
