@@ -1,5 +1,6 @@
-package com.connectruck.foodtruck.truck.domain;
+package com.connectruck.foodtruck.fixture;
 
+import com.connectruck.foodtruck.truck.domain.Truck;
 import org.springframework.data.repository.Repository;
 
 public interface TestTruckRepository extends Repository<Truck, Long> {
