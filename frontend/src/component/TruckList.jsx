@@ -3,25 +3,37 @@ import React from 'react';
 class TruckList extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      trucks: [
-        {
-          name: "츄로츄로",
-          thumbnail: "https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png",
-          location: "서울 마포구 성산동 509-7",
-          openHour: "11:00",
-          closeHour: "21:00"
-        },
-        {
-          name: "하와이안 쉬림프",
-          thumbnail: "https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png",
-          location: "서울 마포구 성산동 509-7",
-          openHour: "11:00",
-          closeHour: "21:00"
-        }
-      ]
+      trucks: [],
+      page: 0, // Current page number
+      size: 20, // Number of restaurants to display per page
+      hasNext: true
     };
+  }
+
+  componentDidMount() {
+    // Fetch truck data from API and update the state
+    this.fetchTruckData();
+  }
+
+  fetchTruckData() {
+    const { page, size } = this.state;
+
+    // Construct the API endpoint URL with request parameters
+    const url = `http://localhost:8080/api/trucks?page=${page}&size=${size}`;
+
+    // Fetch restaurant data from API
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const { trucks } = data;
+        this.setState({
+          trucks: trucks
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching restaurant data:', error);
+      });
   }
 
   render() {
