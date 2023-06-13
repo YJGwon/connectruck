@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.truck.dto;
+package com.connectruck.foodtruck.common.dto;
 
 import org.springframework.data.domain.Slice;
 
