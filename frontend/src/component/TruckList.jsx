@@ -35,7 +35,14 @@ class TruckList extends React.Component {
 
     // Fetch restaurant data from API
     fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        // Check the response status code
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error(`api error: ${response.json().title}`);
+        }
+      })
       .then(data => {
         const { page, trucks } = data;
         this.setState(prevState => ({
@@ -47,6 +54,11 @@ class TruckList extends React.Component {
       })
       .catch(error => {
         console.error('Error fetching truck data:', error);
+        if (error.message.startsWith('api error:')) {
+          alert(error.message);
+        } else {
+          alert('푸드트럭 목록을 불러오지 못하였습니다');
+        }
       });
   }
 
