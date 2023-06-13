@@ -15,7 +15,7 @@ public class TruckService {
     private final TruckRepository truckRepository;
 
     public TrucksResponse findAll(final int page, final int size) {
-        final Slice<Truck> trucks = truckRepository.findAll(PageRequest.of(page, size));
+        final Slice<Truck> trucks = truckRepository.findAllBy(PageRequest.of(page, size));
         return TrucksResponse.of(trucks);
     }
 }
