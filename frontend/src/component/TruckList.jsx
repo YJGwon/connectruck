@@ -5,19 +5,30 @@ class TruckList extends React.Component {
     super(props);
     this.state = {
       trucks: [],
-      page: 0, // Current page number
-      size: 20, // Number of restaurants to display per page
-      hasNext: true
+      page: 0,
+      size: 20,
+      hasNext: true,
+      isLoading: false // 추가 트럭 데이터 로딩중인지
     };
+
+    this.fetchTruckData();
+    this.scrollRef = React.createRef();
   }
 
   componentDidMount() {
-    // Fetch truck data from API and update the state
-    this.fetchTruckData();
+    // Attach event listener to the scroll container
+    this.scrollRef.current.addEventListener('scroll', this.handleScroll);
   }
 
-  fetchTruckData() {
-    const { page, size } = this.state;
+  componentWillUnmount() {
+    // Remove event listener when component is unmounted
+    this.scrollRef.current.removeEventListener('scroll', this.handleScroll);
+  }
+
+  fetchTruckData = () => {
+    const { trucks, page, size } = this.state;
+
+    this.setState({ isLoading: true });
 
     // Construct the API endpoint URL with request parameters
     const url = `http://localhost:8080/api/trucks?page=${page}&size=${size}`;
@@ -26,21 +37,37 @@ class TruckList extends React.Component {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        const { trucks } = data;
-        this.setState({
-          trucks: trucks
-        });
+        const { page, trucks } = data;
+        this.setState(prevState => ({
+          trucks: prevState.trucks.concat(trucks),
+          page: page.currentPage + 1,
+          isLoading: false,
+          hasNext: page.hasNext
+        }));
       })
       .catch(error => {
-        console.error('Error fetching restaurant data:', error);
+        console.error('Error fetching truck data:', error);
       });
   }
 
+  handleScroll = () => {
+    const { isLoading, hasNext } = this.state;
+    const scrollContainer = this.scrollRef.current;
+
+    // Check if scroll container has reached the bottom
+    if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 20) {
+      // Load more trucks if not currently loading and there are more to load
+      if (!isLoading && hasNext) {
+        this.fetchTruckData();
+      }
+    }
+  };
+
   render() {
-    const { trucks: trucks } = this.state;
+    const { trucks, isLoading, hasNext } = this.state;
 
     return (
-      <div>
+      <div ref={this.scrollRef} style={{ height: '400px', overflow: 'auto' }}>
         <h1>푸드트럭</h1>
 
         {trucks.map((truck, index) => (
@@ -53,6 +80,8 @@ class TruckList extends React.Component {
             </div>
           </div>
         ))}
+        {isLoading && <p>불러오는 중...</p>}
+        {!isLoading && !hasNext && <p>끝</p>}
       </div>
     );
   }
