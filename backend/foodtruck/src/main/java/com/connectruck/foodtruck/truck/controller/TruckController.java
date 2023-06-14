@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.truck.api;
+package com.connectruck.foodtruck.truck.controller;
 
 import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/trucks")
 @RequiredArgsConstructor
-
 @Validated
 public class TruckController {
 

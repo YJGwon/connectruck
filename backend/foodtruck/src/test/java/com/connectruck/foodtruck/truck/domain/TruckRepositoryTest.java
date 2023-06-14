@@ -25,7 +25,7 @@ class TruckRepositoryTest {
 
     @DisplayName("모든 푸드트럭에 대해 slice 단위로 조회한다.")
     @Test
-    void findAll_perSlice() {
+    void findAllBy_perSlice() {
         // given
         dataSetup.saveTruck();
         dataSetup.saveTruck();
@@ -34,7 +34,7 @@ class TruckRepositoryTest {
         // when
         final int page = 0;
         final int size = 2;
-        final Slice<Truck> foundPage = truckRepository.findAll(PageRequest.of(page, size));
+        final Slice<Truck> foundPage = truckRepository.findAllBy(PageRequest.of(page, size));
 
         // then
         assertThat(foundPage.getContent()).hasSize(size);

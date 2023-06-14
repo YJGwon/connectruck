@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.truck.api;
+package com.connectruck.foodtruck.truck.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

@@ -6,5 +6,5 @@ import org.springframework.data.repository.Repository;
 
 public interface TruckRepository extends Repository<Truck, Long> {
 
-    Slice<Truck> findAll(final Pageable pageable);
+    Slice<Truck> findAllBy(final Pageable pageable);
 }
