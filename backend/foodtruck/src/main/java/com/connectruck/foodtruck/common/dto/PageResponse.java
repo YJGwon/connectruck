@@ -7,6 +7,7 @@ public record PageResponse(
         int currentPage,
         boolean hasNext
 ) {
+
     public static PageResponse of(final Slice<?> slice) {
         return new PageResponse(slice.getSize(), slice.getNumber(), slice.hasNext());
     }
