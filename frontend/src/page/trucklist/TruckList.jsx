@@ -1,4 +1,5 @@
 import React from 'react';
+import './TruckList.css';
 
 class TruckList extends React.Component {
     constructor(props) {
