@@ -14,12 +14,23 @@ spring:
   flyway:
     locations: [ classpath:db/migration, classpath:db/data ] # initialize default data
 
+# log config
 logging:
   level:
     # enable hibernate sql parameter log
     org.hibernate:
       SQL: DEBUG
       orm.jdbc.bind: TRACE
+    com.foodtruck: INFO
+  # file appender
+  file:
+    name: ./logs/connectruck.log
+  # logback rolling policy
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      file-name-pattern: connectruck-%d{yyyy-MM-dd}-%i.log
+      total-size-cap: 10MB
 
 connectruck:
   # CORS
