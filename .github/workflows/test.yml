@@ -18,15 +18,9 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: 17
-
-      - name: Check directory
-        run: ls
-
-      - name: Move to backend directory
-        run: cd ./backend/foodtruck
       
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ./backend/foodtruck/gradlew
 
       - name: Build with Gradle
-        run : ./gradlew clean build
+        run : ./backend/foodtruck/gradlew clean build
