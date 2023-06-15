@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FoodtruckApplication {
 
     public static void main(String[] args) {
+        // testing workflow
         SpringApplication.run(FoodtruckApplication.class, args);
     }
 }
