@@ -22,8 +22,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./backend/foodtruck/gradlew
 
-      - name: Move to backend directory
-        run: cd ./backend/foodtruck
-
       - name: Build with Gradle
+        working-directory: ./backend/foodtruck
         run : ./gradlew clean build
