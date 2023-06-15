@@ -19,6 +19,9 @@ jobs:
           distribution: 'oracle'
           java-version: 17
 
+      - name: Check directory
+        run: ls
+
       - name: Move to backend directory
         run: cd ./backend/foodtruck
       
