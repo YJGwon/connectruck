@@ -11,6 +11,6 @@ public class WorkFlowTest {
     @DisplayName("fail test")
     @Test
     void fails() {
-        assertThat(true).isFalse();
+        assertThat(Boolean.TRUE).isFalse();
     }
 }
