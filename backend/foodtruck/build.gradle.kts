@@ -1,7 +1,7 @@
 plugins {
-	java
-	id("org.springframework.boot") version "3.1.0"
-	id("io.spring.dependency-management") version "1.1.0"
+    java
+    id("org.springframework.boot") version "3.1.0"
+    id("io.spring.dependency-management") version "1.1.0"
 }
 
 group = "com.connectruck"
@@ -9,41 +9,45 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 configurations {
-	compileOnly {
-		extendsFrom(configurations.annotationProcessor.get())
-	}
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	// spring web
-	implementation("org.springframework.boot:spring-boot-starter-web")
+    // spring web
+    implementation("org.springframework.boot:spring-boot-starter-web")
 
-	// spring data jpa
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    // spring data jpa
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-	// spring validation
-	implementation("org.springframework.boot:spring-boot-starter-validation")
+    // spring validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
 
-	// lombok
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
+    // lombok
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
-	// flyway
-	implementation("org.flywaydb:flyway-core")
+    // flyway
+    implementation("org.flywaydb:flyway-core")
 
-	// h2 db
-	runtimeOnly("com.h2database:h2")
+    // springdoc openapi (swagger ui)
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
-	// spring test
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // h2 db
+    runtimeOnly("com.h2database:h2")
 
-	// rest-assured
-	testImplementation("io.rest-assured:rest-assured:5.3.0")}
+    // spring test
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    // rest-assured
+    testImplementation("io.rest-assured:rest-assured:5.3.0")
+}
 
 tasks.withType<Test> {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
