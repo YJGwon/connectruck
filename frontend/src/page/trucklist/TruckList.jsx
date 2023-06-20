@@ -32,7 +32,7 @@ class TruckList extends React.Component {
     }
 
     fetchTruckData = () => {
-        const {trucks, page, size, isInitialLoad} = this.state;
+        const {page, size, isInitialLoad} = this.state;
 
         this.setState({isLoading: true});
 

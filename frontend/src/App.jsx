@@ -1,12 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
+import TopBar from './component/topbar/TopBar';
 import TruckList from './page/trucklist/TruckList';
 
 function App() {
   return (
     <div>
-      <h1>Connectruck 🚚</h1>
-      <TruckList />
+      <TopBar />
+      <div className="container">
+        <TruckList />
+      </div>
     </div>  
   );
 }
