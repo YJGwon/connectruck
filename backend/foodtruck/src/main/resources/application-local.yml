@@ -29,7 +29,7 @@ logging:
   logback:
     rollingpolicy:
       clean-history-on-start: true
-      file-name-pattern: connectruck-%d{yyyy-MM-dd}-%i.log
+      file-name-pattern: ./logs/rolling/connectruck-%d{yyyy-MM-dd}-%i.gz
       total-size-cap: 10MB
 
 connectruck:

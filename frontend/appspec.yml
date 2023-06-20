@@ -1,0 +1,13 @@
+version: 0.0
+os: linux
+
+files:
+  - source:  /
+    destination: /var/www/html/build
+    overwrite: yes
+
+permissions:
+  - object: /var/www/html/build
+    owner: ubuntu
+    group: ubuntu
+    mode: 755

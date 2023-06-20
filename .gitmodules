@@ -1,0 +1,3 @@
+[submodule "backend/foodtruck/src/main/resources/config"]
+	path = backend/foodtruck/src/main/resources/config
+	url = https://github.com/YJGwon/connectruck-config.git

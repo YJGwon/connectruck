@@ -36,7 +36,7 @@ class TruckList extends React.Component {
 
         this.setState({isLoading: true});
 
-        const url = `http://localhost:8080/api/trucks?page=${page}&size=${size}`;
+        const url = `${process.env.REACT_APP_API_URL}/api/trucks?page=${page}&size=${size}`;
 
         fetch(url)
             .then(response => {
