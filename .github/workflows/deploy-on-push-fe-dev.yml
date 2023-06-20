@@ -61,7 +61,7 @@ jobs:
         run: |
           aws deploy create-deployment \
           --application-name ${{ secrets.AWS_CODEDEPLOY_APP }} \
-          --deployment-group-name connectruck \
+          --deployment-group-name connectruck-fe \
           --file-exists-behavior OVERWRITE \
           --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},bundleType=zip,key=${{ vars.FRONTEND_ZIP_FILE }} \
           --region ap-northeast-2
