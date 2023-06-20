@@ -34,12 +34,16 @@ dependencies {
 
     // flyway
     implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-mysql")
 
     // springdoc openapi (swagger ui)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
     // h2 db
     runtimeOnly("com.h2database:h2")
+
+    // mysql
+    runtimeOnly("mysql:mysql-connector-java:8.0.33")
 
     // spring test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
