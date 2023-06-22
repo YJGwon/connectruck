@@ -1,7 +1,10 @@
 import React from 'react';
+import './OwnersMain.css';
+
 import TopBar from '../../../component/topbar/TopBar';
 
 import {Routes, Route} from 'react-router-dom';
+import LoginForm from '../../../component/loginform/LoginForm';
 
 export default function OwnersMain() {
     const title = '사장님 서비스 🚚';
@@ -14,13 +17,15 @@ export default function OwnersMain() {
     ];
 
     return (
-        <div>
+        <>
             <TopBar title={title} home={home} buttons={buttons}/>
-            <div className="container">
-                <Routes>
-                    <Route exact="exact" path="/" element='사장님 페이지'/>
-                </Routes>
+            <div className='owners-main'>
+                <div className="content">
+                    <Routes>
+                        <Route exact='exact' path='/' element={<LoginForm url='/api/owners/signin' />}/>
+                    </Routes>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
