@@ -1,7 +1,7 @@
 import React from 'react';
-import './TruckList.css';
+import './ServiceTruckList.css';
 
-class TruckList extends React.Component {
+class ServiceTruckList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -116,4 +116,4 @@ class TruckList extends React.Component {
     }
 }
 
-export default TruckList;
+export default ServiceTruckList;

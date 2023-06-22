@@ -2,14 +2,15 @@ import React from 'react';
 import TopBar from '../../../component/topbar/TopBar';
 
 import {Routes, Route} from 'react-router-dom';
+import ServiceTruckList from '../trucklist/ServiceTruckList';
 
-export default function OwnersMain() {
-    const title = '사장님 서비스 🚚';
-    const home = "/owners";
+export default function App() {
+    const title = 'Connectruck 🚚';
+    const home = "/";
     const buttons = [
         {
-            link: '/',
-            name: 'connectruck'
+            link: '/owners',
+            name: '사장님 서비스'
         }
     ];
 
@@ -18,7 +19,7 @@ export default function OwnersMain() {
             <TopBar title={title} home={home} buttons={buttons}/>
             <div className="container">
                 <Routes>
-                    <Route exact="exact" path="/" element='사장님 페이지'/>
+                    <Route path="/" element={<ServiceTruckList />}/>
                 </Routes>
             </div>
         </div>
