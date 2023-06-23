@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {TextField, Button} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import './OwnersSignup.css';
 
@@ -12,6 +13,8 @@ export default function OwnersLogin() {
     const [phone, setPhone] = useState('');
     const [isUsernameAvailable, setIsUsernameAvailable] = useState(false);
     const [isPhoneAvailable, setIsPhoneAvailable] = useState(false);
+
+    const navigate = useNavigate();
 
     // 아이디 검사
     const handleUsernameCheck = async () => {
@@ -112,6 +115,7 @@ export default function OwnersLogin() {
 
             if (response.ok) {
                 alert('가입되었습니다.');
+                navigate('/owners/login');
             } else {
                 throw new Error(`api error: ${response.json().title}`);
             }
