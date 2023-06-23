@@ -2,7 +2,7 @@ import React from 'react';
 import {AppBar, Toolbar, Typography, Link} from '@mui/material';
 import './TopBar.css';
 
-function TopBar(props) {
+export default function TopBar(props) {
     const title = props.title;
     const home = props.home;
     const buttons = props.buttons;
@@ -31,5 +31,3 @@ function TopBar(props) {
         </AppBar>
     );
 }
-
-export default TopBar;

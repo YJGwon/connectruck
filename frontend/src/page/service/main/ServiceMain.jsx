@@ -4,7 +4,7 @@ import TopBar from '../../../component/topbar/TopBar';
 import {Routes, Route} from 'react-router-dom';
 import ServiceTruckList from '../trucklist/ServiceTruckList';
 
-export default function App() {
+export default function ServiceMain() {
     const title = 'Connectruck 🚚';
     const home = "/";
     const buttons = [
