@@ -23,7 +23,10 @@ export default function SideBar(props) {
                 <List>
                     {
                         buttons.map((button, index) => (
-                            <ListItemButton key={index} href={button.link}>
+                            <ListItemButton 
+                                key={index} 
+                                href={button.link}
+                                selected={button.selected}>
                                 <ListItemText primary={button.name}/>
                             </ListItemButton>
                         ))
