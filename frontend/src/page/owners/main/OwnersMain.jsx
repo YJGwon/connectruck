@@ -5,6 +5,7 @@ import TopBar from '../../../component/topbar/TopBar';
 
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import OwnersLogin from '../login/OwnersLogin';
+import OwnersSignup from '../signup/OwnersSignup';
 
 export default function OwnersMain() {
     // topbar props
@@ -20,7 +21,6 @@ export default function OwnersMain() {
     // 로그인 안했을 때 로그인 페이지로 redirect
     const navigate = useNavigate();
     const location = useLocation();
-  
     useEffect(() => {
         const accessToken = localStorage.getItem('accessToken');
         const currentPath = location.pathname;
@@ -39,6 +39,7 @@ export default function OwnersMain() {
                 <Routes>
                     <Route exact='exact' path='/' element="사장님 페이지"/>
                     <Route path='/signin' element={<OwnersLogin />}/>
+                    <Route path='/signup' element={<OwnersSignup />}/>
                 </Routes>
             </div>
         </>

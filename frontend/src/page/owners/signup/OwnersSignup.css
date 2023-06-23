@@ -1,3 +1,9 @@
+.content {
+    flex-grow: 1;
+    display: flex;
+}
+
+/* form */
 .form {
     display: flex;
     flex-direction: column;

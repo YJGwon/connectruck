@@ -33,7 +33,7 @@ export default function LoginForm({url}) {
                 throw new Error(`api error: ${response.json().title}`);
             }
         } catch (error) {
-            console.error('Error fetching truck data:', error);
+            console.error('Error fetching login:', error);
             if (error.message.startsWith('api error:')) {
                 alert(error.message);
             } else {
