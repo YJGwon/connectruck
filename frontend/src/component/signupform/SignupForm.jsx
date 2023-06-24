@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {TextField, Button} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 
-import './OwnersSignup.css';
+import './SignupForm.css';
 
-export default function OwnersLogin() {
+export default function SignupForm({root, role}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,7 +23,7 @@ export default function OwnersLogin() {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/owners/check-username`,
+                `${process.env.REACT_APP_API_URL}/api/users/check-username`,
                 {
                     method: 'POST',
                     headers: {
@@ -65,7 +65,7 @@ export default function OwnersLogin() {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/owners/check-phone`,
+                `${process.env.REACT_APP_API_URL}/api/users/check-phone`,
                 {
                     method: 'POST',
                     headers: {
@@ -89,7 +89,6 @@ export default function OwnersLogin() {
             }
         } catch (error) {
             console.error('Error checking phone:', error);
-            console.error('Error checking username:', error);
             if (error.message.startsWith('api error:')) {
                 alert(error.message);
             } else {
@@ -129,19 +128,19 @@ export default function OwnersLogin() {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/owners/signup`,
+                `${process.env.REACT_APP_API_URL}/api/users`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({username, password, phone})
+                    body: JSON.stringify({username, password, phone, role})
                 }
             );
 
             if (response.ok) {
                 alert('가입되었습니다.');
-                navigate('/owners/login');
+                navigate(`${root}/login`);
             } else {
                 throw new Error(`api error: ${response.json().title}`);
             }

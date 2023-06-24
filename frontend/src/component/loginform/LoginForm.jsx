@@ -6,7 +6,7 @@ import { UserContext } from '../../context/UserContext';
 
 import './LoginForm.css';
 
-export default function LoginForm({home}) {
+export default function LoginForm({root}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -22,7 +22,7 @@ export default function LoginForm({home}) {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/signin`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/signin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ export default function LoginForm({home}) {
             } else {
                 throw new Error(`api error: ${response.json().title}`);
             }
-            navigate(home);
+            navigate(root);
         } catch (error) {
             console.error('Error fetching login:', error);
             if (error.message.startsWith('api error:')) {

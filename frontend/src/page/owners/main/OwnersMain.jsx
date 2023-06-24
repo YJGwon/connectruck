@@ -3,19 +3,19 @@ import './OwnersMain.css';
 
 import {UserContext} from '../../../context/UserContext';
 import TopBar from '../../../component/topbar/TopBar';
-import AuthRouter from '../../../router/AuthRouter';
+import SideBar from '../../../component/sidebar/SideBar';
 
 import { Routes, Route } from 'react-router-dom';
+import AuthRouter from '../../../router/AuthRouter';
 import LoginForm from '../../../component/loginform/LoginForm';
-import OwnersSignup from '../signup/OwnersSignup';
-import SideBar from '../../../component/sidebar/SideBar';
+import SignupForm from '../../../component/signupform/SignupForm';
 
 export default function OwnersMain() {
     const {isLogin} = useContext(UserContext);
+    const root = "/owners";
 
     // topbar props
     const title = '사장님 서비스 🚚';
-    const home = "/owners";
     const topButtons = [
         {
             link: '/',
@@ -44,17 +44,17 @@ export default function OwnersMain() {
 
     return (
         <>
-            <TopBar title={title} home={home} buttons={topButtons} />
+            <TopBar title={title} root={root} buttons={topButtons} />
             <div className='owners-main'>
                 <SideBar buttons={isLogin ? sideButtonsLoggedIn : sideButtonsLoggedOut} />
                 <div className='content'>
                     <Routes>
-                        <Route element={<AuthRouter shouldLogin={true} root='/owners' />}>
+                        <Route element={<AuthRouter shouldLogin={true} root={root} />}>
                             <Route exact='exact' path='/' element="사장님 페이지"/>
                         </Route>
-                        <Route element={<AuthRouter shouldLogin={false} root='/owners' />}>
-                            <Route path='/signin' element={<LoginForm home='/owners'/>}/>
-                            <Route path='/signup' element={<OwnersSignup />}/>
+                        <Route element={<AuthRouter shouldLogin={false} root={root} />}>
+                            <Route path='/signin' element={<LoginForm root={root}/>}/>
+                            <Route path='/signup' element={<SignupForm root={root} role='OWNER' />}/>
                         </Route>
                     </Routes>
                 </div>
