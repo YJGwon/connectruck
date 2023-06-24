@@ -23,7 +23,7 @@ export default function OwnersLogin() {
         <>
             <SideBar buttons={buttons}/>
             <div className="content">
-                <LoginForm url="/api/owners/signin" />
+                <LoginForm home='/owners'/>
             </div>
         </>
     );
