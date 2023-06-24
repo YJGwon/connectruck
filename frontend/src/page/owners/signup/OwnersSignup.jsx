@@ -4,8 +4,6 @@ import {useNavigate} from 'react-router-dom';
 
 import './OwnersSignup.css';
 
-import SideBar from "../../../component/sidebar/SideBar";
-
 export default function OwnersLogin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -176,53 +174,50 @@ export default function OwnersLogin() {
 
     return (
         <> 
-            < SideBar buttons = {buttons} /> 
-            <div className="content">
-                <form className="form" onSubmit={handleFormSubmit}>
-                    <TextField
-                        className="textField"
-                        label="아이디"
-                        variant="outlined"
-                        value={username}
-                        onChange={(e) => {
-                            setUsername(e.target.value);
-                            setIsUsernameAvailable(false);
-                        }}/>
-                    <Button variant="contained" color="primary" onClick={handleUsernameCheck}>
-                        아이디 확인
-                    </Button>
-                    <TextField
-                        className="textField"
-                        label="비밀번호"
-                        variant="outlined"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}/>
-                    <TextField
-                        className="textField"
-                        label="비밀번호 확인"
-                        variant="outlined"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}/>
-                    <TextField
-                        className="textField"
-                        label="휴대폰 번호"
-                        variant="outlined"
-                        value={phone}
-                        onChange={(e) => {
-                            setPhone(e.target.value);
-                            setIsPhoneAvailable(false);
-                        }}/>
-                    <Button variant="contained" color="primary" onClick={handlePhoneCheck}>
-                        휴대폰 번호 확인
-                    </Button>
-                    <p></p>
-                    <Button className="button" variant="contained" color="primary" type="submit">
-                        가입
-                    </Button>
-                </form>
-            </div>
+            <form className="form" onSubmit={handleFormSubmit}>
+                <TextField
+                    className="textField"
+                    label="아이디"
+                    variant="outlined"
+                    value={username}
+                    onChange={(e) => {
+                        setUsername(e.target.value);
+                        setIsUsernameAvailable(false);
+                    }}/>
+                <Button variant="contained" color="primary" onClick={handleUsernameCheck}>
+                    아이디 확인
+                </Button>
+                <TextField
+                    className="textField"
+                    label="비밀번호"
+                    variant="outlined"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}/>
+                <TextField
+                    className="textField"
+                    label="비밀번호 확인"
+                    variant="outlined"
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}/>
+                <TextField
+                    className="textField"
+                    label="휴대폰 번호"
+                    variant="outlined"
+                    value={phone}
+                    onChange={(e) => {
+                        setPhone(e.target.value);
+                        setIsPhoneAvailable(false);
+                    }}/>
+                <Button variant="contained" color="primary" onClick={handlePhoneCheck}>
+                    휴대폰 번호 확인
+                </Button>
+                <p></p>
+                <Button className="button" variant="contained" color="primary" type="submit">
+                    가입
+                </Button>
+            </form>
         </>
     );
 }

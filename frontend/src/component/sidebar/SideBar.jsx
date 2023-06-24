@@ -16,6 +16,8 @@ const StyledDrawer = styled(Drawer)(({theme}) => ({
 
 export default function SideBar(props) {
     const buttons = props.buttons;
+    // eslint-disable-next-line no-restricted-globals
+    const path = location.pathname;
 
     return (
         <div className='sidebar'>
@@ -26,7 +28,7 @@ export default function SideBar(props) {
                             <ListItemButton 
                                 key={index} 
                                 href={button.link}
-                                selected={button.selected}>
+                                selected={path === button.link}>
                                 <ListItemText primary={button.name}/>
                             </ListItemButton>
                         ))

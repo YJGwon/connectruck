@@ -16,7 +16,10 @@ export default function AuthRouter({shouldLogin, root}) {
         if (shouldLogin && !isLogin) {
             navigate(`${root}/signin`);
         }
-    }, [navigate]);
+        if (!shouldLogin && isLogin) {
+            navigate(root);
+        }
+    }, [navigate, isLogin]);
 
     return <Outlet/>;
 };

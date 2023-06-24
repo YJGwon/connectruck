@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {TextField, Button} from '@mui/material';
 
@@ -11,13 +11,7 @@ export default function LoginForm({home}) {
     const [password, setPassword] = useState('');
 
     const navigate = useNavigate();
-    const { isLogin, login } = useContext(UserContext);
-
-    useEffect(() => {
-        if (isLogin) {
-            navigate(home);
-        }
-    }, [isLogin]);
+    const { login } = useContext(UserContext);
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
