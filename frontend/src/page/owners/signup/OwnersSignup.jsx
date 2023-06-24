@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {TextField, Button} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 import './OwnersSignup.css';
 
@@ -18,6 +18,11 @@ export default function OwnersLogin() {
 
     // 아이디 검사
     const handleUsernameCheck = async () => {
+        if (username.trim() === '') {
+            alert('아이디를 입력하세요.');
+            return;
+        }
+
         try {
             const response = await fetch(
                 `${process.env.REACT_APP_API_URL}/api/owners/check-username`,
@@ -29,23 +34,37 @@ export default function OwnersLogin() {
                     body: JSON.stringify({username})
                 }
             );
-            const data = await response.json();
+            if (response.ok) {
+                const data = await response.json();
 
-            if (data.isAvailable) {
-                setIsUsernameAvailable(true);
-                alert('사용 가능한 아이디입니다.');
+                if (data.isAvailable) {
+                    setIsUsernameAvailable(true);
+                    alert('사용 가능한 아이디입니다.');
+                } else {
+                    setIsUsernameAvailable(false);
+                    alert('사용 중인 아이디입니다.');
+                }
             } else {
-                setIsUsernameAvailable(false);
-                alert('사용 중인 아이디입니다.');
+                throw new Error(`api error: ${response.json().title}`);
             }
+
         } catch (error) {
             console.error('Error checking username:', error);
-            alert('아이디 검사를 수행하지 못했습니다.');
+            if (error.message.startsWith('api error:')) {
+                alert(error.message);
+            } else {
+                alert('아이디 검사를 수행하지 못했습니다.');
+            }
         }
     };
 
     // 휴대폰 번호 검사
     const handlePhoneCheck = async () => {
+        if (phone.trim() === '') {
+            alert('휴대폰 번호를 입력하세요.');
+            return;
+        }
+
         try {
             const response = await fetch(
                 `${process.env.REACT_APP_API_URL}/api/owners/check-phone`,
@@ -57,18 +76,27 @@ export default function OwnersLogin() {
                     body: JSON.stringify({phone})
                 }
             );
-            const data = await response.json();
+            if (response.ok) {
+                const data = await response.json();
 
-            if (data.isAvailable) {
-                setIsPhoneAvailable(true);
-                alert('사용 가능한 번호입니다.');
+                if (data.isAvailable) {
+                    setIsPhoneAvailable(true);
+                    alert('사용 가능한 번호입니다.');
+                } else {
+                    setIsPhoneAvailable(false);
+                    alert('사용 중인 번호입니다.');
+                }
             } else {
-                setIsPhoneAvailable(false);
-                alert('사용 중인 번호입니다.');
+                throw new Error(`api error: ${response.json().title}`);
             }
         } catch (error) {
             console.error('Error checking phone:', error);
-            alert('휴대폰 번호 검사를 수행하지 못했습니다.');
+            console.error('Error checking username:', error);
+            if (error.message.startsWith('api error:')) {
+                alert(error.message);
+            } else {
+                alert('휴대폰 번호 검사를 수행하지 못했습니다.');
+            }
         }
     };
 
@@ -139,18 +167,16 @@ export default function OwnersLogin() {
         {
             link: '/owners/signin',
             name: '로그인'
-        },
-        {
+        }, {
             link: '/owners/signup',
             name: '회원가입',
             selected: true
         }
     ];
 
-
     return (
-        <>
-            <SideBar buttons={buttons}/>
+        <> 
+            < SideBar buttons = {buttons} /> 
             <div className="content">
                 <form className="form" onSubmit={handleFormSubmit}>
                     <TextField
@@ -161,8 +187,7 @@ export default function OwnersLogin() {
                         onChange={(e) => {
                             setUsername(e.target.value);
                             setIsUsernameAvailable(false);
-                        }}
-                    />
+                        }}/>
                     <Button variant="contained" color="primary" onClick={handleUsernameCheck}>
                         아이디 확인
                     </Button>
