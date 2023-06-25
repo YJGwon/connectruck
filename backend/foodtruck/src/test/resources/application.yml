@@ -6,6 +6,7 @@ spring:
       hibernate:
         format_sql: true
     hibernate:
+      #      ddl-auto: create
       ddl-auto: validate
   # h2 in-memory db
   datasource:
@@ -14,6 +15,9 @@ spring:
   test:
     database:
       replace: NONE
+  # flyway
+#  flyway:
+#    enabled: false # disable
 
 logging:
   level:

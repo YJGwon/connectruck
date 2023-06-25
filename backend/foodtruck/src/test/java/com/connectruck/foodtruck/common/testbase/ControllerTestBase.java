@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import com.connectruck.foodtruck.truck.service.TruckService;
+import com.connectruck.foodtruck.user.sevice.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +22,9 @@ public abstract class ControllerTestBase {
 
     @MockBean
     protected TruckService truckService;
+
+    @MockBean
+    protected UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;

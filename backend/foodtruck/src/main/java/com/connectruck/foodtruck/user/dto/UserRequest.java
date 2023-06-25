@@ -5,6 +5,7 @@ import static com.connectruck.foodtruck.common.constant.ValidationMessage.INVALI
 import static com.connectruck.foodtruck.common.constant.ValidationMessage.MISSING_REQUIRED_INPUT;
 
 import com.connectruck.foodtruck.common.constant.FormatText;
+import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,4 +18,8 @@ public record UserRequest(
         @Pattern(regexp = FormatText.PHONE, message = INVALID_FORMAT + " : 휴대폰 번호") String phone,
         @NotNull(message = MISSING_REQUIRED_INPUT + " : 계정 권한") Role role
 ) {
+
+    public Account toEntity() {
+        return Account.ofNew(username, password, phone, role);
+    }
 }
