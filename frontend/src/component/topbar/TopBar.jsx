@@ -4,14 +4,14 @@ import './TopBar.css';
 
 export default function TopBar(props) {
     const title = props.title;
-    const home = props.home;
+    const root = props.root;
     const buttons = props.buttons;
 
     return (
         <AppBar position="static" className="topbar">
             <Toolbar>
                 <Typography variant="h6" component="div" className="topbar__title">
-                    <Link href={home} color="inherit" underline="none">
+                    <Link href={root} color="inherit" underline="none">
                         {title}
                     </Link>
                 </Typography>

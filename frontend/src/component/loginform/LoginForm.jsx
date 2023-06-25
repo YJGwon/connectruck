@@ -1,11 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {TextField, Button} from '@mui/material';
+
+import { UserContext } from '../../context/UserContext';
 
 import './LoginForm.css';
 
-export default function LoginForm({url}) {
+export default function LoginForm({root}) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    const navigate = useNavigate();
+    const { login } = useContext(UserContext);
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
@@ -16,7 +22,7 @@ export default function LoginForm({url}) {
         }
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}${url}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/signin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -28,12 +34,13 @@ export default function LoginForm({url}) {
                 const data = await response.json();
                 const accessToken = data.accessToken;
                 // Save the access token to local storage
-                localStorage.setItem('accessToken', accessToken);
+                login(accessToken);
             } else {
                 throw new Error(`api error: ${response.json().title}`);
             }
+            navigate(root);
         } catch (error) {
-            console.error('Error fetching truck data:', error);
+            console.error('Error fetching login:', error);
             if (error.message.startsWith('api error:')) {
                 alert(error.message);
             } else {
