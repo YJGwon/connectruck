@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.truck.dto;
 
+import com.connectruck.foodtruck.common.constant.FormatText;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalTime;
@@ -9,8 +10,8 @@ public record TruckResponse(
         String name,
         String thumbnail,
         String location,
-        @JsonFormat(pattern = "HH:mm") LocalTime openHour,
-        @JsonFormat(pattern = "HH:mm") LocalTime closeHour
+        @JsonFormat(pattern = FormatText.TIME) LocalTime openHour,
+        @JsonFormat(pattern = FormatText.TIME) LocalTime closeHour
 ) {
 
     public static TruckResponse of(final Truck truck) {

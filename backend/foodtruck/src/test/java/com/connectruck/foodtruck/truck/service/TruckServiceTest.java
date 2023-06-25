@@ -4,22 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.connectruck.foodtruck.common.dto.PageResponse;
-import com.connectruck.foodtruck.common.fixture.DataSetup;
+import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
-@SpringBootTest
-@Sql("classpath:truncate.sql")
-class TruckServiceTest {
+class TruckServiceTest extends ServiceTestBase {
 
     @Autowired
     private TruckService truckService;
-    @Autowired
-    private DataSetup dataSetup;
 
     @DisplayName("모든 푸드트럭에 대해 페이지 단위로 조회한다.")
     @Test

@@ -8,12 +8,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalTime;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -30,16 +32,6 @@ public class Truck {
     private String location;
     private LocalTime openHour;
     private LocalTime closeHour;
-
-    public Truck(final Long id, final String name, final String thumbnail, final String location,
-                 final LocalTime openHour, final LocalTime closeHour) {
-        this.id = id;
-        this.name = name;
-        this.thumbnail = thumbnail;
-        this.location = location;
-        this.openHour = openHour;
-        this.closeHour = closeHour;
-    }
 
     public static Truck ofNew(final String name, final String thumbnail, final String location,
                               final LocalTime openHour, final LocalTime closeHour) {
