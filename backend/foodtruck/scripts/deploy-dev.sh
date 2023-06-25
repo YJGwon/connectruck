@@ -8,12 +8,16 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 TIME_NOW=$(date +%c)
 
 # 기존 app 종료
-echo "$TIME_NOW > 실행중인 app 종료" >> $DEPLOY_LOG
+echo "$TIME_NOW > 실행중인 app 종료" > $DEPLOY_LOG
 fuser -k -n tcp 8080
+
+# 기존 jar 파일 삭제
+echo "$TIME_NOW > $JAR_FILE 파일 삭제" >> $DEPLOY_LOG
+rm $JAR_FILE
 
 # build 파일 복사
 echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/*.jar $JAR_FILE
+cp  $PROJECT_ROOT/*.jar $JAR_FILE
 
 # jar 실행 권한 설정
 echo "> $JAR_FILE 에 실행권한 추가"
