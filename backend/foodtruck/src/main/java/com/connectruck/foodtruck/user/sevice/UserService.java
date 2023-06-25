@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.user.sevice;
 
+import com.connectruck.foodtruck.common.exception.AlreadyExistException;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.dto.UserRequest;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,13 @@ public class UserService {
     private final AccountRepository accountRepository;
 
     public void create(final UserRequest request) {
+        checkUsernameExists(request.username());
         accountRepository.save(request.toEntity());
+    }
+
+    private void checkUsernameExists(final String username) {
+        if (accountRepository.existsByUsername(username)) {
+            throw AlreadyExistException.withInputValue("아이디", username);
+        }
     }
 }

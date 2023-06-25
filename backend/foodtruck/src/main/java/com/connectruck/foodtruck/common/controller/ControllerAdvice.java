@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.common.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+import com.connectruck.foodtruck.common.exception.ClientException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
@@ -20,9 +21,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ControllerAdvice {
 
+    @ExceptionHandler(ClientException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ErrorResponse handleClientException(final ClientException e) {
+        log.error(e.getMessage());
+        return ErrorResponse.builder(e, BAD_REQUEST, e.getMessage())
+                .title(e.getTitle())
+                .build();
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ErrorResponse handleParameterException(final Exception e) {
+    public ErrorResponse handleParameterException(final ConstraintViolationException e) {
         log.error(e.getMessage());
         return ErrorResponse.builder(e, BAD_REQUEST, e.getMessage())
                 .title("요청 파라미터값이 올바르지 않습니다.")
