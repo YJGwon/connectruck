@@ -3,6 +3,7 @@ package com.connectruck.foodtruck.user.sevice;
 import com.connectruck.foodtruck.common.exception.AlreadyExistException;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.dto.CheckAvailableResponse;
+import com.connectruck.foodtruck.user.dto.PhoneRequest;
 import com.connectruck.foodtruck.user.dto.UserRequest;
 import com.connectruck.foodtruck.user.dto.UsernameRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,11 @@ public class UserService {
 
     public CheckAvailableResponse checkUsername(final UsernameRequest request) {
         final boolean isAvailable = !accountRepository.existsByUsername(request.username());
+        return new CheckAvailableResponse(isAvailable);
+    }
+
+    public CheckAvailableResponse checkPhone(final PhoneRequest request) {
+        final boolean isAvailable = !accountRepository.existsByPhone(request.phone());
         return new CheckAvailableResponse(isAvailable);
     }
 

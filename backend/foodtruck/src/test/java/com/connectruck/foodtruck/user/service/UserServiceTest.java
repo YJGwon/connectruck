@@ -9,6 +9,7 @@ import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.Role;
 import com.connectruck.foodtruck.user.dto.CheckAvailableResponse;
+import com.connectruck.foodtruck.user.dto.PhoneRequest;
 import com.connectruck.foodtruck.user.dto.UserRequest;
 import com.connectruck.foodtruck.user.dto.UsernameRequest;
 import com.connectruck.foodtruck.user.sevice.UserService;
@@ -49,12 +50,46 @@ public class UserServiceTest extends ServiceTestBase {
         void returnFalse_whenUsernameAlreadyExists() {
             // given
             final String existingUsername = "exists";
-            dataSetup.saveAccount(Account.ofNew(existingUsername, password, "01000000001", Role.OWNER));
+            dataSetup.saveAccount(Account.ofNew(existingUsername, password, phone, Role.OWNER));
 
             final UsernameRequest request = new UsernameRequest(existingUsername);
 
             // when
             final CheckAvailableResponse response = userService.checkUsername(request);
+
+            // then
+            assertThat(response.isAvailable()).isFalse();
+        }
+    }
+
+    @DisplayName("휴대폰 검사")
+    @Nested
+    class checkPhone {
+
+        @DisplayName("사용 가능한 아이디일 경우 true를 반환한다.")
+        @Test
+        void returnTrue_whenPhoneAvailable() {
+            // given
+            final PhoneRequest request = new PhoneRequest(phone);
+
+            // when
+            final CheckAvailableResponse response = userService.checkPhone(request);
+
+            // then
+            assertThat(response.isAvailable()).isTrue();
+        }
+
+        @DisplayName("사용 중인 휴대폰 번호일 경우 false를 반환한다.")
+        @Test
+        void returnFalse_whenPhoneAlreadyExists() {
+            // given
+            final String existingPhone = "01000000001";
+            dataSetup.saveAccount(Account.ofNew(username, password, existingPhone, Role.OWNER));
+
+            final PhoneRequest request = new PhoneRequest(existingPhone);
+
+            // when
+            final CheckAvailableResponse response = userService.checkPhone(request);
 
             // then
             assertThat(response.isAvailable()).isFalse();
