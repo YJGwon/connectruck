@@ -33,4 +33,14 @@ public abstract class AcceptanceTestBase {
                 .when().get(uri)
                 .then().log().all();
     }
+
+    protected ValidatableResponse post(final String uri, final Record body) {
+        return RestAssured
+                .given().log().all()
+                .body(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(uri)
+                .then().log().all();
+    }
 }
