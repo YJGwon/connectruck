@@ -29,12 +29,12 @@ public class Account {
     private Long id;
 
     private String username;
-    private String password;
+    private EncodedPassword password;
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
 
     public static Account ofNew(final String username, final String password, final String phone, final Role role) {
-        return new Account(null, username, password, phone, role);
+        return new Account(null, username, EncodedPassword.fromPlainText(password), phone, role);
     }
 }
