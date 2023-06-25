@@ -1,6 +1,8 @@
 package com.connectruck.foodtruck.user.controller;
 
+import com.connectruck.foodtruck.user.dto.CheckAvailableResponse;
 import com.connectruck.foodtruck.user.dto.UserRequest;
+import com.connectruck.foodtruck.user.dto.UsernameRequest;
 import com.connectruck.foodtruck.user.sevice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    @Operation(summary = "아이디 검사")
+    @ApiResponse(responseCode = "400", description = "잘못된 요청 body")
+    @PostMapping("/check-username")
+    public CheckAvailableResponse checkUsername(@RequestBody @Valid UsernameRequest request) {
+        return userService.checkUsername(request);
+    }
 
     @Operation(summary = "회원 가입")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 body")

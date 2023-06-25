@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.connectruck.foodtruck.common.testbase.ControllerTestBase;
 import com.connectruck.foodtruck.user.domain.Role;
 import com.connectruck.foodtruck.user.dto.UserRequest;
+import com.connectruck.foodtruck.user.dto.UsernameRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,15 +17,31 @@ import org.springframework.test.web.servlet.ResultActions;
 
 public class UserControllerTest extends ControllerTestBase {
 
+    private final String username = "test";
+    private final String password = "test1234!";
+    private final String phone = "01012341234";
+
+    @DisplayName("아이디 검사 요청 시, 아이디가 비어있을 경우 Bad Request를 응답한다.")
+    @ParameterizedTest
+    @NullAndEmptySource
+    void checkUsername_returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
+        // given
+        final UsernameRequest request = new UsernameRequest(blank);
+
+        // when
+        final ResultActions resultActions = performPost("/api/users/check-username", request);
+
+        // then
+        resultActions
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+    }
+
     @DisplayName("회원 정보 생성")
     @Nested
     class create {
 
         private final String uri = "/api/users";
-
-        private final String username = "test";
-        private final String password = "test1234!";
-        private final String phone = "01012341234";
 
         @DisplayName("아이디가 비어있을 경우 Bad Request를 응답한다.")
         @ParameterizedTest

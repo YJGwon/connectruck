@@ -2,7 +2,9 @@ package com.connectruck.foodtruck.user.sevice;
 
 import com.connectruck.foodtruck.common.exception.AlreadyExistException;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
+import com.connectruck.foodtruck.user.dto.CheckAvailableResponse;
 import com.connectruck.foodtruck.user.dto.UserRequest;
+import com.connectruck.foodtruck.user.dto.UsernameRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,11 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final AccountRepository accountRepository;
+
+    public CheckAvailableResponse checkUsername(final UsernameRequest request) {
+        final boolean isAvailable = !accountRepository.existsByUsername(request.username());
+        return new CheckAvailableResponse(isAvailable);
+    }
 
     public void create(final UserRequest request) {
         checkUsernameExists(request.username());
