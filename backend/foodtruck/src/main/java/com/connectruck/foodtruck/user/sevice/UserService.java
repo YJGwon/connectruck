@@ -14,12 +14,19 @@ public class UserService {
 
     public void create(final UserRequest request) {
         checkUsernameExists(request.username());
+        checkPhoneExists(request.phone());
         accountRepository.save(request.toEntity());
     }
 
     private void checkUsernameExists(final String username) {
         if (accountRepository.existsByUsername(username)) {
             throw AlreadyExistException.withInputValue("아이디", username);
+        }
+    }
+
+    private void checkPhoneExists(final String phone) {
+        if (accountRepository.existsByPhone(phone)) {
+            throw AlreadyExistException.withInputValue("휴대폰 번호", phone);
         }
     }
 }

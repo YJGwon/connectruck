@@ -3,7 +3,6 @@ package com.connectruck.foodtruck.common.fixture;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
-import com.connectruck.foodtruck.user.domain.Role;
 import java.time.LocalTime;
 import org.springframework.stereotype.Component;
 
@@ -28,8 +27,7 @@ public class DataSetup {
         return testTruckRepository.save(truck);
     }
 
-    public Account saveAccountOfName(final String username) {
-        final Account account = Account.ofNew(username, "test1234!", "01012341234", Role.OWNER);
+    public Account saveAccount(final Account account) {
         return accountRepository.save(account);
     }
 }
