@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.user.controller;
 
+import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,7 +37,8 @@ public class UserControllerTest extends ControllerTestBase {
         // then
         resultActions
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+                .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                .andExpect(jsonPath("detail", stringContainsInOrder("필수", "아이디")));
     }
 
     @DisplayName("휴대폰 번호 검사 요청 시, 휴대폰 번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
@@ -52,7 +54,8 @@ public class UserControllerTest extends ControllerTestBase {
         // then
         resultActions
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+                .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                .andExpect(jsonPath("detail", stringContainsInOrder("형식", "휴대폰 번호")));
     }
 
     @DisplayName("회원 정보 생성")
@@ -72,7 +75,8 @@ public class UserControllerTest extends ControllerTestBase {
             // then
             resultActions
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                    .andExpect(jsonPath("detail", stringContainsInOrder("필수", "아이디")));
         }
 
         @DisplayName("비밀번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
@@ -88,7 +92,8 @@ public class UserControllerTest extends ControllerTestBase {
             // then
             resultActions
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                    .andExpect(jsonPath("detail", stringContainsInOrder("형식", "비밀번호")));
         }
 
         @DisplayName("휴대폰 번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
@@ -104,7 +109,8 @@ public class UserControllerTest extends ControllerTestBase {
             // then
             resultActions
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                    .andExpect(jsonPath("detail", stringContainsInOrder("형식", "휴대폰 번호")));
         }
 
         @DisplayName("계정 권한이 비어있는 경우 Bad Request를 응답한다.")
@@ -119,7 +125,8 @@ public class UserControllerTest extends ControllerTestBase {
             // then
             resultActions
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."));
+                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                    .andExpect(jsonPath("detail", stringContainsInOrder("필수", "계정 권한")));
         }
     }
 }

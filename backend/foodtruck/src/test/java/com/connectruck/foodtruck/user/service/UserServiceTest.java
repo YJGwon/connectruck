@@ -49,10 +49,8 @@ public class UserServiceTest extends ServiceTestBase {
         @Test
         void returnFalse_whenUsernameAlreadyExists() {
             // given
-            final String existingUsername = "exists";
-            dataSetup.saveAccount(Account.ofNew(existingUsername, password, phone, Role.OWNER));
-
-            final UsernameRequest request = new UsernameRequest(existingUsername);
+            final Account existingUser = dataSetup.saveAccount();
+            final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
 
             // when
             final CheckAvailableResponse response = userService.checkUsername(request);
@@ -83,10 +81,8 @@ public class UserServiceTest extends ServiceTestBase {
         @Test
         void returnFalse_whenPhoneAlreadyExists() {
             // given
-            final String existingPhone = "01000000001";
-            dataSetup.saveAccount(Account.ofNew(username, password, existingPhone, Role.OWNER));
-
-            final PhoneRequest request = new PhoneRequest(existingPhone);
+            final Account existingUser = dataSetup.saveAccount();
+            final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
 
             // when
             final CheckAvailableResponse response = userService.checkPhone(request);
