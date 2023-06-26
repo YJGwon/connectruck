@@ -28,9 +28,20 @@ dependencies {
     // spring validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
+    // jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
     // lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+
+    // h2 db
+    runtimeOnly("com.h2database:h2")
+
+    // mysql
+    runtimeOnly("mysql:mysql-connector-java:8.0.33")
 
     // flyway
     implementation("org.flywaydb:flyway-core")
@@ -38,12 +49,6 @@ dependencies {
 
     // springdoc openapi (swagger ui)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
-
-    // h2 db
-    runtimeOnly("com.h2database:h2")
-
-    // mysql
-    runtimeOnly("mysql:mysql-connector-java:8.0.33")
 
     // spring test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

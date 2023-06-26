@@ -1,11 +1,16 @@
 package com.connectruck.foodtruck.auth.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.connectruck.foodtruck.auth.dto.SignInRequest;
+import com.connectruck.foodtruck.auth.dto.TokenResponse;
 import com.connectruck.foodtruck.auth.exception.SignInFailedException;
+import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.user.domain.Account;
+import com.connectruck.foodtruck.user.domain.Role;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,18 +21,44 @@ public class AuthServiceTest extends ServiceTestBase {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @DisplayName("로그인")
     @Nested
     class signIn {
 
-        private final Account existingAccount = dataSetup.saveAccount();
+        final String username = "test";
+        final String password = "test1234!";
+
+        @DisplayName("로그인에 성공하면 access token을 발급한다.")
+        @Test
+        void returnAccessToken() {
+            // given
+            final Account account = Account.ofNew(username, password, "01000000000", Role.OWNER);
+            dataSetup.saveAccount(account);
+
+            final SignInRequest request = new SignInRequest(username, password);
+
+            // when
+            final TokenResponse tokenResponse = authService.signIn(request);
+
+            // then
+            final String accessToken = tokenResponse.accessToken();
+            final long extractedId = Long.parseLong(jwtTokenProvider.getSubject(accessToken));
+            final Role extractedRole = Role.valueOf(jwtTokenProvider.getClaim(accessToken, "role"));
+
+            assertAll(
+                    () -> assertThat(extractedId).isEqualTo(account.getId()),
+                    () -> assertThat(extractedRole).isEqualTo(account.getRole())
+            );
+        }
 
         @DisplayName("아이디가 잘못되었을 경우 예외가 발생한다.")
         @Test
         void throwsException_whenWrongUsername() {
             // given
-            final String wrongUsername = existingAccount.getUsername() + "wrong";
-            final SignInRequest request = new SignInRequest(wrongUsername, existingAccount.getPassword().getValue());
+            final SignInRequest request = new SignInRequest("test", "test1234!");
 
             // when & then
             assertThatExceptionOfType(SignInFailedException.class)
@@ -38,8 +69,11 @@ public class AuthServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenWrongPassword() {
             // given
-            final String wrongPassword = existingAccount.getPassword().getValue() + "wrong";
-            final SignInRequest request = new SignInRequest(existingAccount.getUsername(), wrongPassword);
+            final Account account = Account.ofNew(username, password, "01000000000", Role.OWNER);
+            dataSetup.saveAccount(account);
+
+            final String wrongPassword = password + "!";
+            final SignInRequest request = new SignInRequest(username, wrongPassword);
 
             // when & then
             assertThatExceptionOfType(SignInFailedException.class)
