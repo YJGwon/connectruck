@@ -18,7 +18,7 @@ public class AuthTestController {
     public void authentication() {
     }
 
-    @Authorization(role = Role.OWNER)
+    @Authorization(Role.OWNER)
     @GetMapping("/api/authorization")
     public void authorization() {
     }

@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Authentication
 public @interface Authorization {
 
-    Role role();
+    Role value();
 }

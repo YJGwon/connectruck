@@ -39,7 +39,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
             if (requiresAuthorization(handlerMethod)) {
                 final Authorization annotation = extractAnnotation(handlerMethod, Authorization.class);
-                authService.validateRole(token, annotation.role());
+                authService.validateRole(token, annotation.value());
             }
         } catch (ClassCastException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
