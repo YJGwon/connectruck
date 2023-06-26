@@ -1,7 +1,9 @@
 package com.connectruck.foodtruck.auth.support;
 
+import com.connectruck.foodtruck.auth.exception.AuthenticationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -35,6 +37,14 @@ public class JwtTokenProvider {
                 .setExpiration(validity)
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public void validateToken(final String token) {
+        try {
+            parseClaimsJws(token);
+        } catch (final JwtException | IllegalArgumentException e) {
+            throw new AuthenticationException("유효하지 않은 토큰입니다.");
+        }
     }
 
     public String getSubject(final String token) {
