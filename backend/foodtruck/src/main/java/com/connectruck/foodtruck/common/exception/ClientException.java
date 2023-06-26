@@ -1,14 +1,8 @@
 package com.connectruck.foodtruck.common.exception;
 
-import lombok.Getter;
-
-@Getter
-public class ClientException extends RuntimeException {
-
-    private final String title;
+public class ClientException extends CustomException {
 
     public ClientException(final String title, final String detail) {
-        super(detail);
-        this.title = title;
+        super(title, detail);
     }
 }
