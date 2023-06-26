@@ -9,13 +9,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Map;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
+
+    private static final String CLAIM_NAME_ROLE = "role";
 
     private final SecretKey secretKey;
     private final long validityInMilliseconds;
@@ -26,12 +27,12 @@ public class JwtTokenProvider {
         this.validityInMilliseconds = validityInMilliseconds;
     }
 
-    public String create(final String subject, final Map<String, Object> claims) {
+    public String create(final String subject, final String role) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setClaims(claims)
+                .claim(CLAIM_NAME_ROLE, role)
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(validity)
@@ -53,10 +54,10 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public String getClaim(final String token, final String claimName) {
+    public String getRole(final String token) {
         return parseClaimsJws(token)
                 .getBody()
-                .get(claimName, String.class);
+                .get(CLAIM_NAME_ROLE, String.class);
     }
 
     private Jws<Claims> parseClaimsJws(final String token) {
