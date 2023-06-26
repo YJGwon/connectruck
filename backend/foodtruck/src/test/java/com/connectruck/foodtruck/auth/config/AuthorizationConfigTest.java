@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(controllers = AuthTestController.class)
 @Import({JwtTokenProvider.class, AuthService.class})
-class AuthenticationConfigTest {
+class AuthorizationConfigTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -33,9 +33,9 @@ class AuthenticationConfigTest {
     @MockBean
     private AccountRepository accountRepository;
 
-    @DisplayName("인증이 필요하지 않은 요청에 대해서는 검증하지 않는다.")
+    @DisplayName("인가가 필요하지 않은 요청에 대해서는 검증하지 않는다.")
     @Test
-    void success_whenAuthenticationNotRequired() throws Exception {
+    void success_whenAuthorizationNotRequired() throws Exception {
         // given & when
         final ResultActions resultActions = mockMvc.perform(get("/api/no-auth"))
                 .andDo(print());
@@ -44,16 +44,16 @@ class AuthenticationConfigTest {
         resultActions.andExpect(status().isOk());
     }
 
-    @DisplayName("인증이 필요한 요청에 대해 토큰 검증")
+    @DisplayName("사장님 권한이 필요한 요청에 대해 권한 검증")
     @Nested
-    class validateToken_whenAuthenticationRequired {
+    class validateRole_whenAuthorizationRequired {
 
-        private static final String URI = "/api/authentication";
+        private static final String URI = "/api/authorization";
         private static final String PREFIX_BEARER = "Bearer ";
 
         private final String validToken = jwtTokenProvider.create("1", Role.OWNER.name());
 
-        @DisplayName("토큰이 유효하면 요청에 성공한다.")
+        @DisplayName("사장님 권한이 있으면 요청에 성공한다.")
         @Test
         void success() throws Exception {
             // given & when
@@ -107,6 +107,21 @@ class AuthenticationConfigTest {
                     .andExpect(status().isUnauthorized())
                     .andExpect(jsonPath("title").value("사용자 인증에 실패하였습니다."))
                     .andExpect(jsonPath("detail").value("유효하지 않은 토큰입니다."));
+        }
+
+        @DisplayName("사장님 권한이 없으면 요청에 실패한다.")
+        @Test
+        void returnForbidden_whenNotOwner() throws Exception {
+            // given
+            final String tokenWithoutRole = jwtTokenProvider.create("1", "");
+
+            // when
+            final ResultActions resultActions = mockMvc.perform(get(URI)
+                            .header(HttpHeaders.AUTHORIZATION, PREFIX_BEARER + tokenWithoutRole))
+                    .andDo(print());
+
+            // then
+            resultActions.andExpect(status().isForbidden());
         }
     }
 }

@@ -6,6 +6,7 @@ import com.connectruck.foodtruck.auth.service.AuthService;
 import com.connectruck.foodtruck.auth.support.TokenExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
@@ -22,17 +23,27 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(final HttpServletRequest request,
                              final HttpServletResponse response,
-                             final Object handler) {
-        if (isPreflight(request) || !requiresAuthentication(handler)) {
+                             final Object handler) throws IOException {
+        if (isPreflight(request)) {
             return true;
         }
 
-        final String token = TokenExtractor.extract(request);
-        authService.validateToken(token);
+        try {
+            final HandlerMethod handlerMethod = (HandlerMethod) handler;
+            if (!requiresAuthentication(handlerMethod)) {
+                return true;
+            }
 
-        if (requiresAuthorization(handler)) {
-            final Authorization annotation = extractAnnotation(handler, Authorization.class);
-            authService.validateRole(token, annotation.role());
+            final String token = TokenExtractor.extract(request);
+            authService.validateToken(token);
+
+            if (requiresAuthorization(handlerMethod)) {
+                final Authorization annotation = extractAnnotation(handlerMethod, Authorization.class);
+                authService.validateRole(token, annotation.role());
+            }
+        } catch (ClassCastException e) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return false;
         }
 
         return true;
@@ -42,23 +53,23 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         return request.getMethod().equals(HttpMethod.OPTIONS.toString());
     }
 
-    private boolean requiresAuthentication(final Object handler) {
-        return hasAnnotation(handler, Authentication.class);
+    private boolean requiresAuthentication(final HandlerMethod handlerMethod) {
+        return hasAnnotation(handlerMethod, Authentication.class);
     }
 
-    private boolean requiresAuthorization(final Object handler) {
-        return hasAnnotation(handler, Authorization.class);
+    private boolean requiresAuthorization(final HandlerMethod handlerMethod) {
+        return hasAnnotation(handlerMethod, Authorization.class);
     }
 
-    private <A extends Annotation> boolean hasAnnotation(final Object handler, final Class<A> annotationType) {
-        final HandlerMethod handlerMethod = (HandlerMethod) handler;
+    private <A extends Annotation> boolean hasAnnotation(final HandlerMethod handlerMethod,
+                                                         final Class<A> annotationType) {
         final boolean hasTypeAnnotation = handlerMethod.getBeanType().isAnnotationPresent(annotationType);
         final boolean hasMethodAnnotation = handlerMethod.hasMethodAnnotation(annotationType);
         return hasTypeAnnotation || hasMethodAnnotation;
     }
 
-    private <A extends Annotation> A extractAnnotation(final Object handler, final Class<A> annotationType) {
-        final HandlerMethod handlerMethod = (HandlerMethod) handler;
+    private <A extends Annotation> A extractAnnotation(final HandlerMethod handlerMethod,
+                                                       final Class<A> annotationType) {
         final A typeAnnotation = handlerMethod.getBeanType().getAnnotation(annotationType);
         if (typeAnnotation != null) {
             return typeAnnotation;
