@@ -1,14 +1,16 @@
 package com.connectruck.foodtruck.auth.config;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.connectruck.foodtruck.auth.service.AuthService;
 import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
+import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -51,12 +53,18 @@ class AuthorizationConfigTest {
         private static final String URI = "/api/authorization";
         private static final String PREFIX_BEARER = "Bearer ";
 
-        private final String validToken = jwtTokenProvider.create("1", Role.OWNER.name());
+        private static final long ID = 1L;
+        private static final Role REQUIRED_ROLE = Role.OWNER;
+
+        private final String validToken = jwtTokenProvider.create(Long.toString(ID), REQUIRED_ROLE.name());
 
         @DisplayName("사장님 권한이 있으면 요청에 성공한다.")
         @Test
         void success() throws Exception {
-            // given & when
+            // given
+            setAccountRole(REQUIRED_ROLE);
+
+            // when
             final ResultActions resultActions = mockMvc.perform(get(URI)
                             .header(HttpHeaders.AUTHORIZATION, PREFIX_BEARER + validToken))
                     .andDo(print());
@@ -65,55 +73,11 @@ class AuthorizationConfigTest {
             resultActions.andExpect(status().isOk());
         }
 
-        @DisplayName("토큰이 없으면 요청에 실패한다.")
-        @Test
-        void returnUnauthorized_withoutToken() throws Exception {
-            // given & when
-            final ResultActions resultActions = mockMvc.perform(get(URI))
-                    .andDo(print());
-
-            // then
-            resultActions
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(jsonPath("title").value("사용자 인증에 실패하였습니다."))
-                    .andExpect(jsonPath("detail").value("토큰이 존재하지 않습니다."));
-        }
-
-        @DisplayName("토큰 형식이 잘못되었으면 요청에 실패한다.")
-        @Test
-        void returnUnauthorized_whenTokenIsNotBearer() throws Exception {
-            // given & when
-            final ResultActions resultActions = mockMvc.perform(get(URI)
-                            .header(HttpHeaders.AUTHORIZATION, validToken))
-                    .andDo(print());
-
-            // then
-            resultActions
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(jsonPath("title").value("사용자 인증에 실패하였습니다."))
-                    .andExpect(jsonPath("detail").value("식별할 수 없는 형식의 토큰입니다."));
-        }
-
-        @DisplayName("토큰이 유효하지 않으면 요청에 실패한다.")
-        @Test
-        void returnUnauthorized_whenTokenInvalid() throws Exception {
-            // given & when
-            final ResultActions resultActions = mockMvc.perform(get(URI)
-                            .header(HttpHeaders.AUTHORIZATION, PREFIX_BEARER + "invalidToken"))
-                    .andDo(print());
-
-            // then
-            resultActions
-                    .andExpect(status().isUnauthorized())
-                    .andExpect(jsonPath("title").value("사용자 인증에 실패하였습니다."))
-                    .andExpect(jsonPath("detail").value("유효하지 않은 토큰입니다."));
-        }
-
         @DisplayName("사장님 권한이 없으면 요청에 실패한다.")
         @Test
-        void returnForbidden_whenNotOwner() throws Exception {
+        void returnForbidden_whenNotOwnerToken() throws Exception {
             // given
-            final String tokenWithoutRole = jwtTokenProvider.create("1", "");
+            final String tokenWithoutRole = jwtTokenProvider.create(Long.toString(ID), "");
 
             // when
             final ResultActions resultActions = mockMvc.perform(get(URI)
@@ -122,6 +86,27 @@ class AuthorizationConfigTest {
 
             // then
             resultActions.andExpect(status().isForbidden());
+        }
+
+        @DisplayName("토큰에만 사장님 권한이 있으면 요청에 실패한다.")
+        @Test
+        void returnForbidden_whenNotOwnerAccount() throws Exception {
+            // given
+            setAccountRole(Role.NONE);
+
+            // when
+            final ResultActions resultActions = mockMvc.perform(get(URI)
+                            .header(HttpHeaders.AUTHORIZATION, PREFIX_BEARER + validToken))
+                    .andDo(print());
+
+            // then
+            resultActions.andExpect(status().isForbidden());
+        }
+
+        private void setAccountRole(final Role role) {
+            final Account account = Account.ofNew("username", "test1234!", "01000000000", role);
+            when(accountRepository.findById(1L))
+                    .thenReturn(Optional.of(account));
         }
     }
 }

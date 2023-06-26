@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.auth.service;
 
 import com.connectruck.foodtruck.auth.dto.SignInRequest;
 import com.connectruck.foodtruck.auth.dto.TokenResponse;
+import com.connectruck.foodtruck.auth.exception.AuthenticationException;
 import com.connectruck.foodtruck.auth.exception.AuthorizationException;
 import com.connectruck.foodtruck.auth.exception.SignInFailedException;
 import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
@@ -34,15 +35,30 @@ public class AuthService {
     }
 
     public void validateRole(final String token, final Role requiredRole) {
-        final String role = jwtTokenProvider.getRole(token);
-        if (!requiredRole.name().equals(role)) {
-            throw new AuthorizationException(role);
-        }
+        checkRoleInToken(token, requiredRole);
+        checkRoleInAccount(token, requiredRole);
     }
 
     private void checkPassword(final String password, final Account account) {
         if (!account.isPassword(password)) {
             throw new SignInFailedException();
+        }
+    }
+
+    private void checkRoleInToken(final String token, final Role requiredRole) {
+        final String tokenRole = jwtTokenProvider.getRole(token);
+        if (!requiredRole.name().equals(tokenRole)) {
+            throw new AuthorizationException(tokenRole);
+        }
+    }
+
+    private void checkRoleInAccount(final String token, final Role requiredRole) {
+        final long id = Long.parseLong(jwtTokenProvider.getSubject(token));
+        final Role accountRole = accountRepository.findById(id)
+                .orElseThrow(() -> new AuthenticationException("사용자 정보가 존재하지 않습니다."))
+                .getRole();
+        if (accountRole != requiredRole) {
+            throw new AuthorizationException(accountRole.name());
         }
     }
 }
