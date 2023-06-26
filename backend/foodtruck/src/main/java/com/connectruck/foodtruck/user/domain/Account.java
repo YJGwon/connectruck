@@ -55,6 +55,10 @@ public class Account {
         return new Account(null, username, EncodedPassword.fromPlainText(password), phone, role);
     }
 
+    public boolean isPassword(final String password) {
+        return this.password.isSamePassword(password);
+    }
+
     private static void validatePhone(final String phone) {
         final Matcher matcher = PATTERN.matcher(phone);
         if (!matcher.matches()) {

@@ -60,10 +60,8 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         @Test
         void returnFalse_whenUsernameAlreadyExists() {
             // given
-            final String existingUsername = "test1";
-            dataSetup.saveAccount(Account.ofNew(existingUsername, password, phone, Role.OWNER));
-
-            final UsernameRequest request = new UsernameRequest(existingUsername);
+            final Account existingUser = dataSetup.saveAccount();
+            final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
 
             // when
             final ValidatableResponse response = post(URI, request);
@@ -98,10 +96,8 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         @Test
         void returnFalse_whenPhoneAlreadyExists() {
             // given
-            final String existingPhone = "01000000001";
-            dataSetup.saveAccount(Account.ofNew(username, password, existingPhone, Role.OWNER));
-
-            final PhoneRequest request = new PhoneRequest(existingPhone);
+            final Account existingUser = dataSetup.saveAccount();
+            final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
 
             // when
             final ValidatableResponse response = post(URI, request);

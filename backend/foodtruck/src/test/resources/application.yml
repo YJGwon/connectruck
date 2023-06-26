@@ -1,7 +1,6 @@
 spring:
   # jpa
   jpa:
-    show_sql: true
     properties:
       hibernate:
         format_sql: true
@@ -25,7 +24,12 @@ logging:
     org.hibernate:
       SQL: DEBUG
       orm.jdbc.bind: TRACE
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) [traceId=%X{traceId}] %highlight(%-5level) [%C.%M:%line] - %msg%n"
 
 connectruck:
   cors:
     allowed-origin: http://localhost:8080
+  jwt:
+    secret-key: 5337df8a0f59f504759223895b36107115bf73650610850f6a389f79cc710b9fdd4f813857727add1ad6ce2f93d5166386082551d45d43f1a530c02bd568c289
+    expire-length: 3600000

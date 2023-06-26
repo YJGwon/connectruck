@@ -140,7 +140,7 @@ export default function SignupForm({root, role}) {
 
             if (response.ok) {
                 alert('가입되었습니다.');
-                navigate(`${root}/login`);
+                navigate(`${root}/signin`);
             } else {
                 throw new Error(`api error: ${response.json().title}`);
             }
