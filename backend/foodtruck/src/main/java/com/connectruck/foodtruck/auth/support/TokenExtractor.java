@@ -4,7 +4,7 @@ import com.connectruck.foodtruck.auth.exception.AuthenticationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 
-public class AuthorizationExtractor {
+public class TokenExtractor {
 
     private static final String BEARER_TYPE = "Bearer";
 

@@ -1,11 +1,10 @@
 package com.connectruck.foodtruck.auth.controller;
 
 import com.connectruck.foodtruck.auth.annotation.Authentication;
-import com.connectruck.foodtruck.auth.support.AuthorizationExtractor;
 import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
+import com.connectruck.foodtruck.auth.support.TokenExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
 
         if (requiresAuthentication(handler)) {
-            final String token = AuthorizationExtractor.extract(request);
+            final String token = TokenExtractor.extract(request);
             jwtTokenProvider.validateToken(token);
         }
 
@@ -40,8 +39,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private boolean requiresAuthentication(final Object handler) {
         final HandlerMethod handlerMethod = (HandlerMethod) handler;
-        final Authentication classAnnotation = handlerMethod.getBeanType().getAnnotation(Authentication.class);
-        final Authentication methodAnnotation = handlerMethod.getMethodAnnotation(Authentication.class);
-        return Objects.nonNull(classAnnotation) || Objects.nonNull(methodAnnotation);
+        final boolean hasTypeAnnotation = handlerMethod.getBeanType().isAnnotationPresent(Authentication.class);
+        final boolean hasMethodAnnotation = handlerMethod.hasMethodAnnotation(Authentication.class);
+        return hasTypeAnnotation || hasMethodAnnotation;
     }
 }
