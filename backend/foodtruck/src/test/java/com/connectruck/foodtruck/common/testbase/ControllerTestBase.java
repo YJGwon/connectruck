@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import com.connectruck.foodtruck.auth.service.AuthService;
+import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import com.connectruck.foodtruck.user.sevice.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,9 @@ public abstract class ControllerTestBase {
 
     @MockBean
     protected AuthService authService;
+
+    @MockBean
+    protected JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     private ObjectMapper objectMapper;

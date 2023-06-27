@@ -30,10 +30,6 @@ public class AuthService {
         return new TokenResponse(accessToken);
     }
 
-    public void validateToken(final String token) {
-        jwtTokenProvider.validateToken(token);
-    }
-
     public void validateRole(final String token, final Role requiredRole) {
         checkRoleInToken(token, requiredRole);
         checkRoleInAccount(token, requiredRole);
