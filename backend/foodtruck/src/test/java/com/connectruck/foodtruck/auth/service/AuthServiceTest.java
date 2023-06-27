@@ -46,7 +46,7 @@ public class AuthServiceTest extends ServiceTestBase {
             // then
             final String accessToken = tokenResponse.accessToken();
             final long extractedId = Long.parseLong(jwtTokenProvider.getSubject(accessToken));
-            final Role extractedRole = Role.valueOf(jwtTokenProvider.getClaim(accessToken, "role"));
+            final Role extractedRole = Role.valueOf(jwtTokenProvider.getRole(accessToken));
 
             assertAll(
                     () -> assertThat(extractedId).isEqualTo(account.getId()),

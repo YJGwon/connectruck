@@ -1,8 +1,9 @@
 package com.connectruck.foodtruck.auth.controller;
 
-import com.connectruck.foodtruck.auth.annotation.Authentication;
-import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
+import com.connectruck.foodtruck.auth.annotation.Authorization;
+import com.connectruck.foodtruck.auth.service.AuthService;
 import com.connectruck.foodtruck.auth.support.TokenExtractor;
+import com.connectruck.foodtruck.user.domain.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,9 +15,9 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @RequiredArgsConstructor
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public class AuthorizationInterceptor implements HandlerInterceptor {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
     @Override
     public boolean preHandle(final HttpServletRequest request,
@@ -28,12 +29,13 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
         try {
             final HandlerMethod handlerMethod = (HandlerMethod) handler;
-            if (!requiresAuthentication(handlerMethod)) {
+            if (!requiresAuthorization(handlerMethod)) {
                 return true;
             }
 
             final String token = TokenExtractor.extract(request);
-            jwtTokenProvider.validateToken(token);
+            final Role requiredRole = extractRequiredRole(handlerMethod);
+            authService.validateRole(token, requiredRole);
         } catch (ClassCastException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return false;
@@ -46,9 +48,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         return request.getMethod().equals(HttpMethod.OPTIONS.toString());
     }
 
-    private boolean requiresAuthentication(final HandlerMethod handlerMethod) {
-        final boolean hasTypeAnnotation = handlerMethod.getBeanType().isAnnotationPresent(Authentication.class);
-        final boolean hasMethodAnnotation = handlerMethod.hasMethodAnnotation(Authentication.class);
+    private boolean requiresAuthorization(final HandlerMethod handlerMethod) {
+        final boolean hasTypeAnnotation = handlerMethod.getBeanType().isAnnotationPresent(Authorization.class);
+        final boolean hasMethodAnnotation = handlerMethod.hasMethodAnnotation(Authorization.class);
         return hasTypeAnnotation || hasMethodAnnotation;
+    }
+
+    private Role extractRequiredRole(final HandlerMethod handlerMethod) {
+        final Authorization authorization = handlerMethod.getBeanType().getAnnotation(Authorization.class);
+        if (authorization != null) {
+            return authorization.value();
+        }
+        return handlerMethod.getMethodAnnotation(Authorization.class).value();
     }
 }
