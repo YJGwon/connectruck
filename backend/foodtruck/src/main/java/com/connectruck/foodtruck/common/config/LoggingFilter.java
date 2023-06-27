@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.config;
+package com.connectruck.foodtruck.common.config;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

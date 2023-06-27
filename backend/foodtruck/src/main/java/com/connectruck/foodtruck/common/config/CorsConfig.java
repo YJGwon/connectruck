@@ -1,14 +1,14 @@
-package com.connectruck.foodtruck.config;
+package com.connectruck.foodtruck.common.config;
 
+import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
-
-    private static final String ALLOWED_METHOD_NAMES = "GET,HEAD,POST,PUT,DELETE,TRACE,OPTIONS,PATCH";
 
     private final String allowedOrigin;
 
@@ -20,6 +20,12 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigin)
-                .allowedMethods(ALLOWED_METHOD_NAMES.split(","));
+                .allowedMethods(getAllHttpMethodNames());
+    }
+
+    private String[] getAllHttpMethodNames() {
+        return Arrays.stream(HttpMethod.values())
+                .map(HttpMethod::name)
+                .toArray(String[]::new);
     }
 }
