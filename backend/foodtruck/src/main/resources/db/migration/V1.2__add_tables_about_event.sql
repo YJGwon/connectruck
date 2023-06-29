@@ -15,9 +15,11 @@ CREATE TABLE schedule (
     FOREIGN KEY (event_id) REFERENCES event (event_id)
 );
 
-CREATE TABLE event_truck (
+CREATE TABLE participation (
+    participation_id BIGINT(20) NOT NULL AUTO_INCREMENT,
     event_id BIGINT(20) NOT NULL,
     truck_id BIGINT(20) NOT NULL,
+    PRIMARY KEY (participation_id),
     FOREIGN KEY (event_id) REFERENCES event (event_id),
     FOREIGN KEY (truck_id) REFERENCES truck (truck_id)
 );

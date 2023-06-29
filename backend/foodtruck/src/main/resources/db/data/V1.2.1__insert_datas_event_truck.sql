@@ -43,7 +43,7 @@ VALUES
     ('밤도깨비 야시장 트럭15', '00가0025')
 ;
 
-INSERT INTO event_truck
+INSERT INTO participation
     (event_id, truck_id)
 VALUES
     (1, 1),
