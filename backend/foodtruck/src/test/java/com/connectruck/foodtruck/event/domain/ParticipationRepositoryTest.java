@@ -1,10 +1,13 @@
 package com.connectruck.foodtruck.event.domain;
 
+import static com.connectruck.foodtruck.event.fixture.EventFixture.밤도깨비_야시장;
+import static com.connectruck.foodtruck.event.fixture.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.connectruck.foodtruck.common.fixture.DataSetup;
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,23 +24,48 @@ class ParticipationRepositoryTest extends RepositoryTestBase {
     @Autowired
     private ParticipationRepository participationRepository;
 
-    @DisplayName("행사 참가 푸드트럭에 대해 slice 단위로 조회한다.")
-    @Test
-    void findAllBy_perSlice() {
-        // given
-        final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
-        dataSetup.saveEvent(event);
-        dataSetup.saveParticipation(event);
-        dataSetup.saveParticipation(event);
-        dataSetup.saveParticipation(event);
+    @DisplayName("행사 참가 푸드트럭 목록 조회")
+    @Nested
+    class findByEventId {
 
-        // when
-        final int page = 0;
-        final int size = 2;
-        final Slice<Participation> found = participationRepository.findByEventId(event.getId(),
-                PageRequest.of(page, size));
+        @DisplayName("slice 단위로 조회한다.")
+        @Test
+        void perSlice() {
+            // given
+            final Event event = 밤도깨비_야시장.create();
+            dataSetup.saveEvent(event);
+            dataSetup.saveParticipation(event);
+            dataSetup.saveParticipation(event);
+            dataSetup.saveParticipation(event);
 
-        // then
-        assertThat(found.getContent()).hasSize(size);
+            // when
+            final int page = 0;
+            final int size = 2;
+            final Slice<Participation> found = participationRepository.findByEventId(event.getId(),
+                    PageRequest.of(page, size));
+
+            // then
+            assertThat(found.getContent()).hasSize(size);
+        }
+
+        @DisplayName("특정 행사의 푸드트럭만 조회한다.")
+        @Test
+        void notContainingOtherEvent() {
+            // given
+            final Event event = 밤도깨비_야시장.create();
+            dataSetup.saveEvent(event);
+            dataSetup.saveParticipation(event);
+
+            final Event otherEvent = 서울FC_경기.create();
+            dataSetup.saveEvent(otherEvent);
+            dataSetup.saveParticipation(otherEvent);
+
+            // when
+            final Slice<Participation> found = participationRepository.findByEventId(event.getId(),
+                    PageRequest.of(0, 2));
+
+            // then
+            assertThat(found.getContent()).hasSize(1);
+        }
     }
 }

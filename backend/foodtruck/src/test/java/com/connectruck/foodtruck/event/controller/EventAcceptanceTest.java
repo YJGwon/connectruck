@@ -1,11 +1,13 @@
 package com.connectruck.foodtruck.event.controller;
 
+import static com.connectruck.foodtruck.event.fixture.EventFixture.서울FC_경기;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
+import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +20,7 @@ public class EventAcceptanceTest extends AcceptanceTestBase {
 
     @DisplayName("행사 참가 푸드트럭 목록 조회")
     @Nested
-    class findAttendingTrucks {
+    class findParticipatingTrucks {
 
         private static final String URI_FORMAT = BASE_URI + "/%d/trucks";
 
@@ -26,13 +28,21 @@ public class EventAcceptanceTest extends AcceptanceTestBase {
         @Test
         void perPage() {
             // given
-            final long eventId = 1L;
+            // 총 3개의 푸드트럭 참가
+            final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
+            dataSetup.saveEvent(event);
+            dataSetup.saveParticipation(event);
+            dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveParticipation(event).getTruck();
+
+            // 다른 행사 참가 푸드트럭 1개 존재
+            final Event otherEvent = 서울FC_경기.create();
+            dataSetup.saveEvent(otherEvent);
+            dataSetup.saveParticipation(otherEvent);
+
+            final long eventId = event.getId();
             final int page = 1;
             final int size = 2;
-
-            dataSetup.saveTruck();
-            dataSetup.saveTruck();
-            final Truck expected = dataSetup.saveTruck();
 
             // when
             final String uri = String.format(URI_FORMAT, eventId);
