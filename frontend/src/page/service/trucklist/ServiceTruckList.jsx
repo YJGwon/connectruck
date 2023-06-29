@@ -1,42 +1,52 @@
-import React from 'react';
+import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import './ServiceTruckList.css';
 
-class ServiceTruckList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            trucks: [],
-            page: 0,
-            size: 20,
-            hasNext: true,
-            isLoading: false,
-            isInitialLoad: true // Flag for initial load
+export default function ServiceTruckList({eventId}) {
+    const [trucks, setTrucks] = useState([]);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(20);
+    const [hasNext, setHasNext] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const scrollRef = useRef();
+
+    useEffect(() => {
+        fetchTruckData(eventId);
+    }, []);
+
+    useLayoutEffect(() => {
+        if (!scrollRef.current) 
+            return;
+        
+        const handleScroll = () => {
+            const scrollContainer = scrollRef.current;
+
+            if (scrollContainer.scrollTop + scrollContainer.offsetHeight >= scrollContainer.scrollHeight - 20) {
+                if (!isLoading && hasNext) {
+                    fetchTruckData(eventId);
+                }
+            }
         };
 
-        this.scrollRef = React.createRef();
-    }
-
-    componentDidMount() {
-        this.fetchTruckData();
-        this
-            .scrollRef
+        scrollRef
             .current
-            .addEventListener('scroll', this.handleScroll);
-    }
+            .addEventListener('scroll', handleScroll);
 
-    componentWillUnmount() {
-        this
-            .scrollRef
-            .current
-            .removeEventListener('scroll', this.handleScroll);
-    }
+        return() => {
+            try {
+                scrollRef
+                    .current
+                    .removeEventListener('scroll', handleScroll);
+            } catch (e) {
+                console.warn('could not removeEventListener on scroll');
+            }
+        };
+    }, [scrollRef.current, isLoading]);
 
-    fetchTruckData = () => {
-        const {page, size, isInitialLoad} = this.state;
+    const fetchTruckData = (eventId) => {
+        setIsLoading(true);
 
-        this.setState({isLoading: true});
-
-        const url = `${process.env.REACT_APP_API_URL}/api/trucks?page=${page}&size=${size}`;
+        const url = `${process.env.REACT_APP_API_URL}/api/events/${eventId}/trucks?page=${page}&size=${size}`;
 
         fetch(url)
             .then(response => {
@@ -47,18 +57,10 @@ class ServiceTruckList extends React.Component {
                 }
             })
             .then(data => {
-                const {page, trucks} = data;
-                this.setState(prevState => ({
-                    trucks: isInitialLoad
-                        ? trucks
-                        : prevState
-                            .trucks
-                            .concat(trucks),
-                    page: page.currentPage + 1,
-                    isLoading: false,
-                    hasNext: page.hasNext,
-                    isInitialLoad: false // Set isInitialLoad to false after the first load
-                }));
+                setTrucks(trucks.concat(data.trucks));
+                setPage(data.page.currentPage + 1);
+                setIsLoading(false);
+                setHasNext(data.page.hasNext);
             })
             .catch(error => {
                 console.error('Error fetching truck data:', error);
@@ -70,50 +72,30 @@ class ServiceTruckList extends React.Component {
             });
     }
 
-    handleScroll = () => {
-        const {isLoading, hasNext} = this.state;
-        const scrollContainer = this.scrollRef.current;
+    return (
+        <div
+            ref={scrollRef}
+            style={{
+                height: '400px',
+                overflow: 'auto'
+            }}>
+            <h1>푸드트럭</h1>
 
-        if (scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 20) {
-            if (!isLoading && hasNext) {
-                this.fetchTruckData();
-            }
-        }
-    };
-
-    render() {
-        const {trucks, isLoading, hasNext} = this.state;
-
-        return (
-            <div
-                ref={this.scrollRef}
-                style={{
-                    height: '400px',
-                    overflow: 'auto'
-                }}>
-                <h1>푸드트럭</h1>
-
-                {
-                    trucks.map((truck, index) => (
-                        <div className="truck-listing" key={index}>
-                            <img
-                                className="truck-thumbnail"
-                                src={truck.thumbnail || 'https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png'}
-                                alt={truck.name}/>
-                            <div className="truck-info">
-                                <h2 className="truck-name">{truck.name}</h2>
-                                <p className="truck-location">Location: {truck.location}</p>
-                                <p className="truck-hours">Operating Hours: {truck.openHour}
-                                    - {truck.closeHour}</p>
-                            </div>
+            {
+                trucks.map((truck, index) => (
+                    <div className="truck-listing" key={index}>
+                        <img
+                            className="truck-thumbnail"
+                            src={truck.thumbnail || 'https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png'}
+                            alt={truck.name}/>
+                        <div className="truck-info">
+                            <h2 className="truck-name">{truck.name}</h2>
                         </div>
-                    ))
-                }
-                {isLoading && <p>불러오는 중...</p>}
-                {!isLoading && !hasNext && <p>끝</p>}
-            </div>
-        );
-    }
+                    </div>
+                ))
+            }
+            {isLoading && <p>불러오는 중...</p>}
+            {!isLoading && !hasNext && <p>끝</p>}
+        </div>
+    );
 }
-
-export default ServiceTruckList;

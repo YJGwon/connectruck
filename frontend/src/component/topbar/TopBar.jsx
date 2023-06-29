@@ -1,11 +1,9 @@
 import React from 'react';
 import {AppBar, Toolbar, Typography, Link} from '@mui/material';
+
 import './TopBar.css';
 
-export default function TopBar(props) {
-    const title = props.title;
-    const root = props.root;
-    const buttons = props.buttons;
+export default function TopBar({title, root}) {
 
     return (
         <AppBar position="static" className="topbar">
@@ -15,18 +13,6 @@ export default function TopBar(props) {
                         {title}
                     </Link>
                 </Typography>
-                <nav>
-                    {
-                        buttons.map((button, index) => (
-                            <Link
-                                key={index}
-                                href={button.link}
-                                color="inherit" underline="none" className="topbar__link">
-                                {button.name}
-                            </Link>
-                        ))
-                    }
-                </nav>
             </Toolbar>
         </AppBar>
     );
