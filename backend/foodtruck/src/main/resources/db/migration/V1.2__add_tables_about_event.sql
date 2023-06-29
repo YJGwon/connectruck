@@ -23,3 +23,4 @@ CREATE TABLE event_truck (
 );
 
 ALTER TABLE truck DROP COLUMN open_hour, close_hour, location;
+ALTER TABLE truck ADD car_number VARCHAR(8) NOT NULL;

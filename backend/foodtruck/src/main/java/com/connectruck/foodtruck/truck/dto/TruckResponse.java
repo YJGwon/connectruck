@@ -5,6 +5,7 @@ import com.connectruck.foodtruck.truck.domain.Truck;
 public record TruckResponse(
         Long id,
         String name,
+        String carNumber,
         String thumbnail
 ) {
 
@@ -12,6 +13,7 @@ public record TruckResponse(
         return new TruckResponse(
                 truck.getId(),
                 truck.getName(),
+                truck.getCarNumber(),
                 truck.getThumbnail()
         );
     }

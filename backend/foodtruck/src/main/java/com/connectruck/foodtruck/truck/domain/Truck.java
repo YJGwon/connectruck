@@ -27,13 +27,14 @@ public class Truck {
     private Long id;
 
     private String name;
+    private String carNumber;
     private String thumbnail;
 
-    public static Truck ofNew(final String name, final String thumbnail) {
-        return new Truck(null, name, thumbnail);
+    public static Truck ofNew(final String name, final String carNumber, final String thumbnail) {
+        return new Truck(null, name, carNumber, thumbnail);
     }
 
-    public static Truck ofNewWithNoThumbnail(final String name) {
-        return new Truck(null, name, null);
+    public static Truck ofNewWithNoThumbnail(final String name, final String carNumber) {
+        return new Truck(null, name, carNumber, null);
     }
 }

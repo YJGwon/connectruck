@@ -18,7 +18,7 @@ public class DataSetup {
     }
 
     public Truck saveTruck() {
-        final Truck truck = Truck.ofNewWithNoThumbnail("핫도그쿨냥이");
+        final Truck truck = Truck.ofNewWithNoThumbnail("핫도그쿨냥이", "00가0001");
         return testTruckRepository.save(truck);
     }
 
