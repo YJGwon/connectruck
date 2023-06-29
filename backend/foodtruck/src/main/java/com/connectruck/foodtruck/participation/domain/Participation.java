@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.event.domain;
+package com.connectruck.foodtruck.participation.domain;
 
 
 import static lombok.AccessLevel.PROTECTED;

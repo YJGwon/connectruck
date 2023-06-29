@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.event.fixture;
+package com.connectruck.foodtruck.common.fixture.data;
 
 import com.connectruck.foodtruck.event.domain.Event;
 

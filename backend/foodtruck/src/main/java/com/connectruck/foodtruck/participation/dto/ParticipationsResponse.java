@@ -1,7 +1,7 @@
-package com.connectruck.foodtruck.event.dto;
+package com.connectruck.foodtruck.participation.dto;
 
 import com.connectruck.foodtruck.common.dto.PageResponse;
-import com.connectruck.foodtruck.event.domain.Participation;
+import com.connectruck.foodtruck.participation.domain.Participation;
 import com.connectruck.foodtruck.truck.dto.TruckResponse;
 import java.util.List;
 import org.springframework.data.domain.Slice;

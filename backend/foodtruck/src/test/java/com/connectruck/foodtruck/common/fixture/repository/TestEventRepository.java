@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.common.fixture;
+package com.connectruck.foodtruck.common.fixture.repository;
 
 import com.connectruck.foodtruck.event.domain.Event;
 import org.springframework.data.repository.Repository;

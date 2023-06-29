@@ -1,25 +1,25 @@
-package com.connectruck.foodtruck.event.service;
+package com.connectruck.foodtruck.participation.service;
 
-import static com.connectruck.foodtruck.event.fixture.EventFixture.서울FC_경기;
+import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.event.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.participation.dto.ParticipationsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class EventServiceTest extends ServiceTestBase {
+class ParticipationServiceTest extends ServiceTestBase {
 
     @Autowired
-    private EventService eventService;
+    private ParticipationService participationService;
 
     @DisplayName("행사 참가 푸드트럭에 대해 페이지 단위로 조회한다.")
     @Test
-    void findTrucks() {
+    void findByEvent() {
         // given
         // 총 2개의 푸드트럭 참가
         final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
@@ -35,7 +35,7 @@ class EventServiceTest extends ServiceTestBase {
         // when
         final int page = 0;
         final int size = 2;
-        final ParticipationsResponse response = eventService.findTrucks(event.getId(), page, size);
+        final ParticipationsResponse response = participationService.findByEvent(event.getId(), page, size);
 
         // then
         assertAll(

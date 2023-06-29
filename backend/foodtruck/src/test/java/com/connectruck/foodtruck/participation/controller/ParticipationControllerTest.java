@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.event.controller;
+package com.connectruck.foodtruck.participation.controller;
 
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -11,22 +11,20 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.web.servlet.ResultActions;
 
-class EventControllerTest extends ControllerTestBase {
+class ParticipationControllerTest extends ControllerTestBase {
 
-    private static final String BASE_URI = "/api/events";
+    private static final String BASE_URI = "/api/events/1/trucks";
 
-    @DisplayName("행사 참가 푸드트럭 전체 목록 조회")
+    @DisplayName("행사 참가 푸드트럭 목록 조회")
     @Nested
-    class findTrucks {
-
-        private static final String URI = BASE_URI + "/1/trucks";
+    class findByEvent {
 
         @DisplayName("페이지 번호 또는 사이즈가 음수일 경우 BadRequest를 응답한다.")
         @ParameterizedTest
         @ValueSource(strings = {"page", "size"})
         void returnBadRequest_whenPageIsNegative(final String paramKey) throws Exception {
             // given & when
-            final ResultActions resultActions = performGet(String.format(URI + "?%s=-1", paramKey));
+            final ResultActions resultActions = performGet(String.format(BASE_URI + "?%s=-1", paramKey));
 
             // then
             resultActions
