@@ -1,15 +1,13 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
-import {useParams} from "react-router-dom";
 import './ServiceTruckList.css';
 
-export default function ServiceTruckList() {
+export default function ServiceTruckList({eventId}) {
     const [trucks, setTrucks] = useState([]);
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(20);
     const [hasNext, setHasNext] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
 
-    const {eventId} = useParams();
     const scrollRef = useRef();
 
     useEffect(() => {

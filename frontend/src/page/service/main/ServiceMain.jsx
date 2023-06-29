@@ -1,25 +1,21 @@
 import React from 'react';
-import TopBar from '../../../component/topbar/TopBar';
+import {Routes, Route, useParams} from 'react-router-dom';
 
-import {Routes, Route} from 'react-router-dom';
+import TopBar from '../../../component/topbar/TopBar';
 import ServiceTruckList from '../trucklist/ServiceTruckList';
 
 export default function ServiceMain() {
+    const {eventId} = useParams();
+
     const title = 'Connectruck 🚚';
-    const home = "/";
-    const buttons = [
-        {
-            link: '/owners',
-            name: '사장님 서비스'
-        }
-    ];
+    const root = `/event/${eventId}`;
 
     return (
         <div>
-            <TopBar title={title} home={home} buttons={buttons}/>
+            <TopBar title={title} root={root} />
             <div className="container">
                 <Routes>
-                    <Route path="/event/:eventId" element={<ServiceTruckList />}/>
+                    <Route exact='exact' path='/' element={<ServiceTruckList eventId={eventId}/>}/>
                 </Routes>
             </div>
         </div>

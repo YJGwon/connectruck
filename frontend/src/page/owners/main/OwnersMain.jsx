@@ -16,12 +16,6 @@ export default function OwnersMain() {
 
     // topbar props
     const title = '사장님 서비스 🚚';
-    const topButtons = [
-        {
-            link: '/',
-            name: 'connectruck'
-        }
-    ];
 
     // sidebar props
     const sideButtonsLoggedOut = [
@@ -44,7 +38,7 @@ export default function OwnersMain() {
 
     return (
         <>
-            <TopBar title={title} root={root} buttons={topButtons} />
+            <TopBar title={title} root={root} />
             <div className='owners-main'>
                 <SideBar buttons={isLogin ? sideButtonsLoggedIn : sideButtonsLoggedOut} />
                 <div className='content'>
