@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.truck.domain;
+package com.connectruck.foodtruck.event.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
@@ -18,23 +20,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Truck {
+public class Schedule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "truck_id")
+    @Column(name = "schedule_id")
     @Include
     private Long id;
 
-    private String name;
-    private String carNumber;
-    private String thumbnail;
+    private LocalDate eventDate;
+    private LocalTime openHour;
+    private LocalTime closeHour;
+    private Long eventId;
 
-    public static Truck ofNew(final String name, final String carNumber, final String thumbnail) {
-        return new Truck(null, name, carNumber, thumbnail);
-    }
-
-    public static Truck ofNewWithNoThumbnail(final String name, final String carNumber) {
-        return new Truck(null, name, carNumber, null);
+    public static Schedule ofNew(final LocalDate eventDate,
+                                 final LocalTime openHour,
+                                 final LocalTime closeHour,
+                                 final Long eventId) {
+        return new Schedule(null, eventDate, openHour, closeHour, eventId);
     }
 }

@@ -1,31 +1,45 @@
 package com.connectruck.foodtruck.common.fixture;
 
+import com.connectruck.foodtruck.common.fixture.repository.TestEventRepository;
+import com.connectruck.foodtruck.common.fixture.repository.TestParticipationRepository;
+import com.connectruck.foodtruck.common.fixture.repository.TestTruckRepository;
+import com.connectruck.foodtruck.event.domain.Event;
+import com.connectruck.foodtruck.participation.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
-import java.time.LocalTime;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DataSetup {
 
     private final TestTruckRepository testTruckRepository;
+    private final TestEventRepository testEventRepository;
+    private final TestParticipationRepository testParticipationRepository;
     private final AccountRepository accountRepository;
 
-    public DataSetup(final TestTruckRepository testTruckRepository, final AccountRepository accountRepository) {
+    public DataSetup(final TestTruckRepository testTruckRepository,
+                     final TestEventRepository testEventRepository,
+                     final TestParticipationRepository testParticipationRepository,
+                     final AccountRepository accountRepository) {
         this.testTruckRepository = testTruckRepository;
+        this.testEventRepository = testEventRepository;
+        this.testParticipationRepository = testParticipationRepository;
         this.accountRepository = accountRepository;
     }
 
+    public Event saveEvent(final Event event) {
+        return testEventRepository.save(event);
+    }
+
     public Truck saveTruck() {
-        final Truck truck = Truck.ofNewWithNoThumbnail(
-                "핫도그쿨냥이",
-                "서울 마포구 성산동 509-7",
-                LocalTime.of(11, 0),
-                LocalTime.of(21, 0)
-        );
+        final Truck truck = Truck.ofNewWithNoThumbnail("핫도그쿨냥이", "00가0001");
         return testTruckRepository.save(truck);
+    }
+
+    public Participation saveParticipation(final Event event) {
+        return testParticipationRepository.save(Participation.ofNew(event.getId(), saveTruck()));
     }
 
     public Account saveAccount() {

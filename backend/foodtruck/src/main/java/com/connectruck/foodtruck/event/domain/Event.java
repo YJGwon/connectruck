@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.truck.domain;
+package com.connectruck.foodtruck.event.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -18,23 +18,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Truck {
+public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "truck_id")
+    @Column(name = "event_id")
     @Include
     private Long id;
 
     private String name;
-    private String carNumber;
-    private String thumbnail;
+    private String location;
 
-    public static Truck ofNew(final String name, final String carNumber, final String thumbnail) {
-        return new Truck(null, name, carNumber, thumbnail);
-    }
-
-    public static Truck ofNewWithNoThumbnail(final String name, final String carNumber) {
-        return new Truck(null, name, carNumber, null);
+    public static Event ofNew(final String name, final String location) {
+        return new Event(null, name, location);
     }
 }

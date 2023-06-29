@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.config;
+package com.connectruck.foodtruck.common.config;
 
 import io.swagger.v3.oas.models.media.Schema;
 import java.time.LocalTime;
