@@ -24,5 +24,7 @@ CREATE TABLE participation (
     FOREIGN KEY (truck_id) REFERENCES truck (truck_id)
 );
 
-ALTER TABLE truck DROP open_hour, DROP close_hour, DROP location;
+ALTER TABLE truck DROP open_hour;
+ALTER TABLE truck DROP close_hour;
+ALTER TABLE truck DROP location;
 ALTER TABLE truck ADD car_number VARCHAR(8) NOT NULL;
