@@ -19,7 +19,7 @@ export default function ServiceMain() {
             <TopBar title={title} home={home} buttons={buttons}/>
             <div className="container">
                 <Routes>
-                    <Route path="/" element={<ServiceTruckList />}/>
+                    <Route path="/event/:eventId" element={<ServiceTruckList />}/>
                 </Routes>
             </div>
         </div>
