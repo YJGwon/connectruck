@@ -15,8 +15,9 @@ spring:
     database:
       replace: NONE
   # flyway
-#  flyway:
+  flyway:
 #    enabled: false # disable
+#    locations: [ classpath:db/migration, classpath:db/data ] # initialize default data
 
 logging:
   level:

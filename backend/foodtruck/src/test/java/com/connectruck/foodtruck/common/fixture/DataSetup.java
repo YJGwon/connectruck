@@ -4,7 +4,6 @@ import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
-import java.time.LocalTime;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,12 +18,7 @@ public class DataSetup {
     }
 
     public Truck saveTruck() {
-        final Truck truck = Truck.ofNewWithNoThumbnail(
-                "핫도그쿨냥이",
-                "서울 마포구 성산동 509-7",
-                LocalTime.of(11, 0),
-                LocalTime.of(21, 0)
-        );
+        final Truck truck = Truck.ofNewWithNoThumbnail("핫도그쿨냥이");
         return testTruckRepository.save(truck);
     }
 

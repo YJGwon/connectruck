@@ -14,3 +14,12 @@ CREATE TABLE schedule (
     PRIMARY KEY (schedule_id),
     FOREIGN KEY (event_id) REFERENCES event (event_id)
 );
+
+CREATE TABLE event_truck (
+    event_id BIGINT(20) NOT NULL,
+    truck_id BIGINT(20) NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES event (event_id),
+    FOREIGN KEY (truck_id) REFERENCES truck (truck_id)
+);
+
+ALTER TABLE truck DROP COLUMN open_hour, close_hour, location;
