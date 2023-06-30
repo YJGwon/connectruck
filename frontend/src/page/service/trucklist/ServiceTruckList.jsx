@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
 import './ServiceTruckList.css';
 
 export default function ServiceTruckList({eventId}) {
@@ -9,6 +10,7 @@ export default function ServiceTruckList({eventId}) {
     const [isLoading, setIsLoading] = useState(false);
 
     const scrollRef = useRef();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTruckData(eventId);
@@ -72,6 +74,10 @@ export default function ServiceTruckList({eventId}) {
             });
     }
 
+    const handleTruckItemClick = (truckId) => {
+        navigate(`./trucks/${truckId}`);
+    };
+
     return (
         <div
             ref={scrollRef}
@@ -83,7 +89,11 @@ export default function ServiceTruckList({eventId}) {
 
             {
                 trucks.map((truck, index) => (
-                    <div className="truck-listing" key={truck.id}>
+                    <div
+                        className="truck-listing"
+                        key={index}
+                        onClick={() => handleTruckItemClick(truck.id)}
+                        style={{ cursor: 'pointer' }}>
                         <img
                             className="truck-thumbnail"
                             src={truck.thumbnail || 'https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png'}

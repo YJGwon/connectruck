@@ -13,7 +13,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route exact="exact" path="/" element={<Index />}/>
-                <Route path="/event/:eventId/*" element={<ServiceMain />}/>
+                <Route path="/events/:eventId/*" element={<ServiceMain />}/>
                 <Route path="/owners/*" element={<OwnersMain />}/>
                 <Route path="/logout" element={<Logout />}/>
             </Routes>
