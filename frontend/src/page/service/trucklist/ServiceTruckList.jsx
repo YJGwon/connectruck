@@ -53,7 +53,7 @@ export default function ServiceTruckList({eventId}) {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error(`api error: ${response.json().title}`);
+                    throw new Error(`api error(${response.json().title}): ${response.json().detail}`);
                 }
             })
             .then(data => {
@@ -64,7 +64,7 @@ export default function ServiceTruckList({eventId}) {
             })
             .catch(error => {
                 console.error('Error fetching truck data:', error);
-                if (error.message.startsWith('api error:')) {
+                if (error.message.startsWith('api error')) {
                     alert(error.message);
                 } else {
                     alert('푸드트럭 목록을 불러오지 못하였습니다');

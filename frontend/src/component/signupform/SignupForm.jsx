@@ -32,8 +32,9 @@ export default function SignupForm({root, role}) {
                     body: JSON.stringify({username})
                 }
             );
+
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
 
                 if (data.isAvailable) {
                     setIsUsernameAvailable(true);
@@ -43,12 +44,12 @@ export default function SignupForm({root, role}) {
                     alert('사용 중인 아이디입니다.');
                 }
             } else {
-                throw new Error(`api error: ${response.json().title}`);
+                throw new Error(`api error(${data.title}): ${data.detail}`);
             }
 
         } catch (error) {
             console.error('Error checking username:', error);
-            if (error.message.startsWith('api error:')) {
+            if (error.message.startsWith('api error')) {
                 alert(error.message);
             } else {
                 alert('아이디 검사를 수행하지 못했습니다.');
