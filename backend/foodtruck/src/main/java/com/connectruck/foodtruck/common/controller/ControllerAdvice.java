@@ -1,8 +1,10 @@
 package com.connectruck.foodtruck.common.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.connectruck.foodtruck.common.exception.ClientException;
+import com.connectruck.foodtruck.common.exception.NotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +28,15 @@ public class ControllerAdvice {
     public ErrorResponse handleClientException(final ClientException e) {
         log.error(e.getMessage());
         return ErrorResponse.builder(e, BAD_REQUEST, e.getMessage())
+                .title(e.getTitle())
+                .build();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ErrorResponse handleNotFoundException(final ClientException e) {
+        log.error(e.getMessage());
+        return ErrorResponse.builder(e, NOT_FOUND, e.getMessage())
                 .title(e.getTitle())
                 .build();
     }

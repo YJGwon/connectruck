@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.event.service;
 
+import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.event.domain.EventRepository;
 import com.connectruck.foodtruck.event.dto.EventResponse;
@@ -15,7 +16,9 @@ public class EventService {
     private final EventRepository eventRepository;
 
     public EventResponse findById(final Long id) {
-        final Event found = eventRepository.findById(id).get();
+        final Event found = eventRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("행사", id));
+
         return EventResponse.of(found);
     }
 }
