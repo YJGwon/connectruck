@@ -16,7 +16,7 @@ class MenuRepositoryTest extends RepositoryTestBase {
     @Autowired
     private MenuRepository menuRepository;
 
-    @DisplayName("특정 참가 푸드트럭의 메뉴만 조회한다.")
+    @DisplayName("참가 푸드트럭의 메뉴 목록을 조회한다.")
     @Test
     void findByParticipationId() {
         // given

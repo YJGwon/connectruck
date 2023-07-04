@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import com.connectruck.foodtruck.auth.service.AuthService;
 import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
+import com.connectruck.foodtruck.menu.service.MenuService;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import com.connectruck.foodtruck.user.sevice.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +25,9 @@ public abstract class ControllerTestBase {
 
     @MockBean
     protected TruckService truckService;
+
+    @MockBean
+    protected MenuService menuService;
 
     @MockBean
     protected UserService userService;
