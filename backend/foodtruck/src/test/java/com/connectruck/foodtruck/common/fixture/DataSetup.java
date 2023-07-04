@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.common.fixture;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
+
 import com.connectruck.foodtruck.common.fixture.repository.TestEventRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestMenuRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestParticipationRepository;
@@ -13,8 +15,10 @@ import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
 import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional(propagation = REQUIRES_NEW)
 public class DataSetup {
 
     private final TestTruckRepository testTruckRepository;

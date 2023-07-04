@@ -21,12 +21,19 @@ spring:
 
 logging:
   level:
-    # enable hibernate sql parameter log
-    org.hibernate:
-      SQL: DEBUG
-      orm.jdbc.bind: TRACE
+    org:
+      # enable hibernate sql parameter log
+      hibernate:
+        SQL: DEBUG
+        orm.jdbc.bind: TRACE
+      # enable transaction log
+      springframework:
+        transaction: DEBUG
+        orm:
+          jpa: DEBUG
   pattern:
     console: "[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) [traceId=%X{traceId}] %highlight(%-5level) [%C.%M:%line] - %msg%n"
+
 
 connectruck:
   cors:
