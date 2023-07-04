@@ -12,11 +12,12 @@ export default function ServiceMenuList({truckId}) {
         const url = `${process.env.REACT_APP_API_URL}/api/trucks/${truckId}/menus`;
 
         fetch(url)
-            .then(response => {
+            .then(async response => {
+                const data = await response.json();
                 if (response.ok) {
-                    return response.json();
+                    return data;
                 } else {
-                    throw new Error(`api error(${response.json().title}): ${response.json().detail}`);
+                    throw new Error(`api error(${data.title}): ${data.detail}`);
                 }
             })
             .then(data => {
@@ -35,7 +36,7 @@ export default function ServiceMenuList({truckId}) {
     return (
         <section id="menu-items">
             <Typography variant="h5" component="h2">
-                {truckId}번 Menu
+                메뉴
             </Typography>
             <List>
                 {
