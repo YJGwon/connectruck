@@ -30,4 +30,8 @@ public class Menu {
     private String name;
     private BigDecimal price;
     private Long participationId;
+
+    public static Menu ofNew(final String name, final BigDecimal price, final Long participationId) {
+        return new Menu(null, name, price, participationId);
+    }
 }

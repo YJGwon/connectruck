@@ -4,22 +4,15 @@ import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도�
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.connectruck.foodtruck.common.fixture.DataSetup;
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@Import(DataSetup.class)
-@Sql("classpath:truncate.sql")
 class ParticipationRepositoryTest extends RepositoryTestBase {
 
     @Autowired
