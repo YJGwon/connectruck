@@ -19,6 +19,6 @@ public class MenuController {
     @Operation(summary = "푸드트럭 메뉴 조회")
     @GetMapping
     public MenusResponse findAll(@PathVariable final long participationId) {
-        return menuService.findByParticipation(participationId);
+        return menuService.findByParticipationId(participationId);
     }
 }

@@ -19,8 +19,9 @@ class MenuServiceTest extends ServiceTestBase {
 
     @DisplayName("참가 푸드트럭 메뉴 목록 조회")
     @Nested
-    class findByParticipation {
+    class findByParticipationId {
 
+        @DisplayName("참가 푸드트럭의 id로 메뉴 목록을 조회한다.")
         @Test
         void success() {
             // given
@@ -32,7 +33,7 @@ class MenuServiceTest extends ServiceTestBase {
             dataSetup.saveMenu(savedParticipation);
 
             // when
-            final MenusResponse response = menuService.findByParticipation(savedParticipation.getId());
+            final MenusResponse response = menuService.findByParticipationId(savedParticipation.getId());
 
             // then
             assertThat(response.menus()).hasSize(2);

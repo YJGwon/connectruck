@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,21 @@ class ParticipationRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     private ParticipationRepository participationRepository;
+
+    @DisplayName("특정 행사 참가 푸드트럭을 id로 조회한다.")
+    @Test
+    void findById() {
+        // given
+        final Event event = 밤도깨비_야시장.create();
+        dataSetup.saveEvent(event);
+        final Participation expected = dataSetup.saveParticipation(event);
+
+        // when
+        final Optional<Participation> found = participationRepository.findById(expected.getId());
+
+        // then
+        assertThat(found.get()).isEqualTo(expected);
+    }
 
     @DisplayName("행사 참가 푸드트럭 목록 조회")
     @Nested
