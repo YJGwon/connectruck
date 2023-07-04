@@ -1,9 +1,8 @@
-package com.connectruck.foodtruck.participation.domain;
+package com.connectruck.foodtruck.truck.domain;
 
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.connectruck.foodtruck.truck.domain.Truck;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

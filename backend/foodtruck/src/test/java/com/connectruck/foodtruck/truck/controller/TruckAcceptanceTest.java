@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.participation.controller;
+package com.connectruck.foodtruck.truck.controller;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.hamcrest.Matchers.contains;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class ParticipationAcceptanceTest extends AcceptanceTestBase {
+public class TruckAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI_FORMAT = "/api/events/%d/trucks";
 

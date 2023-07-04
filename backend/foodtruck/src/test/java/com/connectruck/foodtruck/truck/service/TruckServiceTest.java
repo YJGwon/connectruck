@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.participation.service;
+package com.connectruck.foodtruck.truck.service;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,15 +7,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.participation.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class ParticipationServiceTest extends ServiceTestBase {
+class TruckServiceTest extends ServiceTestBase {
 
     @Autowired
-    private ParticipationService participationService;
+    private TruckService truckService;
 
     @DisplayName("행사 참가 푸드트럭에 대해 페이지 단위로 조회한다.")
     @Test
@@ -35,7 +35,7 @@ class ParticipationServiceTest extends ServiceTestBase {
         // when
         final int page = 0;
         final int size = 2;
-        final ParticipationsResponse response = participationService.findByEvent(event.getId(), page, size);
+        final TrucksResponse response = truckService.findByEvent(event.getId(), page, size);
 
         // then
         assertAll(

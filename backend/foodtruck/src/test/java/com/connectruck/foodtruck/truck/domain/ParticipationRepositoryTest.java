@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.participation.domain;
+package com.connectruck.foodtruck.truck.domain;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;

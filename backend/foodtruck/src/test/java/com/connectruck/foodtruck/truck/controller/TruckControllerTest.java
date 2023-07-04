@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.participation.controller;
+package com.connectruck.foodtruck.truck.controller;
 
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.web.servlet.ResultActions;
 
-class ParticipationControllerTest extends ControllerTestBase {
+class TruckControllerTest extends ControllerTestBase {
 
     private static final String BASE_URI = "/api/events/1/trucks";
 

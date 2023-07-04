@@ -4,7 +4,7 @@ import com.connectruck.foodtruck.common.fixture.repository.TestEventRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestParticipationRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestTruckRepository;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.participation.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
