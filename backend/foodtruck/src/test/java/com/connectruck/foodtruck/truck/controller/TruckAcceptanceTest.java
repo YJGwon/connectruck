@@ -8,6 +8,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
+import com.connectruck.foodtruck.truck.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -69,6 +70,28 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             response.statusCode(OK.value())
                     .body("page.size", equalTo(20))
                     .body("page.currentPage", equalTo(0));
+        }
+    }
+
+    @DisplayName("행사 참가 푸드트럭 정보 조회")
+    @Nested
+    class findOneParticipatingTruck {
+
+        private static final String URI_FORMAT = BASE_URI + "/%d";
+
+        @DisplayName("특정 참가 푸드트럭의 정보를 id로 조회한다.")
+        @Test
+        void byParticipationId() {
+            // given
+            final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
+            dataSetup.saveEvent(event);
+            final Participation expected = dataSetup.saveParticipation(event);
+
+            // when
+            final ValidatableResponse response = get(String.format(URI_FORMAT, expected.getId()));
+
+            // then
+            response.statusCode(OK.value());
         }
     }
 }
