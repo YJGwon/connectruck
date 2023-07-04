@@ -91,7 +91,9 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             final ValidatableResponse response = get(String.format(URI_FORMAT, expected.getId()));
 
             // then
-            response.statusCode(OK.value());
+            response.statusCode(OK.value())
+                    .body("id", equalTo(expected.getId().intValue()))
+                    .body("name", equalTo(expected.getTruck().getName()));
         }
     }
 }
