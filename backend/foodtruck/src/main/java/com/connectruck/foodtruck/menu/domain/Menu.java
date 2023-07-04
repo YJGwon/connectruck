@@ -1,16 +1,13 @@
-package com.connectruck.foodtruck.participation.domain;
-
+package com.connectruck.foodtruck.menu.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.connectruck.foodtruck.truck.domain.Truck;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
@@ -22,22 +19,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Participation {
+public class Menu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "participation_id")
+    @Column(name = "menu_id")
+    @Include
     private Long id;
 
-    @Include
-    private Long eventId;
+    private String name;
+    private BigDecimal price;
+    private Long participationId;
 
-    @ManyToOne
-    @JoinColumn(name = "truck_id")
-    @Include
-    private Truck truck;
-
-    public static Participation ofNew(final Long eventId, final Truck truck) {
-        return new Participation(null, eventId, truck);
+    public static Menu ofNew(final String name, final BigDecimal price, final Long participationId) {
+        return new Menu(null, name, price, participationId);
     }
 }

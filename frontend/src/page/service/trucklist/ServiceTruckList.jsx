@@ -46,7 +46,7 @@ export default function ServiceTruckList({eventId}) {
     const fetchTruckData = (eventId) => {
         setIsLoading(true);
 
-        const url = `${process.env.REACT_APP_API_URL}/api/events/${eventId}/trucks?page=${page}&size=${size}`;
+        const url = `${process.env.REACT_APP_API_URL}/api/trucks?eventId=${eventId}&page=${page}&size=${size}`;
 
         fetch(url)
             .then(response => {
@@ -83,7 +83,7 @@ export default function ServiceTruckList({eventId}) {
 
             {
                 trucks.map((truck, index) => (
-                    <div className="truck-listing" key={index}>
+                    <div className="truck-listing" key={truck.id}>
                         <img
                             className="truck-thumbnail"
                             src={truck.thumbnail || 'https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png'}

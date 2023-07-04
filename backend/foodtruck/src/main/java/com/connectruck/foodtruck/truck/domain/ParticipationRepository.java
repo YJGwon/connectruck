@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.participation.domain;
+package com.connectruck.foodtruck.truck.domain;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
