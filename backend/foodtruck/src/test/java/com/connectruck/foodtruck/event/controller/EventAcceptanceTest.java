@@ -1,6 +1,7 @@
 package com.connectruck.foodtruck.event.controller;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
@@ -29,7 +30,9 @@ public class EventAcceptanceTest extends AcceptanceTestBase {
             final ValidatableResponse response = get(String.format(URI_FORMAT, expected.getId().intValue()));
 
             // then
-            response.statusCode(OK.value());
+            response.statusCode(OK.value())
+                    .body("id", equalTo(expected.getId().intValue()))
+                    .body("name", equalTo(expected.getName()));
         }
     }
 }
