@@ -34,7 +34,7 @@ public class ControllerAdvice {
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(NOT_FOUND)
-    public ErrorResponse handleNotFoundException(final ClientException e) {
+    public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.error(e.getMessage());
         return ErrorResponse.builder(e, NOT_FOUND, e.getMessage())
                 .title(e.getTitle())
