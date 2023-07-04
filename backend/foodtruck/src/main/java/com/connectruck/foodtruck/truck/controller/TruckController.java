@@ -11,13 +11,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/events/{eventId}/trucks")
+@RequestMapping("/api/trucks")
 @RequiredArgsConstructor
 @Validated
 public class TruckController {
@@ -34,7 +33,7 @@ public class TruckController {
     @ApiResponse(responseCode = "400", description = "잘못된 요청 parameter")
     @GetMapping
     public TrucksResponse findByEvent(
-            @PathVariable final long eventId,
+            @RequestParam final long eventId,
             @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) int page,
             @RequestParam(required = false, defaultValue = DEFAULT_SIZE) final @Positive(message = SIZE_MIN_VALUE_MESSAGE) int size) {
         return truckService.findByEvent(eventId, page, size);

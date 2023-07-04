@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 public class TruckAcceptanceTest extends AcceptanceTestBase {
 
-    private static final String BASE_URI_FORMAT = "/api/events/%d/trucks";
+    private static final String BASE_URI = "/api/trucks";
 
     @DisplayName("행사 참가 푸드트럭 목록 조회")
     @Nested
@@ -43,9 +43,8 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             final int size = 2;
 
             // when
-            final String uri = String.format(BASE_URI_FORMAT, eventId);
-            final String params = String.format("?page=%d&size=%d", page, size);
-            final ValidatableResponse response = get(uri + params);
+            final String params = String.format("?eventId=%d&page=%d&size=%d", eventId, page, size);
+            final ValidatableResponse response = get(BASE_URI + params);
 
             // then
             response.statusCode(OK.value())
@@ -64,7 +63,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             final long eventId = 1L;
 
             // when
-            final ValidatableResponse response = get(String.format(BASE_URI_FORMAT, eventId));
+            final ValidatableResponse response = get(BASE_URI + String.format("?eventId=%d", eventId));
 
             // then
             response.statusCode(OK.value())

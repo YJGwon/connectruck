@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 class TruckControllerTest extends ControllerTestBase {
 
-    private static final String BASE_URI = "/api/events/1/trucks";
+    private static final String BASE_URI = "/api/trucks";
 
     @DisplayName("행사 참가 푸드트럭 목록 조회")
     @Nested
@@ -24,7 +24,7 @@ class TruckControllerTest extends ControllerTestBase {
         @ValueSource(strings = {"page", "size"})
         void returnBadRequest_whenPageIsNegative(final String paramKey) throws Exception {
             // given & when
-            final ResultActions resultActions = performGet(String.format(BASE_URI + "?%s=-1", paramKey));
+            final ResultActions resultActions = performGet(String.format(BASE_URI + "?eventId=1&%s=-1", paramKey));
 
             // then
             resultActions
