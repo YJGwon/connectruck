@@ -15,7 +15,7 @@ public class MenuService {
 
     private final MenuRepository menuRepository;
 
-    public MenusResponse findByParticipation(final Long participationId) {
+    public MenusResponse findByParticipationId(final Long participationId) {
         final List<Menu> menus = menuRepository.findByParticipationId(participationId);
         return MenusResponse.of(menus);
     }

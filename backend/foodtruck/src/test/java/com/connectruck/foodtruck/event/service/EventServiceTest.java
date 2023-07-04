@@ -19,10 +19,11 @@ class EventServiceTest extends ServiceTestBase {
     @Autowired
     private EventService eventService;
 
-    @DisplayName("행사를 id로 조회한다.")
+    @DisplayName("행사 정보 조회")
     @Nested
     class findById {
 
+        @DisplayName("특정 행사의 정보를 id로 조회한다.")
         @Test
         void success() {
             // given

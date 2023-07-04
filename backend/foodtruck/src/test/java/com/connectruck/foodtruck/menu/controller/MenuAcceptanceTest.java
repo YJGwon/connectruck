@@ -20,10 +20,11 @@ public class MenuAcceptanceTest extends AcceptanceTestBase {
 
     @DisplayName("참가 푸드트럭 메뉴 목록 조회")
     @Nested
-    class findMenuOfTruck {
+    class findMenusOfTruck {
 
+        @DisplayName("참가 푸드트럭의 id로 메뉴 목록을 조회한다.")
         @Test
-        void success() {
+        void byParticipationId() {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);

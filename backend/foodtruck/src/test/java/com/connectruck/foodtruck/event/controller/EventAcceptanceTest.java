@@ -17,12 +17,13 @@ public class EventAcceptanceTest extends AcceptanceTestBase {
 
     @DisplayName("행사 정보 조회")
     @Nested
-    class findEventById {
+    class findOneEvent {
 
         private static final String URI_FORMAT = BASE_URI + "/%d";
 
+        @DisplayName("특정 행사의 정보를 id로 조회한다.")
         @Test
-        void success() {
+        void byId() {
             // given
             final Event expected = dataSetup.saveEvent(밤도깨비_야시장.create());
 
