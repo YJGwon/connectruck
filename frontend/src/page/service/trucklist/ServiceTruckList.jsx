@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
 import './ServiceTruckList.css';
 
 export default function ServiceTruckList({eventId}) {
@@ -9,6 +10,7 @@ export default function ServiceTruckList({eventId}) {
     const [isLoading, setIsLoading] = useState(false);
 
     const scrollRef = useRef();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchTruckData(eventId);
@@ -53,7 +55,7 @@ export default function ServiceTruckList({eventId}) {
                 if (response.ok) {
                     return response.json();
                 } else {
-                    throw new Error(`api error: ${response.json().title}`);
+                    throw new Error(`api error(${response.json().title}): ${response.json().detail}`);
                 }
             })
             .then(data => {
@@ -64,13 +66,17 @@ export default function ServiceTruckList({eventId}) {
             })
             .catch(error => {
                 console.error('Error fetching truck data:', error);
-                if (error.message.startsWith('api error:')) {
+                if (error.message.startsWith('api error')) {
                     alert(error.message);
                 } else {
                     alert('푸드트럭 목록을 불러오지 못하였습니다');
                 }
             });
     }
+
+    const handleTruckItemClick = (truckId) => {
+        navigate(`./trucks/${truckId}`);
+    };
 
     return (
         <div
@@ -83,7 +89,11 @@ export default function ServiceTruckList({eventId}) {
 
             {
                 trucks.map((truck, index) => (
-                    <div className="truck-listing" key={truck.id}>
+                    <div
+                        className="truck-listing"
+                        key={index}
+                        onClick={() => handleTruckItemClick(truck.id)}
+                        style={{ cursor: 'pointer' }}>
                         <img
                             className="truck-thumbnail"
                             src={truck.thumbnail || 'https://cdn.pixabay.com/photo/2020/06/02/12/12/sample-5250731_1280.png'}

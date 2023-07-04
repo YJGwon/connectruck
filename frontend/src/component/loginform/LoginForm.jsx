@@ -30,18 +30,18 @@ export default function LoginForm({root}) {
                 body: JSON.stringify({username, password})
             });
 
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
                 const accessToken = data.accessToken;
                 // Save the access token to local storage
                 login(accessToken);
             } else {
-                throw new Error(`api error: ${response.json().title}`);
+                throw new Error(`api error(${data.title}): ${data.detail}`);
             }
             navigate(root);
         } catch (error) {
             console.error('Error fetching login:', error);
-            if (error.message.startsWith('api error:')) {
+            if (error.message.startsWith('api error')) {
                 alert(error.message);
             } else {
                 alert('로그인 하지 못하였습니다.');
