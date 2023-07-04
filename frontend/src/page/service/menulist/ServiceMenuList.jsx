@@ -36,7 +36,7 @@ export default function ServiceMenuList({truckId}) {
     return (
         <section id="menu-items">
             <Typography variant="h5" component="h2">
-                {truckId}번 Menu
+                메뉴
             </Typography>
             <List>
                 {
