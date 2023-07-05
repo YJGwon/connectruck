@@ -7,6 +7,7 @@ import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.truck.domain.Participation;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,23 @@ class MenuRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     private MenuRepository menuRepository;
+
+    @DisplayName("아이디로 특정 메뉴를 조회한다.")
+    @Test
+    void findById() {
+        // given
+        final Event event = 밤도깨비_야시장.create();
+        dataSetup.saveEvent(event);
+
+        final Participation savedParticipation = dataSetup.saveParticipation(event);
+        final Menu expected = dataSetup.saveMenu(savedParticipation);
+
+        // when
+        final Optional<Menu> found = menuRepository.findById(expected.getId());
+
+        // then
+        assertThat(found.get()).isEqualTo(expected);
+    }
 
     @DisplayName("참가 푸드트럭의 메뉴 목록을 조회한다.")
     @Test
