@@ -37,6 +37,7 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
 
             final OrderRequest request = new OrderRequest(
                     savedParticipation.getId(),
+                    "01000000000",
                     List.of(new OrderMenuRequest(savedMenu.getId(), 2))
             );
             // when
