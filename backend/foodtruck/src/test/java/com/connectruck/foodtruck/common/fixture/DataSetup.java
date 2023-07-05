@@ -5,8 +5,10 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 import com.connectruck.foodtruck.common.fixture.repository.TestEventRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestMenuRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestParticipationRepository;
+import com.connectruck.foodtruck.common.fixture.repository.TestScheduleRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestTruckRepository;
 import com.connectruck.foodtruck.event.domain.Event;
+import com.connectruck.foodtruck.event.domain.Schedule;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.truck.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
@@ -23,17 +25,20 @@ public class DataSetup {
 
     private final TestTruckRepository testTruckRepository;
     private final TestEventRepository testEventRepository;
+    private final TestScheduleRepository testScheduleRepository;
     private final TestParticipationRepository testParticipationRepository;
     private final TestMenuRepository testMenuRepository;
     private final AccountRepository accountRepository;
 
     public DataSetup(final TestTruckRepository testTruckRepository,
                      final TestEventRepository testEventRepository,
+                     final TestScheduleRepository testScheduleRepository,
                      final TestParticipationRepository testParticipationRepository,
                      final TestMenuRepository testMenuRepository,
                      final AccountRepository accountRepository) {
         this.testTruckRepository = testTruckRepository;
         this.testEventRepository = testEventRepository;
+        this.testScheduleRepository = testScheduleRepository;
         this.testParticipationRepository = testParticipationRepository;
         this.testMenuRepository = testMenuRepository;
         this.accountRepository = accountRepository;
@@ -41,6 +46,10 @@ public class DataSetup {
 
     public Event saveEvent(final Event event) {
         return testEventRepository.save(event);
+    }
+
+    public Schedule saveSchedule(final Schedule schedule) {
+        return testScheduleRepository.save(schedule);
     }
 
     public Truck saveTruck() {
