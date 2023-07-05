@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.order.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.connectruck.foodtruck.common.validation.Validator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +14,6 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
@@ -24,7 +24,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -45,6 +44,16 @@ public class OrderInfo {
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public OrderInfo(final Long id, final String phone, final List<OrderLine> orderLines, final LocalDateTime createdAt,
+                     final LocalDateTime updatedAt) {
+        Validator.validatePhone(phone);
+        this.id = id;
+        this.phone = phone;
+        this.orderLines = orderLines;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     public static OrderInfo ofNew(final String phone) {
         return new OrderInfo(null, phone, new ArrayList<>(), null, null);
