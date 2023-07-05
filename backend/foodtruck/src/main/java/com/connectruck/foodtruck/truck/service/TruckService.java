@@ -24,10 +24,21 @@ public class TruckService {
         return ParticipationsResponse.of(found);
     }
 
-    public ParticipationResponse findByParticipationId(final long participationId) {
+    public ParticipationResponse findByParticipationId(final Long participationId) {
         final Participation found = participationRepository.findById(participationId)
-                .orElseThrow(() -> NotFoundException.of("푸드트럭", participationId));
+                .orElseThrow(() -> createParticipationNotFoundException(participationId));
 
         return ParticipationResponse.of(found);
+    }
+
+    public Long findEventIdByParticipationId(final Long participationId) {
+        final Participation found = participationRepository.findById(participationId)
+                .orElseThrow(() -> createParticipationNotFoundException(participationId));
+
+        return found.getEventId();
+    }
+
+    private NotFoundException createParticipationNotFoundException(final Long participationId) {
+        return NotFoundException.of("푸드트럭", participationId);
     }
 }
