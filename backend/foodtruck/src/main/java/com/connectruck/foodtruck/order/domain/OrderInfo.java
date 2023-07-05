@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.order.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.validation.Validator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -60,6 +61,13 @@ public class OrderInfo {
     }
 
     public void changeOrderLine(final List<OrderLine> orderLines) {
+        checkOrderLinesNotEmpty(orderLines);
         this.orderLines = List.copyOf(orderLines);
+    }
+
+    private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {
+        if (orderLines == null || orderLines.isEmpty()) {
+            throw new ClientException("주문 메뉴 내역을 변경할 수 없습니다.", "주문 메뉴 내역을 빈 값으로 변경할 수 없습니다.");
+        }
     }
 }
