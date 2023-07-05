@@ -39,10 +39,18 @@ public class OrderInfo {
     private String phone;
 
     @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.PERSIST)
-    private List<OrderLine> orderLines = new ArrayList<>();
+    private List<OrderLine> orderLines;
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    public static OrderInfo ofNew(final String phone) {
+        return new OrderInfo(null, phone, new ArrayList<>(), null, null);
+    }
+
+    public void changeOrderLine(final List<OrderLine> orderLines) {
+        this.orderLines = List.copyOf(orderLines);
+    }
 }

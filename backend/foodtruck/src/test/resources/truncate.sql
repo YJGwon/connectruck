@@ -1,5 +1,9 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
+TRUNCATE TABLE order_line;
+
+TRUNCATE TABLE order_info;
+
 TRUNCATE TABLE menu;
 
 TRUNCATE TABLE participation;
