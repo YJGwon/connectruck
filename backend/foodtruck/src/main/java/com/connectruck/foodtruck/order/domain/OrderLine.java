@@ -2,7 +2,6 @@ package com.connectruck.foodtruck.order.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.connectruck.foodtruck.menu.domain.Menu;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,7 +39,11 @@ public class OrderLine {
     @JoinColumn(name = "order_info_id")
     private OrderInfo orderInfo;
 
-    public static OrderLine ofNew(final Menu menu, final int quantity, final OrderInfo orderInfo) {
-        return new OrderLine(null, menu.getId(), menu.getName(), menu.getPrice(), quantity, orderInfo);
+    public static OrderLine ofNew(final Long menuId,
+                                  final String menuName,
+                                  final BigDecimal menuPrice,
+                                  final int quantity,
+                                  final OrderInfo orderInfo) {
+        return new OrderLine(null, menuId, menuName, menuPrice, quantity, orderInfo);
     }
 }

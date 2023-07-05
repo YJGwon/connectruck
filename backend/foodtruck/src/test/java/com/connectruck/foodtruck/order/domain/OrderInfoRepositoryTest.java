@@ -46,7 +46,10 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             final Menu savedMenu = dataSetup.saveMenu(savedParticipation);
 
             final OrderInfo orderInfo = OrderInfo.ofNew("01000000000");
-            final OrderLine orderLine = OrderLine.ofNew(savedMenu, 1, orderInfo);
+            final OrderLine orderLine = OrderLine.ofNew(
+                    savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
+                    1, orderInfo
+            );
             orderInfo.changeOrderLine(List.of(orderLine));
 
             // when
