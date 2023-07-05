@@ -1,6 +1,6 @@
 package com.connectruck.foodtruck.truck.controller;
 
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.SMALLER_THAN_MIN_VALUE;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.SMALLER_THAN_MIN_VALUE;
 
 import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
 import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;

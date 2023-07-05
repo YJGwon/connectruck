@@ -1,9 +1,9 @@
 package com.connectruck.foodtruck.order.dto;
 
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.INVALID_FORMAT;
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.MISSING_REQUIRED_INPUT;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.INVALID_FORMAT;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.MISSING_REQUIRED_INPUT;
 
-import com.connectruck.foodtruck.common.constant.FormatText;
+import com.connectruck.foodtruck.common.validation.FormatText;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

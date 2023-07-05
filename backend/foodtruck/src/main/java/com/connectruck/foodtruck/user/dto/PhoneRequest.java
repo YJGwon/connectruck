@@ -1,8 +1,8 @@
 package com.connectruck.foodtruck.user.dto;
 
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.INVALID_FORMAT;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.INVALID_FORMAT;
 
-import com.connectruck.foodtruck.common.constant.FormatText;
+import com.connectruck.foodtruck.common.validation.FormatText;
 import jakarta.validation.constraints.Pattern;
 
 public record PhoneRequest(

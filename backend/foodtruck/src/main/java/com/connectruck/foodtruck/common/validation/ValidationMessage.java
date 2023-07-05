@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.common.constant;
+package com.connectruck.foodtruck.common.validation;
 
 public class ValidationMessage {
 

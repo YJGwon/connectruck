@@ -1,7 +1,7 @@
 package com.connectruck.foodtruck.order.dto;
 
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.MISSING_REQUIRED_INPUT;
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.SMALLER_THAN_MIN_VALUE;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.MISSING_REQUIRED_INPUT;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.SMALLER_THAN_MIN_VALUE;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
