@@ -49,7 +49,7 @@ export default function ServiceMenuList({truckId}) {
                             <Button 
                                 variant="contained" 
                                 color="primary"
-                                onClick={() => addToCart(menu)}>
+                                onClick={() => addToCart(menu, truckId)}>
                                 담기
                             </Button>
                         </ListItem>

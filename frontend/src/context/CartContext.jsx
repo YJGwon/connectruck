@@ -4,21 +4,31 @@ export const CartContext = createContext();
 
 export const CartProvider = ({children}) => {
     const [cartItems, setCartItems] = useState([]);
+    const [truckId, setTruckId] = useState(0);
 
     useEffect(() => {
         const rawCartItems = localStorage.getItem('cartItems');
         if (rawCartItems !== null) {
             setCartItems(JSON.parse(rawCartItems));
+            setTruckId(localStorage.getItem('cartTruckId'));
         }
     }, []);
 
     useEffect(() => {
-        console.log('use effect', cartItems);
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const addToCart = (menu) => {
+    useEffect(() => {
+        localStorage.setItem('cartTruckId', truckId);
+    }, [truckId]);
+
+    const addToCart = (menu, truckIdOfMenu) => {
         // Check if the menu item already exists in the cart
+        if (cartItems.length !== 0 && truckIdOfMenu !== truckId) {
+            alert('같은 푸드트럭의 메뉴만 담을 수 있습니다.');
+            return;
+        }
+
         const existingItem = cartItems.find(item => item.id === menu.id);
         if (existingItem) {
             // If the item already exists, update its quantity
@@ -39,6 +49,8 @@ export const CartProvider = ({children}) => {
                 quantity: 1
             }));
         }
+        setTruckId(truckIdOfMenu);
+        alert('장바구니에 담았습니다.');
     };
 
     const changeQuantity = (itemId, newQuantity) => {
