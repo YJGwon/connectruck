@@ -143,11 +143,12 @@ export default function SignupForm({root, role}) {
                 alert('가입되었습니다.');
                 navigate(`${root}/signin`);
             } else {
-                throw new Error(`api error: ${response.json().title}`);
+                const data = await response.json();
+                throw new Error(`api error(${data.title}): ${data.detail}`);
             }
         } catch (error) {
             console.error('Error fetching signup:', error);
-            if (error.message.startsWith('api error:')) {
+            if (error.message.startsWith('api error')) {
                 alert(error.message);
             } else {
                 alert('가입하지 못하였습니다.');

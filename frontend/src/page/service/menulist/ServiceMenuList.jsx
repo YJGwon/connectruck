@@ -1,8 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Typography, List, ListItem, ListItemText, Button} from '@mui/material';
+
+import {CartContext} from '../../../context/CartContext';
 
 export default function ServiceMenuList({truckId}) {
     const [menus, setMenus] = useState([]);
+    const {addToCart} = useContext(CartContext);
 
     useEffect(() => {
         fetchMenus(truckId);
@@ -43,7 +46,12 @@ export default function ServiceMenuList({truckId}) {
                     menus.map((menu, index) => (
                         <ListItem key={index}>
                             <ListItemText primary={menu.name} secondary={`${menu.price}원`}/>
-                            <Button variant="contained" color="primary">담기</Button>
+                            <Button 
+                                variant="contained" 
+                                color="primary"
+                                onClick={() => addToCart(menu, truckId)}>
+                                담기
+                            </Button>
                         </ListItem>
                     ))
                 }

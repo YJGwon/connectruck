@@ -3,7 +3,7 @@ import {AppBar, Toolbar, Typography, Link} from '@mui/material';
 
 import './TopBar.css';
 
-export default function TopBar({title, root}) {
+export default function TopBar({title, root, buttons}) {
 
     return (
         <AppBar position="static" className="topbar">
@@ -13,6 +13,18 @@ export default function TopBar({title, root}) {
                         {title}
                     </Link>
                 </Typography>
+                <nav>
+                    {buttons &&
+                        buttons.map((button, index) => (
+                            <Link
+                                key={index}
+                                href={button.link}
+                                color="inherit" underline="none" className="topbar__link">
+                                {button.name}
+                            </Link>
+                        ))
+                    }
+                </nav>            
             </Toolbar>
         </AppBar>
     );
