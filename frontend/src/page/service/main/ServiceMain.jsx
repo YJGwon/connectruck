@@ -42,10 +42,16 @@ export default function ServiceMain() {
 
     const title = `${name} 푸드트럭 주문 by Connectruck 🚚`;
     const root = `/events/${eventId}`;
+    const buttons = [
+        {
+            link: `${root}/cart`,
+            name: '장바구니'
+        }
+    ];
 
     return (
         <div>
-            <TopBar title={title} root={root}/>
+            <TopBar title={title} root={root} buttons={buttons}/>
             <div className="container">
                 <Routes>
                     <Route
