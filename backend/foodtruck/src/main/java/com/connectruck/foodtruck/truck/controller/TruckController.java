@@ -1,6 +1,6 @@
 package com.connectruck.foodtruck.truck.controller;
 
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.SMALLER_THAN_MIN_VALUE;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.SMALLER_THAN_MIN_VALUE;
 
 import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
 import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
@@ -42,6 +42,7 @@ public class TruckController {
     }
 
     @Operation(summary = "행사 참가 푸드트럭 정보 조회")
+    @ApiResponse(responseCode = "404", description = "존재하지 않는 행사 참가 푸드트럭 id")
     @GetMapping("/{participationId}")
     public ParticipationResponse findOne(@PathVariable final long participationId) {
         return truckService.findByParticipationId(participationId);

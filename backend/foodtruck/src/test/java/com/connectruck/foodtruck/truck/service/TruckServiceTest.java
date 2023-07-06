@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.truck.service;
 
+import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -27,7 +28,7 @@ class TruckServiceTest extends ServiceTestBase {
     void findByEvent() {
         // given
         // 총 2개의 푸드트럭 참가
-        final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
+        final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
         dataSetup.saveParticipation(event);
         dataSetup.saveParticipation(event);
@@ -57,7 +58,7 @@ class TruckServiceTest extends ServiceTestBase {
         @Test
         void success() {
             // given
-            final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
+            final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
             final Participation expected = dataSetup.saveParticipation(event);
 
@@ -80,6 +81,38 @@ class TruckServiceTest extends ServiceTestBase {
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> truckService.findByParticipationId(fakeId))
+                    .withMessageContaining("존재하지 않습니다");
+        }
+    }
+
+    @DisplayName("행사 참가 푸드트럭의 행사 id 조회")
+    @Nested
+    class findEventIdByParticipationId {
+
+        @DisplayName("특정 행사 참가 푸드트럭의 행사 id를 id로 조회한다.")
+        @Test
+        void success() {
+            // given
+            final Event event = 밤도깨비_야시장.create();
+            dataSetup.saveEvent(event);
+            final Participation savedParticipation = dataSetup.saveParticipation(event);
+
+            // when
+            final Long actual = truckService.findEventIdByParticipationId(savedParticipation.getId());
+
+            // then
+            assertThat(actual).isEqualTo(event.getId());
+        }
+
+        @DisplayName("해당하는 행사 참가 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenParticipationNotFound() {
+            // given
+            final long fakeId = 0L;
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> truckService.findEventIdByParticipationId(fakeId))
                     .withMessageContaining("존재하지 않습니다");
         }
     }

@@ -1,6 +1,6 @@
 package com.connectruck.foodtruck.user.dto;
 
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.MISSING_REQUIRED_INPUT;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.MISSING_REQUIRED_INPUT;
 
 import jakarta.validation.constraints.NotBlank;
 

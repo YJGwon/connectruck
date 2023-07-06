@@ -1,6 +1,7 @@
 package com.connectruck.foodtruck.user.controller;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -33,7 +34,7 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
 
         // then
         response.statusCode(CREATED.value())
-                .header("Location", BASE_URI + "/me");
+                .header(LOCATION, BASE_URI + "/me");
     }
 
     @DisplayName("사용 가능한 아이디인지 검사한다.")

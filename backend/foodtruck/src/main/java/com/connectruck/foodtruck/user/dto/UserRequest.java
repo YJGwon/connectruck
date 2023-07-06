@@ -1,10 +1,10 @@
 package com.connectruck.foodtruck.user.dto;
 
-import static com.connectruck.foodtruck.common.constant.FormatText.PASSWORD_DESCRIPTION;
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.INVALID_FORMAT;
-import static com.connectruck.foodtruck.common.constant.ValidationMessage.MISSING_REQUIRED_INPUT;
+import static com.connectruck.foodtruck.common.validation.FormatText.PASSWORD_DESCRIPTION;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.INVALID_FORMAT;
+import static com.connectruck.foodtruck.common.validation.ValidationMessage.MISSING_REQUIRED_INPUT;
 
-import com.connectruck.foodtruck.common.constant.FormatText;
+import com.connectruck.foodtruck.common.validation.FormatText;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.Role;
 import jakarta.validation.constraints.NotBlank;

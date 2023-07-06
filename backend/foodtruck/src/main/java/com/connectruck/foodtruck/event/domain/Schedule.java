@@ -39,4 +39,8 @@ public class Schedule {
                                  final Long eventId) {
         return new Schedule(null, eventDate, openHour, closeHour, eventId);
     }
+
+    public boolean isClosedAt(final LocalTime time) {
+        return openHour.isAfter(time) || closeHour.isBefore(time);
+    }
 }

@@ -2,8 +2,8 @@ package com.connectruck.foodtruck.user.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.connectruck.foodtruck.common.constant.FormatText;
 import com.connectruck.foodtruck.common.exception.InvalidFormatException;
+import com.connectruck.foodtruck.common.validation.FormatText;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.nio.charset.StandardCharsets;
