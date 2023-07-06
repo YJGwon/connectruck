@@ -19,6 +19,7 @@ export const CartProvider = ({children}) => {
     }, [cartItems]);
 
     useEffect(() => {
+        console.log(truckId);
         localStorage.setItem('cartTruckId', truckId);
     }, [truckId]);
 
@@ -77,6 +78,7 @@ export const CartProvider = ({children}) => {
     const removeFromCart = (itemId) => {
         const updatedItems = cartItems.filter(item => item.id !== itemId);
         setCartItems(updatedItems);
+        setTruckId(0);
     };
 
     const calculateSubtotal = () => {
@@ -122,6 +124,7 @@ export const CartProvider = ({children}) => {
         <CartContext.Provider
             value={{
                 cartItems,
+                truckId,
                 addToCart,
                 changeQuantity,
                 removeFromCart,

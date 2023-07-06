@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
     Typography,
     Button,
@@ -18,10 +18,52 @@ import {CartContext} from '../../../context/CartContext';
 import './ServiceCart.css';
 
 export default function ServiceCart() {
-    const {cartItems, changeQuantity, removeFromCart, calculateSubtotal, checkOut} = useContext(CartContext);
+    const {
+        cartItems,
+        truckId,
+        changeQuantity, 
+        removeFromCart, 
+        calculateSubtotal, 
+        checkOut
+    } = useContext(CartContext);
 
+    const [truckName, setTruckName] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
+
+    useEffect(() => {
+        console.log('truckId: ', truckId);
+        if (!truckId || truckId == 0) {
+            setTruckName('');
+            return;
+        }
+        fetchTruck();
+    }, [truckId]);
+
+    const fetchTruck = () => {
+        const url = `${process.env.REACT_APP_API_URL}/api/trucks/${truckId}`;
+
+        fetch(url)
+            .then(async response => {
+                const data = await response.json();
+                if (response.ok) {
+                    return data;
+                } else {
+                    throw new Error(`api error(${data.title}): ${data.detail}`);
+                }
+            })
+            .then(data => {
+                setTruckName(data.name);
+            })
+            .catch(error => {
+                console.error('Error fetching truck data:', error);
+                if (error.message.startsWith('api error')) {
+                    alert(error.message);
+                } else {
+                    alert('푸드트럭 정보를 불러오지 못하였습니다');
+                }
+            });
+    }
 
     const handleCheckOut = () => {
         setIsModalOpen(true);
@@ -47,6 +89,9 @@ export default function ServiceCart() {
             <Box mt={3}>
                 <Typography variant="h4" component="h1" align="center">
                     장바구니
+                </Typography>
+                <Typography variant="h5" component="h1" align="center">
+                    {truckName && `${truckName}`}
                 </Typography>
             </Box>
 
