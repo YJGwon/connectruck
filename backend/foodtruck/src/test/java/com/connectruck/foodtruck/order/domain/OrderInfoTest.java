@@ -15,7 +15,7 @@ class OrderInfoTest {
     @NullAndEmptySource
     void changeOrderLine(final List<OrderLine> emptyLines) {
         // given
-        final OrderInfo orderInfo = OrderInfo.ofNew("01000000000");
+        final OrderInfo orderInfo = OrderInfo.ofNew(0L, "01000000000");
 
         // when & then
         assertThatExceptionOfType(ClientException.class)

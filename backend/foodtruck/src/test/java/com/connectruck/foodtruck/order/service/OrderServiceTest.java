@@ -13,7 +13,7 @@ import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.dto.OrderMenuRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
-import com.connectruck.foodtruck.order.exception.EventClosedException;
+import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Participation;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -79,8 +79,29 @@ class OrderServiceTest extends ServiceTestBase {
             );
 
             // when & then
-            assertThatExceptionOfType(EventClosedException.class)
-                    .isThrownBy(() -> orderService.create(request));
+            assertThatExceptionOfType(OrderCreationException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("운영 시간");
+        }
+
+        @DisplayName("해당 참가 푸드트럭의 메뉴가 아닌 메뉴를 주문하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenMenuOfOtherParticipation() {
+            // given
+            final Participation otherParticipation = dataSetup.saveParticipation(event);
+            final Menu menuOfOtherParticipation = dataSetup.saveMenu(otherParticipation);
+
+            final OrderRequest request = new OrderRequest(
+                    savedParticipation.getId(),
+                    "01000000000",
+                    List.of(new OrderMenuRequest(savedMenu.getId(), 2),
+                            new OrderMenuRequest(menuOfOtherParticipation.getId(), 1))
+            );
+
+            // when & then
+            assertThatExceptionOfType(OrderCreationException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("다른 푸드트럭");
         }
 
         private void setEventClosed(final boolean value) {

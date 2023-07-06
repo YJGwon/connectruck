@@ -26,7 +26,11 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         @Test
         void withCreatedAt() {
             // given
-            final OrderInfo orderInfo = OrderInfo.ofNew("01000000000");
+            final Event event = 밤도깨비_야시장.create();
+            dataSetup.saveEvent(event);
+
+            final Participation savedParticipation = dataSetup.saveParticipation(event);
+            final OrderInfo orderInfo = OrderInfo.ofNew(savedParticipation.getId(), "01000000000");
 
             // when
             orderInfoRepository.save(orderInfo);
@@ -45,10 +49,9 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             final Participation savedParticipation = dataSetup.saveParticipation(event);
             final Menu savedMenu = dataSetup.saveMenu(savedParticipation);
 
-            final OrderInfo orderInfo = OrderInfo.ofNew("01000000000");
+            final OrderInfo orderInfo = OrderInfo.ofNew(savedParticipation.getId(), "01000000000");
             final OrderLine orderLine = OrderLine.ofNew(
-                    savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(),
-                    1, orderInfo
+                    savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(), 1, orderInfo
             );
             orderInfo.changeOrderLine(List.of(orderLine));
 

@@ -1,15 +1,17 @@
 package com.connectruck.foodtruck.menu.dto;
 
 import com.connectruck.foodtruck.menu.domain.Menu;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
 
 public record MenuResponse(
         Long id,
         String name,
-        BigDecimal price
+        BigDecimal price,
+        @JsonIgnore Long participationId
 ) {
 
     public static MenuResponse of(final Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getParticipationId());
     }
 }

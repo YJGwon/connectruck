@@ -36,6 +36,7 @@ public class OrderInfo {
     @Include
     private Long id;
 
+    private Long participationId;
     private String phone;
 
     @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.PERSIST)
@@ -46,18 +47,19 @@ public class OrderInfo {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public OrderInfo(final Long id, final String phone, final List<OrderLine> orderLines, final LocalDateTime createdAt,
-                     final LocalDateTime updatedAt) {
+    public OrderInfo(final Long id, final Long participationId, final String phone, final List<OrderLine> orderLines,
+                     final LocalDateTime createdAt, final LocalDateTime updatedAt) {
         Validator.validatePhone(phone);
         this.id = id;
+        this.participationId = participationId;
         this.phone = phone;
         this.orderLines = orderLines;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static OrderInfo ofNew(final String phone) {
-        return new OrderInfo(null, phone, new ArrayList<>(), null, null);
+    public static OrderInfo ofNew(final Long participationId, final String phone) {
+        return new OrderInfo(null, participationId, phone, new ArrayList<>(), null, null);
     }
 
     public void changeOrderLine(final List<OrderLine> orderLines) {
