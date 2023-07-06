@@ -4,6 +4,7 @@ import {Routes, Route, useParams} from 'react-router-dom';
 import TopBar from '../../../component/topbar/TopBar';
 import ServiceTruckList from '../trucklist/ServiceTruckList';
 import ServiceTruck from '../truck/ServiceTruck';
+import ServiceCart from '../cart/ServiceCart';
 
 export default function ServiceMain() {
     const [name, setName] = useState("");
@@ -49,6 +50,7 @@ export default function ServiceMain() {
                 <Routes>
                     <Route exact='exact' path='/' element={<ServiceTruckList eventId={eventId}/>}/>
                     <Route path='/trucks/:truckId/*' element={<ServiceTruck />} />
+                    <Route path='/cart' element={<ServiceCart />} />
                 </Routes>
             </div>
         </div>
