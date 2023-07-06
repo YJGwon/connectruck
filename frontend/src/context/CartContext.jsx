@@ -54,6 +54,16 @@ export const CartProvider = ({children}) => {
     };
 
     const changeQuantity = (itemId, newQuantity) => {
+        if (newQuantity < 0) {
+            alert('수량은 0보다 작을 수 없습니다.');
+            return;
+        }
+
+        if (newQuantity === 0) {
+            removeFromCart(itemId);
+            return;
+        }
+
         setCartItems(prevItems => prevItems.map(
             item => item.id === itemId
                 ? {
@@ -73,9 +83,39 @@ export const CartProvider = ({children}) => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
-    const checkOut = (phone) => {
-        console.log('check out: ', phone);
-        setCartItems([]);
+    const checkOut = async (phone) => {
+        const url = `${process.env.REACT_APP_API_URL}/api/orders`;
+
+        const data = {
+            truckId,
+            phone,
+            menus: cartItems.map((item) => ({menuId: item.id, quantity: item.quantity}))
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                setCartItems([]);
+                alert('주문이 완료되었습니다.');
+            } else {
+                const data = await response.json();
+                throw new Error(`api error(${data.title}): ${data.detail}`);
+            }
+        } catch (error) {
+            console.error('Error fetching order:', error);
+            if (error.message.startsWith('api error')) {
+                alert(error.message);
+            } else {
+                alert('주문을 처리하지 못하였습니다.');
+            }
+        }
     };
 
     return (
