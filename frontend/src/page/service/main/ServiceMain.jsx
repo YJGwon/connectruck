@@ -45,12 +45,19 @@ export default function ServiceMain() {
 
     return (
         <div>
-            <TopBar title={title} root={root} />
+            <TopBar title={title} root={root}/>
             <div className="container">
                 <Routes>
-                    <Route exact='exact' path='/' element={<ServiceTruckList eventId={eventId}/>}/>
-                    <Route path='/trucks/:truckId/*' element={<ServiceTruck />} />
-                    <Route path='/cart' element={<ServiceCart />} />
+                    <Route
+                        exact='exact'
+                        path='/'
+                        element={<ServiceTruckList eventId = {
+                            eventId
+                        } />
+                        }
+                    />
+                    <Route path='/trucks/:truckId/*' element={<ServiceTruck />}/>
+                    <Route path='/cart' element={<ServiceCart />}/>
                 </Routes>
             </div>
         </div>
