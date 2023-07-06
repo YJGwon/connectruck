@@ -7,14 +7,40 @@ import {
     List,
     ListItem,
     ListItemText,
-    IconButton
+    IconButton,
+    Modal,
+    TextField
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import {CartContext} from '../../../context/CartContext';
 
+import './ServiceCart.css';
+
 export default function ServiceCart() {
-    const {cartItems, changeQuantity, removeFromCart, calculateSubtotal, clearCart} = useContext(CartContext);
+    const {cartItems, changeQuantity, removeFromCart, calculateSubtotal, checkOut} = useContext(CartContext);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [phoneNumber, setPhoneNumber] = useState('');
+
+    const handleCheckOut = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setPhoneNumber('');
+    };
+
+    const handleConfirmOrder = () => {
+        if (phoneNumber.trim() === '') {
+            alert('휴대폰 번호를 입력해주세요.');
+            return;
+        }
+
+        checkOut(phoneNumber);
+        handleCloseModal();
+    };
 
     return (
         <Container>
@@ -65,11 +91,34 @@ export default function ServiceCart() {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => clearCart()}
+                    onClick={handleCheckOut}
                     disabled={cartItems.length === 0}>
                     주문하기
                 </Button>
             </Box>
+            <Modal open={isModalOpen} onClose={handleCloseModal}>
+                <Box className="modalContainer">
+                    <Typography variant="h5" component="h2" className="modalTitle">
+                        휴대폰 번호를 입력해주세요.
+                    </Typography>
+                    <TextField
+                        label="휴대폰 번호"
+                        variant="outlined"
+                        fullWidth={true}
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="modalTextInput"/>
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleConfirmOrder}
+                        disabled={!phoneNumber}
+                        className="modalConfirmButton">
+                        주문하기
+                    </Button>
+                </Box>
+            </Modal>
         </Container>
     );
 };

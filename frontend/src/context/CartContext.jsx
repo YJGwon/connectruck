@@ -73,7 +73,8 @@ export const CartProvider = ({children}) => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     };
 
-    const clearCart = () => {
+    const checkOut = (phone) => {
+        console.log('check out: ', phone);
         setCartItems([]);
     };
 
@@ -85,7 +86,7 @@ export const CartProvider = ({children}) => {
                 changeQuantity,
                 removeFromCart,
                 calculateSubtotal,
-                clearCart
+                checkOut
             }}>
             {children}
         </CartContext.Provider>
