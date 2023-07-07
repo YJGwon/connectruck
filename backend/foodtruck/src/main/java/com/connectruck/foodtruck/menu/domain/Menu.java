@@ -29,10 +29,9 @@ public class Menu {
 
     private String name;
     private BigDecimal price;
-    @Column(name = "truck_id")
-    private Long participationId;
+    private Long truckId;
 
-    public static Menu ofNew(final String name, final BigDecimal price, final Long participationId) {
-        return new Menu(null, name, price, participationId);
+    public static Menu ofNew(final String name, final BigDecimal price, final Long truckId) {
+        return new Menu(null, name, price, truckId);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/trucks/{participationId}/menus")
+@RequestMapping("/api/trucks/{truckId}/menus")
 @RequiredArgsConstructor
 public class MenuController {
 
@@ -18,7 +18,7 @@ public class MenuController {
 
     @Operation(summary = "푸드트럭 메뉴 조회")
     @GetMapping
-    public MenusResponse findAll(@PathVariable final long participationId) {
-        return menuService.findByParticipationId(participationId);
+    public MenusResponse findAll(@PathVariable final long truckId) {
+        return menuService.findByTruckId(truckId);
     }
 }

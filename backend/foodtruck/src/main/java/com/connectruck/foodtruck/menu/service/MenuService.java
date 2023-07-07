@@ -25,8 +25,8 @@ public class MenuService {
         return MenuResponse.of(menu);
     }
 
-    public MenusResponse findByParticipationId(final Long participationId) {
-        final List<Menu> menus = menuRepository.findByParticipationId(participationId);
+    public MenusResponse findByTruckId(final Long truckId) {
+        final List<Menu> menus = menuRepository.findByTruckId(truckId);
         return MenusResponse.of(menus);
     }
 }

@@ -71,7 +71,7 @@ class MenuServiceTest extends ServiceTestBase {
             dataSetup.saveMenu(savedParticipation);
 
             // when
-            final MenusResponse response = menuService.findByParticipationId(savedParticipation.getId());
+            final MenusResponse response = menuService.findByTruckId(savedParticipation.getId());
 
             // then
             assertThat(response.menus()).hasSize(2);

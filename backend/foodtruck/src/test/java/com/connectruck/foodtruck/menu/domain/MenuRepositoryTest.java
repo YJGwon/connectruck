@@ -49,7 +49,7 @@ class MenuRepositoryTest extends RepositoryTestBase {
         dataSetup.saveMenu(otherParticipation);
 
         // when
-        final List<Menu> found = menuRepository.findByParticipationId(savedParticipation.getId());
+        final List<Menu> found = menuRepository.findByTruckId(savedParticipation.getId());
 
         // when
         assertThat(found).hasSize(2);

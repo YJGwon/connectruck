@@ -8,5 +8,5 @@ public interface MenuRepository extends Repository<Menu, Long> {
 
     Optional<Menu> findById(final long id);
 
-    List<Menu> findByParticipationId(final long participationId);
+    List<Menu> findByTruckId(final long truckId);
 }
