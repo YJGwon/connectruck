@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 
-class ParticipationRepositoryTest extends RepositoryTestBase {
+class TruckRepositoryTest extends RepositoryTestBase {
 
     @Autowired
-    private ParticipationRepository participationRepository;
+    private TruckRepository truckRepository;
 
     @DisplayName("특정 행사 참가 푸드트럭을 id로 조회한다.")
     @Test
@@ -25,10 +25,10 @@ class ParticipationRepositoryTest extends RepositoryTestBase {
         // given
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
-        final Participation expected = dataSetup.saveParticipation(event);
+        final Truck expected = dataSetup.saveTruck(event);
 
         // when
-        final Optional<Participation> found = participationRepository.findById(expected.getId());
+        final Optional<Truck> found = truckRepository.findById(expected.getId());
 
         // then
         assertThat(found.get()).isEqualTo(expected);
@@ -44,14 +44,14 @@ class ParticipationRepositoryTest extends RepositoryTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            dataSetup.saveParticipation(event);
-            dataSetup.saveParticipation(event);
-            dataSetup.saveParticipation(event);
+            dataSetup.saveTruck(event);
+            dataSetup.saveTruck(event);
+            dataSetup.saveTruck(event);
 
             // when
             final int page = 0;
             final int size = 2;
-            final Slice<Participation> found = participationRepository.findByEventId(event.getId(),
+            final Slice<Truck> found = truckRepository.findByEventId(event.getId(),
                     PageRequest.of(page, size));
 
             // then
@@ -64,14 +64,14 @@ class ParticipationRepositoryTest extends RepositoryTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            dataSetup.saveParticipation(event);
+            dataSetup.saveTruck(event);
 
             final Event otherEvent = 서울FC_경기.create();
             dataSetup.saveEvent(otherEvent);
-            dataSetup.saveParticipation(otherEvent);
+            dataSetup.saveTruck(otherEvent);
 
             // when
-            final Slice<Participation> found = participationRepository.findByEventId(event.getId(),
+            final Slice<Truck> found = truckRepository.findByEventId(event.getId(),
                     PageRequest.of(0, 2));
 
             // then

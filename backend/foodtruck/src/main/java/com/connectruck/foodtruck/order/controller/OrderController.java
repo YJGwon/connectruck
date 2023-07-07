@@ -20,9 +20,9 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @Operation(summary = "행사 참가 푸드트럭 메뉴 주문")
+    @Operation(summary = "푸드트럭 메뉴 주문")
     @ApiResponse(responseCode = "400", description = "운영 중이지 않은 행사 또는 해당 푸드트럭에 없는 메뉴 주문")
-    @ApiResponse(responseCode = "404", description = "존재하지 않는 참가 푸드트럭, 메뉴 id")
+    @ApiResponse(responseCode = "404", description = "존재하지 않는 푸드트럭, 메뉴 id")
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid final OrderRequest request) {
         final Long id = orderService.create(request);

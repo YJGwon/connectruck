@@ -26,15 +26,16 @@ public class Truck {
     @Include
     private Long id;
 
+    private Long eventId;
     private String name;
     private String carNumber;
     private String thumbnail;
 
-    public static Truck ofNew(final String name, final String carNumber, final String thumbnail) {
-        return new Truck(null, name, carNumber, thumbnail);
+    public static Truck ofNew(final Long eventId, final String name, final String carNumber, final String thumbnail) {
+        return new Truck(null, eventId, name, carNumber, thumbnail);
     }
 
-    public static Truck ofNewWithNoThumbnail(final String name, final String carNumber) {
-        return new Truck(null, name, carNumber, null);
+    public static Truck ofNewWithOutThumbnail(final Long eventId, final String name, final String carNumber) {
+        return new Truck(null, eventId, name, carNumber, null);
     }
 }

@@ -1,10 +1,10 @@
 package com.connectruck.foodtruck.truck.service;
 
 import com.connectruck.foodtruck.common.exception.NotFoundException;
-import com.connectruck.foodtruck.truck.domain.Participation;
-import com.connectruck.foodtruck.truck.domain.ParticipationRepository;
-import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
-import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.truck.domain.TruckRepository;
+import com.connectruck.foodtruck.truck.dto.TruckResponse;
+import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -16,29 +16,29 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TruckService {
 
-    private final ParticipationRepository participationRepository;
+    private final TruckRepository truckRepository;
 
-    public ParticipationsResponse findByEvent(final Long eventId, final int page, final int size) {
-        final Slice<Participation> found = participationRepository.findByEventId(eventId,
+    public TrucksResponse findByEvent(final Long eventId, final int page, final int size) {
+        final Slice<Truck> found = truckRepository.findByEventId(eventId,
                 PageRequest.of(page, size));
-        return ParticipationsResponse.of(found);
+        return TrucksResponse.of(found);
     }
 
-    public ParticipationResponse findByParticipationId(final Long participationId) {
-        final Participation found = participationRepository.findById(participationId)
-                .orElseThrow(() -> createParticipationNotFoundException(participationId));
+    public TruckResponse findById(final Long id) {
+        final Truck found = truckRepository.findById(id)
+                .orElseThrow(() -> createTruckNotFoundException(id));
 
-        return ParticipationResponse.of(found);
+        return TruckResponse.of(found);
     }
 
-    public Long findEventIdByParticipationId(final Long participationId) {
-        final Participation found = participationRepository.findById(participationId)
-                .orElseThrow(() -> createParticipationNotFoundException(participationId));
+    public Long findEventIdById(final Long id) {
+        final Truck found = truckRepository.findById(id)
+                .orElseThrow(() -> createTruckNotFoundException(id));
 
         return found.getEventId();
     }
 
-    private NotFoundException createParticipationNotFoundException(final Long participationId) {
-        return NotFoundException.of("푸드트럭", participationId);
+    private NotFoundException createTruckNotFoundException(final Long truckId) {
+        return NotFoundException.of("푸드트럭", truckId);
     }
 }

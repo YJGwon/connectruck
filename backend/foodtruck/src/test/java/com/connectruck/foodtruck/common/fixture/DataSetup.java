@@ -4,13 +4,11 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 
 import com.connectruck.foodtruck.common.fixture.repository.TestEventRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestMenuRepository;
-import com.connectruck.foodtruck.common.fixture.repository.TestParticipationRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestScheduleRepository;
 import com.connectruck.foodtruck.common.fixture.repository.TestTruckRepository;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.event.domain.Schedule;
 import com.connectruck.foodtruck.menu.domain.Menu;
-import com.connectruck.foodtruck.truck.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
@@ -23,23 +21,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = REQUIRES_NEW)
 public class DataSetup {
 
-    private final TestTruckRepository testTruckRepository;
     private final TestEventRepository testEventRepository;
     private final TestScheduleRepository testScheduleRepository;
-    private final TestParticipationRepository testParticipationRepository;
+    private final TestTruckRepository testTruckRepository;
     private final TestMenuRepository testMenuRepository;
     private final AccountRepository accountRepository;
 
-    public DataSetup(final TestTruckRepository testTruckRepository,
-                     final TestEventRepository testEventRepository,
+    public DataSetup(final TestEventRepository testEventRepository,
                      final TestScheduleRepository testScheduleRepository,
-                     final TestParticipationRepository testParticipationRepository,
+                     final TestTruckRepository testTruckRepository,
                      final TestMenuRepository testMenuRepository,
                      final AccountRepository accountRepository) {
-        this.testTruckRepository = testTruckRepository;
         this.testEventRepository = testEventRepository;
         this.testScheduleRepository = testScheduleRepository;
-        this.testParticipationRepository = testParticipationRepository;
+        this.testTruckRepository = testTruckRepository;
         this.testMenuRepository = testMenuRepository;
         this.accountRepository = accountRepository;
     }
@@ -52,17 +47,13 @@ public class DataSetup {
         return testScheduleRepository.save(schedule);
     }
 
-    public Truck saveTruck() {
-        final Truck truck = Truck.ofNewWithNoThumbnail("핫도그쿨냥이", "00가0001");
-        return testTruckRepository.save(truck);
+    public Truck saveTruck(final Event event) {
+        return testTruckRepository.save(
+                Truck.ofNewWithOutThumbnail(event.getId(), "핫도그쿨냥이", "00가0001"));
     }
 
-    public Participation saveParticipation(final Event event) {
-        return testParticipationRepository.save(Participation.ofNew(event.getId(), saveTruck()));
-    }
-
-    public Menu saveMenu(final Participation participation) {
-        return testMenuRepository.save(Menu.ofNew("핫도그", BigDecimal.valueOf(8000), participation.getId()));
+    public Menu saveMenu(final Truck truck) {
+        return testMenuRepository.save(Menu.ofNew("핫도그", BigDecimal.valueOf(8000), truck.getId()));
     }
 
     public Account saveAccount() {

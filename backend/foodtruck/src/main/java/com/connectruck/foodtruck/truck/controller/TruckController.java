@@ -2,8 +2,8 @@ package com.connectruck.foodtruck.truck.controller;
 
 import static com.connectruck.foodtruck.common.validation.ValidationMessage.SMALLER_THAN_MIN_VALUE;
 
-import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
-import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.truck.dto.TruckResponse;
+import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,17 +34,17 @@ public class TruckController {
     @Operation(summary = "행사 참가 푸드트럭 목록 페이지 단위 조회")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 parameter")
     @GetMapping
-    public ParticipationsResponse findByEvent(
+    public TrucksResponse findByEvent(
             @RequestParam final long eventId,
             @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) int page,
             @RequestParam(required = false, defaultValue = DEFAULT_SIZE) final @Positive(message = SIZE_MIN_VALUE_MESSAGE) int size) {
         return truckService.findByEvent(eventId, page, size);
     }
 
-    @Operation(summary = "행사 참가 푸드트럭 정보 조회")
-    @ApiResponse(responseCode = "404", description = "존재하지 않는 행사 참가 푸드트럭 id")
-    @GetMapping("/{participationId}")
-    public ParticipationResponse findOne(@PathVariable final long participationId) {
-        return truckService.findByParticipationId(participationId);
+    @Operation(summary = "푸드트럭 정보 조회")
+    @ApiResponse(responseCode = "404", description = "존재하지 않는 푸드트럭 id")
+    @GetMapping("/{truckId}")
+    public TruckResponse findOne(@PathVariable final long truckId) {
+        return truckService.findById(truckId);
     }
 }

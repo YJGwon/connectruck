@@ -27,17 +27,17 @@ public class OrderService {
     private final TruckService truckService;
     private final EventService eventService;
 
-    private static void checkParticipationHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
-        if (!orderInfo.getParticipationId().equals(menuResponse.participationId())) {
+    private static void checkTruckHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
+        if (!orderInfo.getTruckId().equals(menuResponse.truckId())) {
             throw OrderCreationException.ofOtherTruck();
         }
     }
 
     public Long create(final OrderRequest request) {
-        final Long participationId = request.truckId();
-        checkEventOpened(participationId);
+        final Long truckId = request.truckId();
+        checkEventOpened(truckId);
 
-        final OrderInfo orderInfo = OrderInfo.ofNew(participationId, request.phone());
+        final OrderInfo orderInfo = OrderInfo.ofNew(truckId, request.phone());
         final List<OrderLine> orderLines = request.menus()
                 .stream()
                 .map(orderMenuRequest -> createOrderLineOf(orderInfo, orderMenuRequest))
@@ -48,19 +48,19 @@ public class OrderService {
         return orderInfo.getId();
     }
 
-    private void checkEventOpened(final Long participationId) {
-        final Long eventId = truckService.findEventIdByParticipationId(participationId);
-        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
-            throw OrderCreationException.ofClosed();
-        }
-    }
-
     private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderMenuRequest orderMenuRequest) {
         final Long menuId = orderMenuRequest.menuId();
         final MenuResponse menuResponse = menuService.findById(menuId);
-        checkParticipationHasMenu(orderInfo, menuResponse);
+        checkTruckHasMenu(orderInfo, menuResponse);
 
         return OrderLine.ofNew(menuResponse.id(), menuResponse.name(), menuResponse.price(),
                 orderMenuRequest.quantity(), orderInfo);
+    }
+
+    private void checkEventOpened(final Long truckId) {
+        final Long eventId = truckService.findEventIdById(truckId);
+        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
+            throw OrderCreationException.ofClosed();
+        }
     }
 }

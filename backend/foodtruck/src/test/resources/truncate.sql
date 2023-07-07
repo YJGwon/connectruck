@@ -6,8 +6,6 @@ TRUNCATE TABLE order_info;
 
 TRUNCATE TABLE menu;
 
-TRUNCATE TABLE participation;
-
 TRUNCATE TABLE truck;
 
 TRUNCATE TABLE schedule;

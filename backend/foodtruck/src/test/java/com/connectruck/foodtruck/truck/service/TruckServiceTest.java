@@ -10,9 +10,9 @@ import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.truck.domain.Participation;
-import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
-import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.truck.dto.TruckResponse;
+import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -30,18 +30,18 @@ class TruckServiceTest extends ServiceTestBase {
         // 총 2개의 푸드트럭 참가
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
-        dataSetup.saveParticipation(event);
-        dataSetup.saveParticipation(event);
+        dataSetup.saveTruck(event);
+        dataSetup.saveTruck(event);
 
         // 다른 행사 참가 푸드트럭 1개 존재
         final Event otherEvent = 서울FC_경기.create();
         dataSetup.saveEvent(otherEvent);
-        dataSetup.saveParticipation(otherEvent);
+        dataSetup.saveTruck(otherEvent);
 
         // when
         final int page = 0;
         final int size = 2;
-        final ParticipationsResponse response = truckService.findByEvent(event.getId(), page, size);
+        final TrucksResponse response = truckService.findByEvent(event.getId(), page, size);
 
         // then
         assertAll(
@@ -50,44 +50,44 @@ class TruckServiceTest extends ServiceTestBase {
         );
     }
 
-    @DisplayName("행사 참가 푸드트럭 정보 조회")
+    @DisplayName("푸드트럭 정보 조회")
     @Nested
-    class findByParticipationId {
+    class findById {
 
-        @DisplayName("특정 행사 참가 푸드트럭의 정보를 id로 조회한다.")
+        @DisplayName("특정 푸드트럭의 정보를 id로 조회한다.")
         @Test
         void success() {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            final Participation expected = dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveTruck(event);
 
             // when
-            final ParticipationResponse response = truckService.findByParticipationId(expected.getId());
+            final TruckResponse response = truckService.findById(expected.getId());
 
             // then
             assertAll(
                     () -> assertThat(response.id()).isEqualTo(expected.getId()),
-                    () -> assertThat(response.name()).isEqualTo(expected.getTruck().getName())
+                    () -> assertThat(response.name()).isEqualTo(expected.getName())
             );
         }
 
-        @DisplayName("해당하는 행사 참가 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
-        void throwsException_whenParticipationNotFound() {
+        void throwsException_whenTruckNotFound() {
             // given
             final long fakeId = 0L;
 
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> truckService.findByParticipationId(fakeId))
+                    .isThrownBy(() -> truckService.findById(fakeId))
                     .withMessageContaining("존재하지 않습니다");
         }
     }
 
-    @DisplayName("행사 참가 푸드트럭의 행사 id 조회")
+    @DisplayName("푸드트럭의 참가 행사 id 조회")
     @Nested
-    class findEventIdByParticipationId {
+    class findEventIdById {
 
         @DisplayName("특정 행사 참가 푸드트럭의 행사 id를 id로 조회한다.")
         @Test
@@ -95,24 +95,24 @@ class TruckServiceTest extends ServiceTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
 
             // when
-            final Long actual = truckService.findEventIdByParticipationId(savedParticipation.getId());
+            final Long actual = truckService.findEventIdById(savedTruck.getId());
 
             // then
             assertThat(actual).isEqualTo(event.getId());
         }
 
-        @DisplayName("해당하는 행사 참가 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
-        void throwsException_whenParticipationNotFound() {
+        void throwsException_whenTruckNotFound() {
             // given
             final long fakeId = 0L;
 
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> truckService.findEventIdByParticipationId(fakeId))
+                    .isThrownBy(() -> truckService.findEventIdById(fakeId))
                     .withMessageContaining("존재하지 않습니다");
         }
     }

@@ -5,9 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.Repository;
 
-public interface ParticipationRepository extends Repository<Participation, Long> {
+public interface TruckRepository extends Repository<Truck, Long> {
 
-    Optional<Participation> findById(final Long id);
+    Optional<Truck> findById(final Long id);
 
-    Slice<Participation> findByEventId(final Long eventId, final Pageable pageable);
+    Slice<Truck> findByEventId(final Long eventId, final Pageable pageable);
 }

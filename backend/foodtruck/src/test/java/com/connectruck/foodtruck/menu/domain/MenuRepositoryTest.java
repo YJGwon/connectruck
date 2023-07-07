@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.truck.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +24,8 @@ class MenuRepositoryTest extends RepositoryTestBase {
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
 
-        final Participation savedParticipation = dataSetup.saveParticipation(event);
-        final Menu expected = dataSetup.saveMenu(savedParticipation);
+        final Truck savedTruck = dataSetup.saveTruck(event);
+        final Menu expected = dataSetup.saveMenu(savedTruck);
 
         // when
         final Optional<Menu> found = menuRepository.findById(expected.getId());
@@ -34,22 +34,22 @@ class MenuRepositoryTest extends RepositoryTestBase {
         assertThat(found.get()).isEqualTo(expected);
     }
 
-    @DisplayName("참가 푸드트럭의 메뉴 목록을 조회한다.")
+    @DisplayName("푸드트럭의 메뉴 목록을 조회한다.")
     @Test
-    void findByParticipationId() {
+    void findByTruckId() {
         // given
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
 
-        final Participation savedParticipation = dataSetup.saveParticipation(event);
-        dataSetup.saveMenu(savedParticipation);
-        dataSetup.saveMenu(savedParticipation);
+        final Truck savedTruck = dataSetup.saveTruck(event);
+        dataSetup.saveMenu(savedTruck);
+        dataSetup.saveMenu(savedTruck);
 
-        final Participation otherParticipation = dataSetup.saveParticipation(event);
-        dataSetup.saveMenu(otherParticipation);
+        final Truck otherTruck = dataSetup.saveTruck(event);
+        dataSetup.saveMenu(otherTruck);
 
         // when
-        final List<Menu> found = menuRepository.findByParticipationId(savedParticipation.getId());
+        final List<Menu> found = menuRepository.findByTruckId(savedTruck.getId());
 
         // when
         assertThat(found).hasSize(2);

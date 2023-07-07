@@ -8,10 +8,10 @@ public record MenuResponse(
         Long id,
         String name,
         BigDecimal price,
-        @JsonIgnore Long participationId
+        @JsonIgnore Long truckId
 ) {
 
     public static MenuResponse of(final Menu menu) {
-        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getParticipationId());
+        return new MenuResponse(menu.getId(), menu.getName(), menu.getPrice(), menu.getTruckId());
     }
 }

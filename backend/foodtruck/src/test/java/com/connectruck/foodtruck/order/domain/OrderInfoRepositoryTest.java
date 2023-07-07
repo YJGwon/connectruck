@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
-import com.connectruck.foodtruck.truck.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,8 +29,8 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
-            final OrderInfo orderInfo = OrderInfo.ofNew(savedParticipation.getId(), "01000000000");
+            final Truck savedTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderInfo = OrderInfo.ofNew(savedTruck.getId(), "01000000000");
 
             // when
             orderInfoRepository.save(orderInfo);
@@ -46,10 +46,10 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
-            final Menu savedMenu = dataSetup.saveMenu(savedParticipation);
+            final Truck savedTruck = dataSetup.saveTruck(event);
+            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
 
-            final OrderInfo orderInfo = OrderInfo.ofNew(savedParticipation.getId(), "01000000000");
+            final OrderInfo orderInfo = OrderInfo.ofNew(savedTruck.getId(), "01000000000");
             final OrderLine orderLine = OrderLine.ofNew(
                     savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(), 1, orderInfo
             );
