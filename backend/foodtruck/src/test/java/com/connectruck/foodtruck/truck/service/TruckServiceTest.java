@@ -11,8 +11,8 @@ import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.truck.domain.Truck;
-import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
-import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.truck.dto.TruckResponse;
+import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class TruckServiceTest extends ServiceTestBase {
         // when
         final int page = 0;
         final int size = 2;
-        final ParticipationsResponse response = truckService.findByEvent(event.getId(), page, size);
+        final TrucksResponse response = truckService.findByEvent(event.getId(), page, size);
 
         // then
         assertAll(
@@ -63,7 +63,7 @@ class TruckServiceTest extends ServiceTestBase {
             final Truck expected = dataSetup.saveParticipation(event);
 
             // when
-            final ParticipationResponse response = truckService.findById(expected.getId());
+            final TruckResponse response = truckService.findById(expected.getId());
 
             // then
             assertAll(

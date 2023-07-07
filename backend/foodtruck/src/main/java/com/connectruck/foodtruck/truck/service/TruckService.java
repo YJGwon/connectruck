@@ -3,8 +3,8 @@ package com.connectruck.foodtruck.truck.service;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
-import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
-import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
+import com.connectruck.foodtruck.truck.dto.TruckResponse;
+import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -18,22 +18,22 @@ public class TruckService {
 
     private final TruckRepository truckRepository;
 
-    public ParticipationsResponse findByEvent(final Long eventId, final int page, final int size) {
+    public TrucksResponse findByEvent(final Long eventId, final int page, final int size) {
         final Slice<Truck> found = truckRepository.findByEventId(eventId,
                 PageRequest.of(page, size));
-        return ParticipationsResponse.of(found);
+        return TrucksResponse.of(found);
     }
 
-    public ParticipationResponse findById(final Long truckId) {
-        final Truck found = truckRepository.findById(truckId)
-                .orElseThrow(() -> createTruckNotFoundException(truckId));
+    public TruckResponse findById(final Long id) {
+        final Truck found = truckRepository.findById(id)
+                .orElseThrow(() -> createTruckNotFoundException(id));
 
-        return ParticipationResponse.of(found);
+        return TruckResponse.of(found);
     }
 
-    public Long findEventIdById(final Long truckId) {
-        final Truck found = truckRepository.findById(truckId)
-                .orElseThrow(() -> createTruckNotFoundException(truckId));
+    public Long findEventIdById(final Long id) {
+        final Truck found = truckRepository.findById(id)
+                .orElseThrow(() -> createTruckNotFoundException(id));
 
         return found.getEventId();
     }
