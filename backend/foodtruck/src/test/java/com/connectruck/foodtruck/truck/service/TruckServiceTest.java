@@ -10,7 +10,7 @@ import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.truck.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.dto.ParticipationResponse;
 import com.connectruck.foodtruck.truck.dto.ParticipationsResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -50,17 +50,17 @@ class TruckServiceTest extends ServiceTestBase {
         );
     }
 
-    @DisplayName("행사 참가 푸드트럭 정보 조회")
+    @DisplayName("푸드트럭 정보 조회")
     @Nested
-    class findByParticipationId {
+    class findById {
 
-        @DisplayName("특정 행사 참가 푸드트럭의 정보를 id로 조회한다.")
+        @DisplayName("특정 푸드트럭의 정보를 id로 조회한다.")
         @Test
         void success() {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            final Participation expected = dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveParticipation(event);
 
             // when
             final ParticipationResponse response = truckService.findByParticipationId(expected.getId());
@@ -68,7 +68,7 @@ class TruckServiceTest extends ServiceTestBase {
             // then
             assertAll(
                     () -> assertThat(response.id()).isEqualTo(expected.getId()),
-                    () -> assertThat(response.name()).isEqualTo(expected.getTruck().getName())
+                    () -> assertThat(response.name()).isEqualTo(expected.getTruckInfo().getName())
             );
         }
 
@@ -85,9 +85,9 @@ class TruckServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("행사 참가 푸드트럭의 행사 id 조회")
+    @DisplayName("푸드트럭의 참가 행사 id 조회")
     @Nested
-    class findEventIdByParticipationId {
+    class findEventIdById {
 
         @DisplayName("특정 행사 참가 푸드트럭의 행사 id를 id로 조회한다.")
         @Test
@@ -95,10 +95,10 @@ class TruckServiceTest extends ServiceTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveParticipation(event);
 
             // when
-            final Long actual = truckService.findEventIdByParticipationId(savedParticipation.getId());
+            final Long actual = truckService.findEventIdByParticipationId(savedTruck.getId());
 
             // then
             assertThat(actual).isEqualTo(event.getId());

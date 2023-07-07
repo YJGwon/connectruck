@@ -8,7 +8,6 @@ import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.truck.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +31,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             dataSetup.saveEvent(event);
             dataSetup.saveParticipation(event);
             dataSetup.saveParticipation(event);
-            final Participation expected = dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveParticipation(event);
 
             // 다른 행사 참가 푸드트럭 1개 존재
             final Event otherEvent = 서울FC_경기.create();
@@ -54,7 +53,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
                     .body("page.hasNext", equalTo(false))
                     .body("trucks", hasSize(1))
                     .body("trucks.id", contains(expected.getId().intValue()))
-                    .body("trucks.name", contains(expected.getTruck().getName()));
+                    .body("trucks.name", contains(expected.getTruckInfo().getName()));
         }
 
         @DisplayName("사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")
@@ -73,9 +72,9 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
         }
     }
 
-    @DisplayName("행사 참가 푸드트럭 정보 조회")
+    @DisplayName("푸드트럭 정보 조회")
     @Nested
-    class findOneParticipatingTruck {
+    class findOneTruck {
 
         private static final String URI_FORMAT = BASE_URI + "/%d";
 
@@ -85,7 +84,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             // given
             final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
             dataSetup.saveEvent(event);
-            final Participation expected = dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveParticipation(event);
 
             // when
             final ValidatableResponse response = get(String.format(URI_FORMAT, expected.getId()));
@@ -93,7 +92,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             // then
             response.statusCode(OK.value())
                     .body("id", equalTo(expected.getId().intValue()))
-                    .body("name", equalTo(expected.getTruck().getName()));
+                    .body("name", equalTo(expected.getTruckInfo().getName()));
         }
     }
 }

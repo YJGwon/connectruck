@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.OK;
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
-import com.connectruck.foodtruck.truck.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,11 +29,11 @@ public class MenuAcceptanceTest extends AcceptanceTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
-            final Menu expected = dataSetup.saveMenu(savedParticipation);
+            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Menu expected = dataSetup.saveMenu(savedTruck);
 
             // when
-            final ValidatableResponse response = get(String.format(BASE_URI_FORMAT, savedParticipation.getId()));
+            final ValidatableResponse response = get(String.format(BASE_URI_FORMAT, savedTruck.getId()));
 
             // then
             response.statusCode(OK.value())

@@ -10,7 +10,7 @@ import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.menu.dto.MenuResponse;
 import com.connectruck.foodtruck.menu.dto.MenusResponse;
-import com.connectruck.foodtruck.truck.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ class MenuServiceTest extends ServiceTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
-            final Menu expected = dataSetup.saveMenu(savedParticipation);
+            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Menu expected = dataSetup.saveMenu(savedTruck);
 
             // when
             final MenuResponse response = menuService.findById(expected.getId());
@@ -57,7 +57,7 @@ class MenuServiceTest extends ServiceTestBase {
 
     @DisplayName("참가 푸드트럭 메뉴 목록 조회")
     @Nested
-    class findByParticipationId {
+    class findByTruckId {
 
         @DisplayName("참가 푸드트럭의 id로 메뉴 목록을 조회한다.")
         @Test
@@ -66,12 +66,12 @@ class MenuServiceTest extends ServiceTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
-            dataSetup.saveMenu(savedParticipation);
-            dataSetup.saveMenu(savedParticipation);
+            final Truck savedTruck = dataSetup.saveParticipation(event);
+            dataSetup.saveMenu(savedTruck);
+            dataSetup.saveMenu(savedTruck);
 
             // when
-            final MenusResponse response = menuService.findByTruckId(savedParticipation.getId());
+            final MenusResponse response = menuService.findByTruckId(savedTruck.getId());
 
             // then
             assertThat(response.menus()).hasSize(2);

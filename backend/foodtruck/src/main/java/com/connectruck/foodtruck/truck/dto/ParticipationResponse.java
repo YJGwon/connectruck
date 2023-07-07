@@ -1,7 +1,7 @@
 package com.connectruck.foodtruck.truck.dto;
 
-import com.connectruck.foodtruck.truck.domain.Participation;
 import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.truck.domain.TruckInfo;
 
 public record ParticipationResponse(
         Long id,
@@ -10,13 +10,13 @@ public record ParticipationResponse(
         String thumbnail
 ) {
 
-    public static ParticipationResponse of(final Participation participation) {
-        final Truck truck = participation.getTruck();
+    public static ParticipationResponse of(final Truck truck) {
+        final TruckInfo truckInfo = truck.getTruckInfo();
         return new ParticipationResponse(
-                participation.getId(),
-                truck.getName(),
-                truck.getCarNumber(),
-                truck.getThumbnail()
+                truck.getId(),
+                truckInfo.getName(),
+                truckInfo.getCarNumber(),
+                truckInfo.getThumbnail()
         );
     }
 }

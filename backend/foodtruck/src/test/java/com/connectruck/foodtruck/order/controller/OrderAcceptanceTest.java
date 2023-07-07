@@ -14,7 +14,7 @@ import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.dto.OrderMenuRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
-import com.connectruck.foodtruck.truck.domain.Participation;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,11 +45,11 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
                     .when(eventService)
                     .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
 
-            final Participation savedParticipation = dataSetup.saveParticipation(event);
-            final Menu savedMenu = dataSetup.saveMenu(savedParticipation);
+            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
 
             final OrderRequest request = new OrderRequest(
-                    savedParticipation.getId(),
+                    savedTruck.getId(),
                     "01000000000",
                     List.of(new OrderMenuRequest(savedMenu.getId(), 2))
             );
