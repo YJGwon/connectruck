@@ -24,21 +24,21 @@ public class TruckService {
         return ParticipationsResponse.of(found);
     }
 
-    public ParticipationResponse findByParticipationId(final Long truckId) {
+    public ParticipationResponse findById(final Long truckId) {
         final Truck found = truckRepository.findById(truckId)
-                .orElseThrow(() -> createParticipationNotFoundException(truckId));
+                .orElseThrow(() -> createTruckNotFoundException(truckId));
 
         return ParticipationResponse.of(found);
     }
 
-    public Long findEventIdByParticipationId(final Long truckId) {
+    public Long findEventIdById(final Long truckId) {
         final Truck found = truckRepository.findById(truckId)
-                .orElseThrow(() -> createParticipationNotFoundException(truckId));
+                .orElseThrow(() -> createTruckNotFoundException(truckId));
 
         return found.getEventId();
     }
 
-    private NotFoundException createParticipationNotFoundException(final Long truckId) {
+    private NotFoundException createTruckNotFoundException(final Long truckId) {
         return NotFoundException.of("푸드트럭", truckId);
     }
 }

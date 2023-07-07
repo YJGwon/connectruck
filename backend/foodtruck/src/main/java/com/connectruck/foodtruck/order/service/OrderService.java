@@ -58,7 +58,7 @@ public class OrderService {
     }
 
     private void checkEventOpened(final Long truckId) {
-        final Long eventId = truckService.findEventIdByParticipationId(truckId);
+        final Long eventId = truckService.findEventIdById(truckId);
         if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
             throw OrderCreationException.ofClosed();
         }

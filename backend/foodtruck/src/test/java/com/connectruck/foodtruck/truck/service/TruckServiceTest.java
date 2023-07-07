@@ -63,7 +63,7 @@ class TruckServiceTest extends ServiceTestBase {
             final Truck expected = dataSetup.saveParticipation(event);
 
             // when
-            final ParticipationResponse response = truckService.findByParticipationId(expected.getId());
+            final ParticipationResponse response = truckService.findById(expected.getId());
 
             // then
             assertAll(
@@ -80,7 +80,7 @@ class TruckServiceTest extends ServiceTestBase {
 
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> truckService.findByParticipationId(fakeId))
+                    .isThrownBy(() -> truckService.findById(fakeId))
                     .withMessageContaining("존재하지 않습니다");
         }
     }
@@ -98,7 +98,7 @@ class TruckServiceTest extends ServiceTestBase {
             final Truck savedTruck = dataSetup.saveParticipation(event);
 
             // when
-            final Long actual = truckService.findEventIdByParticipationId(savedTruck.getId());
+            final Long actual = truckService.findEventIdById(savedTruck.getId());
 
             // then
             assertThat(actual).isEqualTo(event.getId());
@@ -112,7 +112,7 @@ class TruckServiceTest extends ServiceTestBase {
 
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> truckService.findEventIdByParticipationId(fakeId))
+                    .isThrownBy(() -> truckService.findEventIdById(fakeId))
                     .withMessageContaining("존재하지 않습니다");
         }
     }
