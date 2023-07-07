@@ -32,7 +32,7 @@ class MenuServiceTest extends ServiceTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
             final Menu expected = dataSetup.saveMenu(savedTruck);
 
             // when
@@ -55,18 +55,18 @@ class MenuServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("참가 푸드트럭 메뉴 목록 조회")
+    @DisplayName("푸드트럭 메뉴 목록 조회")
     @Nested
     class findByTruckId {
 
-        @DisplayName("참가 푸드트럭의 id로 메뉴 목록을 조회한다.")
+        @DisplayName("푸드트럭의 id로 메뉴 목록을 조회한다.")
         @Test
         void success() {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
             dataSetup.saveMenu(savedTruck);
             dataSetup.saveMenu(savedTruck);
 

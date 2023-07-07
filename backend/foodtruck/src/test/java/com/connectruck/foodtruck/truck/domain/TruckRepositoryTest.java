@@ -25,7 +25,7 @@ class TruckRepositoryTest extends RepositoryTestBase {
         // given
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
-        final Truck expected = dataSetup.saveParticipation(event);
+        final Truck expected = dataSetup.saveTruck(event);
 
         // when
         final Optional<Truck> found = truckRepository.findById(expected.getId());
@@ -44,9 +44,9 @@ class TruckRepositoryTest extends RepositoryTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            dataSetup.saveParticipation(event);
-            dataSetup.saveParticipation(event);
-            dataSetup.saveParticipation(event);
+            dataSetup.saveTruck(event);
+            dataSetup.saveTruck(event);
+            dataSetup.saveTruck(event);
 
             // when
             final int page = 0;
@@ -64,11 +64,11 @@ class TruckRepositoryTest extends RepositoryTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            dataSetup.saveParticipation(event);
+            dataSetup.saveTruck(event);
 
             final Event otherEvent = 서울FC_경기.create();
             dataSetup.saveEvent(otherEvent);
-            dataSetup.saveParticipation(otherEvent);
+            dataSetup.saveTruck(otherEvent);
 
             // when
             final Slice<Truck> found = truckRepository.findByEventId(event.getId(),

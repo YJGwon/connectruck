@@ -24,7 +24,7 @@ class MenuRepositoryTest extends RepositoryTestBase {
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
 
-        final Truck savedTruck = dataSetup.saveParticipation(event);
+        final Truck savedTruck = dataSetup.saveTruck(event);
         final Menu expected = dataSetup.saveMenu(savedTruck);
 
         // when
@@ -41,11 +41,11 @@ class MenuRepositoryTest extends RepositoryTestBase {
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
 
-        final Truck savedTruck = dataSetup.saveParticipation(event);
+        final Truck savedTruck = dataSetup.saveTruck(event);
         dataSetup.saveMenu(savedTruck);
         dataSetup.saveMenu(savedTruck);
 
-        final Truck otherTruck = dataSetup.saveParticipation(event);
+        final Truck otherTruck = dataSetup.saveTruck(event);
         dataSetup.saveMenu(otherTruck);
 
         // when

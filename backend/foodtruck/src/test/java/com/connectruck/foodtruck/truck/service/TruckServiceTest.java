@@ -30,13 +30,13 @@ class TruckServiceTest extends ServiceTestBase {
         // 총 2개의 푸드트럭 참가
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
-        dataSetup.saveParticipation(event);
-        dataSetup.saveParticipation(event);
+        dataSetup.saveTruck(event);
+        dataSetup.saveTruck(event);
 
         // 다른 행사 참가 푸드트럭 1개 존재
         final Event otherEvent = 서울FC_경기.create();
         dataSetup.saveEvent(otherEvent);
-        dataSetup.saveParticipation(otherEvent);
+        dataSetup.saveTruck(otherEvent);
 
         // when
         final int page = 0;
@@ -60,7 +60,7 @@ class TruckServiceTest extends ServiceTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            final Truck expected = dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveTruck(event);
 
             // when
             final TruckResponse response = truckService.findById(expected.getId());
@@ -72,9 +72,9 @@ class TruckServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("해당하는 행사 참가 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
-        void throwsException_whenParticipationNotFound() {
+        void throwsException_whenTruckNotFound() {
             // given
             final long fakeId = 0L;
 
@@ -95,7 +95,7 @@ class TruckServiceTest extends ServiceTestBase {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
 
             // when
             final Long actual = truckService.findEventIdById(savedTruck.getId());
@@ -104,9 +104,9 @@ class TruckServiceTest extends ServiceTestBase {
             assertThat(actual).isEqualTo(event.getId());
         }
 
-        @DisplayName("해당하는 행사 참가 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
-        void throwsException_whenParticipationNotFound() {
+        void throwsException_whenTruckNotFound() {
             // given
             final long fakeId = 0L;
 

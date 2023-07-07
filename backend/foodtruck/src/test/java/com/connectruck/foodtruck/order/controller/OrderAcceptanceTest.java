@@ -35,7 +35,7 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
     @Nested
     class order {
 
-        @DisplayName("한 행사 참가 푸드트럭에 대해 메뉴를 주문한다.")
+        @DisplayName("한 푸드트럭에 대해 메뉴를 주문한다.")
         @Test
         void success() {
             // given
@@ -45,7 +45,7 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
                     .when(eventService)
                     .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
 
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
             final Menu savedMenu = dataSetup.saveMenu(savedTruck);
 
             final OrderRequest request = new OrderRequest(

@@ -29,14 +29,14 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             // 총 3개의 푸드트럭 참가
             final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
             dataSetup.saveEvent(event);
-            dataSetup.saveParticipation(event);
-            dataSetup.saveParticipation(event);
-            final Truck expected = dataSetup.saveParticipation(event);
+            dataSetup.saveTruck(event);
+            dataSetup.saveTruck(event);
+            final Truck expected = dataSetup.saveTruck(event);
 
             // 다른 행사 참가 푸드트럭 1개 존재
             final Event otherEvent = 서울FC_경기.create();
             dataSetup.saveEvent(otherEvent);
-            dataSetup.saveParticipation(otherEvent);
+            dataSetup.saveTruck(otherEvent);
 
             final long eventId = event.getId();
             final int page = 1;
@@ -80,11 +80,11 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
 
         @DisplayName("특정 참가 푸드트럭의 정보를 id로 조회한다.")
         @Test
-        void byParticipationId() {
+        void byId() {
             // given
             final Event event = Event.ofNew("여의도 밤도깨비 야시장", "서울 영등포구 여의동 여의동로 330");
             dataSetup.saveEvent(event);
-            final Truck expected = dataSetup.saveParticipation(event);
+            final Truck expected = dataSetup.saveTruck(event);
 
             // when
             final ValidatableResponse response = get(String.format(URI_FORMAT, expected.getId()));

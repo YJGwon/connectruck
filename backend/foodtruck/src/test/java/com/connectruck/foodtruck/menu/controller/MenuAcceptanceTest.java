@@ -18,18 +18,18 @@ public class MenuAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI_FORMAT = "/api/trucks/%d/menus";
 
-    @DisplayName("참가 푸드트럭 메뉴 목록 조회")
+    @DisplayName("푸드트럭 메뉴 목록 조회")
     @Nested
     class findMenusOfTruck {
 
-        @DisplayName("참가 푸드트럭의 id로 메뉴 목록을 조회한다.")
+        @DisplayName("푸드트럭의 id로 메뉴 목록을 조회한다.")
         @Test
-        void byParticipationId() {
+        void byTruckId() {
             // given
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
             final Menu expected = dataSetup.saveMenu(savedTruck);
 
             // when

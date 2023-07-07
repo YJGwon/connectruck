@@ -48,13 +48,13 @@ public class DataSetup {
         return testScheduleRepository.save(schedule);
     }
 
-    public Truck saveParticipation(final Event event) {
+    public Truck saveTruck(final Event event) {
         return testTruckRepository.save(
                 Truck.ofNew(event.getId(), TruckInfo.ofNewWithNoThumbnail("핫도그쿨냥이", "00가0001")));
     }
 
-    public Menu saveMenu(final Truck participation) {
-        return testMenuRepository.save(Menu.ofNew("핫도그", BigDecimal.valueOf(8000), participation.getId()));
+    public Menu saveMenu(final Truck truck) {
+        return testMenuRepository.save(Menu.ofNew("핫도그", BigDecimal.valueOf(8000), truck.getId()));
     }
 
     public Account saveAccount() {

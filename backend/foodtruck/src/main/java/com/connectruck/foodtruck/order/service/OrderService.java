@@ -27,7 +27,7 @@ public class OrderService {
     private final TruckService truckService;
     private final EventService eventService;
 
-    private static void checkParticipationHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
+    private static void checkTruckHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
         if (!orderInfo.getTruckId().equals(menuResponse.truckId())) {
             throw OrderCreationException.ofOtherTruck();
         }
@@ -51,7 +51,7 @@ public class OrderService {
     private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderMenuRequest orderMenuRequest) {
         final Long menuId = orderMenuRequest.menuId();
         final MenuResponse menuResponse = menuService.findById(menuId);
-        checkParticipationHasMenu(orderInfo, menuResponse);
+        checkTruckHasMenu(orderInfo, menuResponse);
 
         return OrderLine.ofNew(menuResponse.id(), menuResponse.name(), menuResponse.price(),
                 orderMenuRequest.quantity(), orderInfo);

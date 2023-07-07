@@ -45,7 +45,7 @@ class OrderServiceTest extends ServiceTestBase {
             event = dataSetup.saveEvent(밤도깨비_야시장.create());
             setEventClosed(false);
 
-            savedTruck = dataSetup.saveParticipation(event);
+            savedTruck = dataSetup.saveTruck(event);
             savedMenu = dataSetup.saveMenu(savedTruck);
         }
 
@@ -88,7 +88,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenMenuOfOtherTruck() {
             // given
-            final Truck otherTruck = dataSetup.saveParticipation(event);
+            final Truck otherTruck = dataSetup.saveTruck(event);
             final Menu menuOfOtherTruck = dataSetup.saveMenu(otherTruck);
 
             final OrderRequest request = new OrderRequest(

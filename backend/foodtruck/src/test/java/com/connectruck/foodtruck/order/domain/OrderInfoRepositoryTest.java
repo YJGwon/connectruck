@@ -29,7 +29,7 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
             final OrderInfo orderInfo = OrderInfo.ofNew(savedTruck.getId(), "01000000000");
 
             // when
@@ -46,7 +46,7 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             final Event event = 밤도깨비_야시장.create();
             dataSetup.saveEvent(event);
 
-            final Truck savedTruck = dataSetup.saveParticipation(event);
+            final Truck savedTruck = dataSetup.saveTruck(event);
             final Menu savedMenu = dataSetup.saveMenu(savedTruck);
 
             final OrderInfo orderInfo = OrderInfo.ofNew(savedTruck.getId(), "01000000000");
