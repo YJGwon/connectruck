@@ -32,7 +32,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             dataSetup.saveEvent(event);
             dataSetup.saveParticipation(event);
             dataSetup.saveParticipation(event);
-            final Truck expected = dataSetup.saveParticipation(event).getTruck();
+            final Participation expected = dataSetup.saveParticipation(event);
 
             // 다른 행사 참가 푸드트럭 1개 존재
             final Event otherEvent = 서울FC_경기.create();
@@ -54,7 +54,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
                     .body("page.hasNext", equalTo(false))
                     .body("trucks", hasSize(1))
                     .body("trucks.id", contains(expected.getId().intValue()))
-                    .body("trucks.name", contains(expected.getName()));
+                    .body("trucks.name", contains(expected.getTruck().getName()));
         }
 
         @DisplayName("사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")

@@ -36,6 +36,7 @@ public class OrderInfo {
     @Include
     private Long id;
 
+    @Column(name = "truck_id")
     private Long participationId;
     private String phone;
 

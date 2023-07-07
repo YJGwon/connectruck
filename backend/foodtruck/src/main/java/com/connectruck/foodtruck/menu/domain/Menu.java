@@ -29,6 +29,7 @@ public class Menu {
 
     private String name;
     private BigDecimal price;
+    @Column(name = "truck_id")
     private Long participationId;
 
     public static Menu ofNew(final String name, final BigDecimal price, final Long participationId) {
