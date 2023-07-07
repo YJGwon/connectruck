@@ -10,7 +10,6 @@ import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.event.domain.Schedule;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.truck.domain.Truck;
-import com.connectruck.foodtruck.truck.domain.TruckInfo;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
@@ -50,7 +49,7 @@ public class DataSetup {
 
     public Truck saveTruck(final Event event) {
         return testTruckRepository.save(
-                Truck.ofNew(event.getId(), TruckInfo.ofNewWithNoThumbnail("핫도그쿨냥이", "00가0001")));
+                Truck.ofNewWithOutThumbnail(event.getId(), "핫도그쿨냥이", "00가0001"));
     }
 
     public Menu saveMenu(final Truck truck) {

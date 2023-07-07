@@ -53,7 +53,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
                     .body("page.hasNext", equalTo(false))
                     .body("trucks", hasSize(1))
                     .body("trucks.id", contains(expected.getId().intValue()))
-                    .body("trucks.name", contains(expected.getTruckInfo().getName()));
+                    .body("trucks.name", contains(expected.getName()));
         }
 
         @DisplayName("사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")
@@ -92,7 +92,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             // then
             response.statusCode(OK.value())
                     .body("id", equalTo(expected.getId().intValue()))
-                    .body("name", equalTo(expected.getTruckInfo().getName()));
+                    .body("name", equalTo(expected.getName()));
         }
     }
 }

@@ -68,7 +68,7 @@ class TruckServiceTest extends ServiceTestBase {
             // then
             assertAll(
                     () -> assertThat(response.id()).isEqualTo(expected.getId()),
-                    () -> assertThat(response.name()).isEqualTo(expected.getTruckInfo().getName())
+                    () -> assertThat(response.name()).isEqualTo(expected.getName())
             );
         }
 

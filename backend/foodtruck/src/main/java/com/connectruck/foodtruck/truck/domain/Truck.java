@@ -3,7 +3,6 @@ package com.connectruck.foodtruck.truck.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,11 +27,15 @@ public class Truck {
     private Long id;
 
     private Long eventId;
+    private String name;
+    private String carNumber;
+    private String thumbnail;
 
-    @Embedded
-    private TruckInfo truckInfo;
+    public static Truck ofNew(final Long eventId, final String name, final String carNumber, final String thumbnail) {
+        return new Truck(null, eventId, name, carNumber, thumbnail);
+    }
 
-    public static Truck ofNew(final Long eventId, final TruckInfo truckInfo) {
-        return new Truck(null, eventId, truckInfo);
+    public static Truck ofNewWithOutThumbnail(final Long eventId, final String name, final String carNumber) {
+        return new Truck(null, eventId, name, carNumber, null);
     }
 }
