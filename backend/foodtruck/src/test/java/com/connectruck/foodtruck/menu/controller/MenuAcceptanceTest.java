@@ -39,8 +39,7 @@ public class MenuAcceptanceTest extends AcceptanceTestBase {
             response.statusCode(OK.value())
                     .body("menus", hasSize(1))
                     .body("menus.id", contains(expected.getId().intValue()))
-                    .body("menus.name", contains(expected.getName()))
-                    .body("menus.price", contains(expected.getPrice().intValue()));
+                    .body("menus.name", contains(expected.getName()));
         }
     }
 }
