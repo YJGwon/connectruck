@@ -6,7 +6,7 @@ UPDATE truck t
 
 ALTER TABLE truck ADD FOREIGN KEY(event_id) REFERENCES event(event_id);
 
--- add truck_id to menu, order_info and drop participation_id
+-- add truck_id to menu, order_info
 ALTER TABLE menu ADD truck_id BIGINT(20);
 ALTER TABLE order_info ADD truck_id BIGINT(20);
 
@@ -16,8 +16,10 @@ UPDATE menu m
 UPDATE order_info o
     SET o.truck_id = (SELECT p.truck_id FROM participation p WHERE o.participation_id = p.participation_id);
 
+-- drop participation
+SET FOREIGN_KEY_CHECKS=0;
 ALTER TABLE menu DROP participation_id;
 ALTER TABLE order_info DROP participation_id;
+SET FOREIGN_KEY_CHECKS=1;
 
--- drop participation
 DROP TABLE participation;
