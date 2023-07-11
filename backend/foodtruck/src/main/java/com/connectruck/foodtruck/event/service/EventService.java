@@ -22,7 +22,7 @@ public class EventService {
 
     public EventResponse findById(final Long id) {
         final Event found = eventRepository.findById(id)
-                .orElseThrow(() -> NotFoundException.of("행사", id));
+                .orElseThrow(() -> NotFoundException.of("행사", "eventId", id));
 
         return EventResponse.of(found);
     }
