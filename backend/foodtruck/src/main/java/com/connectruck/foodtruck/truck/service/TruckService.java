@@ -26,27 +26,19 @@ public class TruckService {
 
     public TruckResponse findById(final Long id) {
         final Truck found = truckRepository.findById(id)
-                .orElseThrow(() -> createTruckNotFoundException("truckId", id));
-
-        return TruckResponse.of(found);
-    }
-
-
-    public TruckResponse findByOwnerId(final Long ownerId) {
-        final Truck found = truckRepository.findByOwnerId(ownerId)
-                .orElseThrow(() -> createTruckNotFoundException("ownerId", ownerId));
+                .orElseThrow(() -> createTruckNotFoundException(id));
 
         return TruckResponse.of(found);
     }
 
     public Long findEventIdById(final Long id) {
         final Truck found = truckRepository.findById(id)
-                .orElseThrow(() -> createTruckNotFoundException("truckId", id));
+                .orElseThrow(() -> createTruckNotFoundException(id));
 
         return found.getEventId();
     }
 
-    private NotFoundException createTruckNotFoundException(final String paramName, final Long truckId) {
-        return NotFoundException.of("푸드트럭", paramName, truckId);
+    private NotFoundException createTruckNotFoundException(final Long truckId) {
+        return NotFoundException.of("푸드트럭", "truckId", truckId);
     }
 }
