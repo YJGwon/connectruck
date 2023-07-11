@@ -13,7 +13,7 @@ import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class OwnerAcceptanceTest extends AcceptanceTestBase {
+class OwnerAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI = "/api/owner";
 
