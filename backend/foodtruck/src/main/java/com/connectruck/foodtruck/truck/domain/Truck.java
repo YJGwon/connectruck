@@ -32,11 +32,15 @@ public class Truck {
     private String thumbnail;
     private Long ownerId;
 
-    public static Truck ofNew(final Long eventId, final String name, final String carNumber, final String thumbnail) {
-        return new Truck(null, eventId, name, carNumber, thumbnail, null);
+    public static Truck ofNew(final Long eventId,
+                              final String name,
+                              final String carNumber,
+                              final String thumbnail,
+                              final Long ownerId) {
+        return new Truck(null, eventId, name, carNumber, thumbnail, ownerId);
     }
 
-    public static Truck ofNewWithOutThumbnail(final Long eventId, final String name, final String carNumber) {
+    public static Truck ofNewWithOutThumbnailAndOwner(final Long eventId, final String name, final String carNumber) {
         return new Truck(null, eventId, name, carNumber, null, null);
     }
 }

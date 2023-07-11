@@ -48,15 +48,19 @@ public class DataSetup {
     }
 
     public Truck saveTruck(final Event event) {
+        return saveTruck(event, null);
+    }
+
+    public Truck saveTruck(final Event event, final Long ownerId) {
         return testTruckRepository.save(
-                Truck.ofNewWithOutThumbnail(event.getId(), "핫도그쿨냥이", "00가0001"));
+                Truck.ofNew(event.getId(), "핫도그쿨냥이", "00가0001", null, ownerId));
     }
 
     public Menu saveMenu(final Truck truck) {
         return testMenuRepository.save(Menu.ofNew("핫도그", BigDecimal.valueOf(8000), truck.getId()));
     }
 
-    public Account saveAccount() {
+    public Account saveOwnerAccount() {
         final Account account = Account.ofNew("test", "test1234!", "01000000000", Role.OWNER);
         return saveAccount(account);
     }
