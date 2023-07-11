@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.common.testbase;
 
+import com.connectruck.foodtruck.auth.dto.SignInRequest;
+import com.connectruck.foodtruck.auth.dto.TokenResponse;
 import com.connectruck.foodtruck.common.fixture.DataSetup;
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -34,6 +36,15 @@ public abstract class AcceptanceTestBase {
                 .then().log().all();
     }
 
+    protected ValidatableResponse getWithToken(final String uri, final String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all();
+    }
+
     protected ValidatableResponse post(final String uri, final Record body) {
         return RestAssured
                 .given().log().all()
@@ -42,5 +53,14 @@ public abstract class AcceptanceTestBase {
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post(uri)
                 .then().log().all();
+    }
+
+    protected String loginAndGetToken(final String username, final String password) {
+        final SignInRequest request = new SignInRequest(username, password);
+        return post("/api/auth/signin", request)
+                .extract()
+                .body()
+                .as(TokenResponse.class)
+                .accessToken();
     }
 }

@@ -39,11 +39,14 @@ class TruckRepositoryTest extends RepositoryTestBase {
     @Test
     void findByOwnerId() {
         // given
-        final Account owner = dataSetup.saveOwnerAccount();
-
         final Event event = 밤도깨비_야시장.create();
         dataSetup.saveEvent(event);
+
+        final Account owner = dataSetup.saveOwnerAccount();
         final Truck expected = dataSetup.saveTruck(event, owner.getId());
+
+        // 해당 계정의 소유 아닌 푸드트럭 1개 존재
+        dataSetup.saveTruck(event);
 
         // when
         final Optional<Truck> found = truckRepository.findByOwnerId(owner.getId());
