@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
     private final AuthService authService;
@@ -37,6 +39,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             final Role requiredRole = extractRequiredRole(handlerMethod);
             authService.validateRole(token, requiredRole);
         } catch (ClassCastException e) {
+            log.error(e.getMessage());
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return false;
         }

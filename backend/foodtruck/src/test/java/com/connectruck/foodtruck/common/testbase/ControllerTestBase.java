@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.common.testbase;
 
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -55,6 +57,17 @@ public abstract class ControllerTestBase {
 
     protected ResultActions performGet(final String uri) throws Exception {
         return mockMvc.perform(get(uri)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print());
+    }
+
+    protected ResultActions performGetWithToken(final String uri) throws Exception {
+        doReturn("0")
+                .when(jwtTokenProvider)
+                .getSubject("fakeToken");
+
+        return mockMvc.perform(get(uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer fakeToken")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print());
     }
