@@ -60,6 +60,7 @@ class OwnerOrderInfoRepositoryTest extends RepositoryTestBase {
             final Menu savedMenu = dataSetup.saveMenu(savedTruck);
             final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
 
+            // 다른 트럭 대상 주문 1건 존재
             final Truck otherTruck = dataSetup.saveTruck(event);
             final Menu menuOfOtherTruck = dataSetup.saveMenu(savedTruck);
             dataSetup.saveOrderInfo(otherTruck, menuOfOtherTruck);

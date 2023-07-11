@@ -46,7 +46,7 @@ class TruckServiceTest extends ServiceTestBase {
         // then
         assertAll(
                 () -> assertThat(response.trucks()).hasSize(2),
-                () -> assertThat(response.page()).isEqualTo(new PageResponse(size, page, false))
+                () -> assertThat(response.page()).isEqualTo(new PageResponse(size, 0, page, false))
         );
     }
 
