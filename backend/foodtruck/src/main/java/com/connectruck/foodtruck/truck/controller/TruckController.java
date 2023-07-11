@@ -1,7 +1,10 @@
 package com.connectruck.foodtruck.truck.controller;
 
 import static com.connectruck.foodtruck.common.validation.ValidationMessage.SMALLER_THAN_MIN_VALUE;
+import static com.connectruck.foodtruck.user.domain.Role.OWNER;
 
+import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
+import com.connectruck.foodtruck.auth.annotation.Authorization;
 import com.connectruck.foodtruck.truck.dto.TruckResponse;
 import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
@@ -35,16 +38,28 @@ public class TruckController {
     @ApiResponse(responseCode = "400", description = "잘못된 요청 parameter")
     @GetMapping
     public TrucksResponse findByEvent(
-            @RequestParam final long eventId,
-            @RequestParam(required = false, defaultValue = DEFAULT_PAGE) final @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) int page,
-            @RequestParam(required = false, defaultValue = DEFAULT_SIZE) final @Positive(message = SIZE_MIN_VALUE_MESSAGE) int size) {
+            @RequestParam final Long eventId,
+            @RequestParam(required = false, defaultValue = DEFAULT_PAGE)
+            @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) final int page,
+            @RequestParam(required = false, defaultValue = DEFAULT_SIZE)
+            @Positive(message = SIZE_MIN_VALUE_MESSAGE) final int size) {
         return truckService.findByEvent(eventId, page, size);
     }
 
     @Operation(summary = "푸드트럭 정보 조회")
     @ApiResponse(responseCode = "404", description = "존재하지 않는 푸드트럭 id")
     @GetMapping("/{truckId}")
-    public TruckResponse findOne(@PathVariable final long truckId) {
+    public TruckResponse findById(@PathVariable final Long truckId) {
         return truckService.findById(truckId);
+    }
+
+    @Operation(summary = "사장님 계정의 소유 푸드트럭 정보 조회")
+    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
+    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
+    @ApiResponse(responseCode = "404", description = "해당 계정이 소유한 푸드트럭 존재하지 않음")
+    @Authorization(OWNER)
+    @GetMapping("/my")
+    public TruckResponse findByOwnerId(@AuthenticationPrincipal final Long ownerId) {
+        return truckService.findByOwnerId(ownerId);
     }
 }

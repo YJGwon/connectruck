@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
+import com.connectruck.foodtruck.user.domain.Account;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +20,7 @@ class TruckRepositoryTest extends RepositoryTestBase {
     @Autowired
     private TruckRepository truckRepository;
 
-    @DisplayName("특정 행사 참가 푸드트럭을 id로 조회한다.")
+    @DisplayName("특정 푸드트럭을 id로 조회한다.")
     @Test
     void findById() {
         // given
@@ -29,6 +30,26 @@ class TruckRepositoryTest extends RepositoryTestBase {
 
         // when
         final Optional<Truck> found = truckRepository.findById(expected.getId());
+
+        // then
+        assertThat(found.get()).isEqualTo(expected);
+    }
+
+    @DisplayName("푸드트럭을 사장님 계정 id로 조회한다.")
+    @Test
+    void findByOwnerId() {
+        // given
+        final Event event = 밤도깨비_야시장.create();
+        dataSetup.saveEvent(event);
+
+        final Account owner = dataSetup.saveOwnerAccount();
+        final Truck expected = dataSetup.saveTruck(event, owner.getId());
+
+        // 해당 계정의 소유 아닌 푸드트럭 1개 존재
+        dataSetup.saveTruck(event);
+
+        // when
+        final Optional<Truck> found = truckRepository.findByOwnerId(owner.getId());
 
         // then
         assertThat(found.get()).isEqualTo(expected);

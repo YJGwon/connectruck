@@ -9,5 +9,7 @@ public interface TruckRepository extends Repository<Truck, Long> {
 
     Optional<Truck> findById(final Long id);
 
+    Optional<Truck> findByOwnerId(final Long ownerId);
+
     Slice<Truck> findByEventId(final Long eventId, final Pageable pageable);
 }

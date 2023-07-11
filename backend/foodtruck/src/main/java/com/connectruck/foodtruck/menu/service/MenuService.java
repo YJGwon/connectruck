@@ -20,7 +20,7 @@ public class MenuService {
 
     public MenuResponse findById(final Long menuId) {
         final Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> NotFoundException.of("메뉴", menuId));
+                .orElseThrow(() -> NotFoundException.of("메뉴", "menuId", menuId));
 
         return MenuResponse.of(menu);
     }

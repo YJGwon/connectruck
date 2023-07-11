@@ -61,7 +61,7 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         @Test
         void returnFalse_whenUsernameAlreadyExists() {
             // given
-            final Account existingUser = dataSetup.saveAccount();
+            final Account existingUser = dataSetup.saveOwnerAccount();
             final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
 
             // when
@@ -97,7 +97,7 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         @Test
         void returnFalse_whenPhoneAlreadyExists() {
             // given
-            final Account existingUser = dataSetup.saveAccount();
+            final Account existingUser = dataSetup.saveOwnerAccount();
             final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
 
             // when
