@@ -3,17 +3,22 @@ package com.connectruck.foodtruck.order.service;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
+import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
+import com.connectruck.foodtruck.order.domain.OrderLine;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
+import com.connectruck.foodtruck.order.dto.OrderLineResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
+import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import java.time.LocalDateTime;
@@ -33,21 +38,25 @@ class OrderServiceTest extends ServiceTestBase {
     @Autowired
     private OrderService orderService;
 
+
+    private Event event;
+    private Truck savedTruck;
+    private Menu savedMenu;
+
+    @BeforeEach
+    void setUp() {
+        event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        savedTruck = dataSetup.saveTruck(event);
+        savedMenu = dataSetup.saveMenu(savedTruck);
+    }
+
     @DisplayName("주문 생성")
     @Nested
     class create {
 
-        private Event event;
-        private Truck savedTruck;
-        private Menu savedMenu;
-
         @BeforeEach
         void setUp() {
-            event = dataSetup.saveEvent(밤도깨비_야시장.create());
             setEventClosed(false);
-
-            savedTruck = dataSetup.saveTruck(event);
-            savedMenu = dataSetup.saveMenu(savedTruck);
         }
 
         @DisplayName("주문을 생성한다.")
@@ -109,6 +118,48 @@ class OrderServiceTest extends ServiceTestBase {
             doReturn(value)
                     .when(eventService)
                     .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
+        }
+    }
+
+    @DisplayName("특정 주문 정보 조회")
+    @Nested
+    class findById {
+
+        @DisplayName("특정 주문 정보를 id로 조회한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final List<Long> expectedOrderLineIds = expected.getOrderLines()
+                    .stream()
+                    .map(OrderLine::getId)
+                    .toList();
+
+            // when
+            final OrderResponse response = orderService.findById(expected.getId());
+
+            // then
+            final List<Long> actualOrderLineIds = response.menus()
+                    .stream()
+                    .map(OrderLineResponse::id)
+                    .toList();
+
+            assertAll(
+                    () -> assertThat(response.id()).isEqualTo(expected.getId()),
+                    () -> assertThat(actualOrderLineIds).containsAll(expectedOrderLineIds)
+            );
+        }
+
+        @DisplayName("해당하는 주문 정보가 존재하지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenOrderInfoNotFound() {
+            // given
+            final Long fakeId = 0L;
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.findById(fakeId))
+                    .withMessageContaining("주문 정보", "존재하지 않습니다");
         }
     }
 }

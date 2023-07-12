@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.order.service;
 
+import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.dto.MenuResponse;
 import com.connectruck.foodtruck.menu.service.MenuService;
@@ -8,6 +9,7 @@ import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
+import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
@@ -62,5 +64,12 @@ public class OrderService {
         if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
             throw OrderCreationException.ofClosed();
         }
+    }
+
+    public OrderResponse findById(final Long id) {
+        final OrderInfo found = orderInfoRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+
+        return OrderResponse.of(found);
     }
 }

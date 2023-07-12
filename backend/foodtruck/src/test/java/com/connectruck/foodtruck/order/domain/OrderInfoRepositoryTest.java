@@ -30,7 +30,6 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         savedTruck = dataSetup.saveTruck(event);
         savedMenu = dataSetup.saveMenu(savedTruck);
     }
-
     @DisplayName("주문 정보 저장")
     @Nested
     class save {
@@ -80,7 +79,7 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         final OrderInfo actual = found.get();
         assertAll(
                 () -> assertThat(actual).isEqualTo(expected),
-                () -> assertThat(actual.getOrderLines().containsAll(expectedOrderLines)).isTrue()
+                () -> assertThat(actual.getOrderLines()).containsAll(expectedOrderLines)
         );
     }
 }
