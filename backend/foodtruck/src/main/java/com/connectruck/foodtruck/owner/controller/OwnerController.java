@@ -52,9 +52,9 @@ public class OwnerController {
     public OwnerOrdersResponse findMyOrders(@AuthenticationPrincipal final Long ownerId,
                                             @RequestParam(required = false, defaultValue = "ALL") final String status,
                                             @RequestParam(required = false, defaultValue = DEFAULT_PAGE)
-                                                @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) final int page,
+                                            @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) final int page,
                                             @RequestParam(required = false, defaultValue = DEFAULT_SIZE)
-                                                @Positive(message = SIZE_MIN_VALUE_MESSAGE) final int size) {
+                                            @Positive(message = SIZE_MIN_VALUE_MESSAGE) final int size) {
         return ownerService.findOrdersOfOwningTruckByStatus(ownerId, status, page, size);
     }
 }
