@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.order.domain;
 
+import static com.connectruck.foodtruck.order.domain.OrderStatus.CREATED;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.connectruck.foodtruck.common.exception.ClientException;
@@ -8,6 +9,8 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +18,7 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
@@ -25,6 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -38,6 +43,8 @@ public class OrderInfo {
 
     private Long truckId;
     private String phone;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @OneToMany(mappedBy = "orderInfo", cascade = CascadeType.PERSIST)
     private List<OrderLine> orderLines;
@@ -47,19 +54,9 @@ public class OrderInfo {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public OrderInfo(final Long id, final Long truckId, final String phone, final List<OrderLine> orderLines,
-                     final LocalDateTime createdAt, final LocalDateTime updatedAt) {
-        Validator.validatePhone(phone);
-        this.id = id;
-        this.truckId = truckId;
-        this.phone = phone;
-        this.orderLines = orderLines;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public static OrderInfo ofNew(final Long truckId, final String phone) {
-        return new OrderInfo(null, truckId, phone, new ArrayList<>(), null, null);
+        Validator.validatePhone(phone);
+        return new OrderInfo(null, truckId, phone, CREATED, new ArrayList<>(), null, null);
     }
 
     public void changeOrderLine(final List<OrderLine> orderLines) {
