@@ -10,6 +10,7 @@ import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.Role;
@@ -56,15 +57,15 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
                 .body("name", equalTo(owningTruck.getName()));
     }
 
-    @DisplayName("소유 푸드트럭의 주문 목록 조회")
+    @DisplayName("소유 푸드트럭의 상태별 주문 목록 조회")
     @Nested
     class findMyOrders {
 
         private static final String URI = BASE_URI + "/trucks/my/orders";
 
-        @DisplayName("최신순으로 정렬하여 특정 페이지를 조회한다.")
+        @DisplayName("모든 주문을 최신순으로 정렬하여 특정 페이지를 조회한다.")
         @Test
-        void perPage() {
+        void all_perPage() {
             // given
             final Menu savedMenu = dataSetup.saveMenu(owningTruck);
             final OrderInfo expected = dataSetup.saveOrderInfo(owningTruck, savedMenu);
@@ -79,8 +80,34 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
 
             // then
             response.statusCode(OK.value())
-                    .body("page.size", equalTo(2))
-                    .body("page.currentPage", equalTo(1))
+                    .body("page.size", equalTo(size))
+                    .body("page.currentPage", equalTo(page))
+                    .body("page.hasNext", equalTo(false))
+                    .body("orders", hasSize(1))
+                    .body("orders.id", contains(expected.getId().intValue()));
+        }
+
+        @DisplayName("특정 상태의 주문을 조회한다.")
+        @Test
+        void byStatus_perPage() {
+            // given
+            final Menu savedMenu = dataSetup.saveMenu(owningTruck);
+            final OrderInfo expected = dataSetup.saveOrderInfo(owningTruck, savedMenu);
+
+            // 완료 상태의 주문 존재
+            dataSetup.saveOrderInfo(owningTruck, savedMenu, OrderStatus.COMPLETE);
+
+            // when
+            final String status = OrderStatus.CREATED.name().toLowerCase();
+            final int page = 0;
+            final int size = 2;
+            final String params = String.format("?status=%s&page=%d&size=%d", status, page, size);
+            final ValidatableResponse response = getWithToken(URI + params, token);
+
+            // then
+            response.statusCode(OK.value())
+                    .body("page.size", equalTo(size))
+                    .body("page.currentPage", equalTo(page))
                     .body("page.hasNext", equalTo(false))
                     .body("orders", hasSize(1))
                     .body("orders.id", contains(expected.getId().intValue()));

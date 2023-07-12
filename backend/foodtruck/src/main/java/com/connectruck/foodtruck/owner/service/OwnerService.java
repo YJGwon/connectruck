@@ -30,13 +30,14 @@ public class OwnerService {
         return OwnerTruckResponse.of(found);
     }
 
-    public OwnerOrdersResponse findOrdersOfOwningTruckByStatus(final Long ownerId, final OrderStatus status,
+    public OwnerOrdersResponse findOrdersOfOwningTruckByStatus(final Long ownerId, final String rawStatus,
                                                                final int page, final int size) {
         final Long truckId = getOwningTruck(ownerId).getId();
 
         final Sort latest = Sort.by(DESC, "createdAt");
         final PageRequest pageRequest = PageRequest.of(page, size, latest);
 
+        final OrderStatus status = OrderStatus.valueOf(rawStatus.toUpperCase());
         final Page<OrderInfo> found = getOrdersByTruckIdAndStatus(status, truckId, pageRequest);
         return OwnerOrdersResponse.of(found);
     }

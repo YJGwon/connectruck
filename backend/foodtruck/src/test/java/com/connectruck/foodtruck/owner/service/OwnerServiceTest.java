@@ -89,7 +89,7 @@ class OwnerServiceTest extends ServiceTestBase {
             final int page = 0;
             final int size = 2;
             final OwnerOrdersResponse response = ownerService.findOrdersOfOwningTruckByStatus(
-                    owner.getId(), OrderStatus.CREATED, page, size
+                    owner.getId(), OrderStatus.CREATED.name(), page, size
             );
 
             // then
@@ -113,7 +113,7 @@ class OwnerServiceTest extends ServiceTestBase {
             final int page = 0;
             final int size = 2;
             final OwnerOrdersResponse response = ownerService.findOrdersOfOwningTruckByStatus(
-                    owner.getId(), OrderStatus.ALL, page, size
+                    owner.getId(), OrderStatus.ALL.name(), page, size
             );
 
             // then
@@ -132,7 +132,7 @@ class OwnerServiceTest extends ServiceTestBase {
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> ownerService.findOrdersOfOwningTruckByStatus(
-                            ownerNotHavingTruck.getId(), OrderStatus.ALL, 0, 2
+                            ownerNotHavingTruck.getId(), OrderStatus.ALL.name(), 0, 2
                     ))
                     .withMessageContainingAll("푸드트럭", "존재하지 않습니다");
         }
