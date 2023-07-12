@@ -18,8 +18,8 @@ import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -27,38 +27,39 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI = "/api/orders";
 
+    private Event event;
+    private Truck savedTruck;
+    private Menu savedMenu;
+
+    @BeforeEach
+    void setUp() {
+        event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        savedTruck = dataSetup.saveTruck(event);
+        savedMenu = dataSetup.saveMenu(savedTruck);
+    }
 
     @SpyBean
     private EventService eventService;
 
-    @DisplayName("메뉴 주문")
-    @Nested
-    class order {
+    @DisplayName("한 푸드트럭에 대해 메뉴를 주문한다.")
+    @Test
+    void order() {
+        // given
+        // 이벤트 진행 시간 검증 통과
+        doReturn(false)
+                .when(eventService)
+                .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
 
-        @DisplayName("한 푸드트럭에 대해 메뉴를 주문한다.")
-        @Test
-        void success() {
-            // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
-            doReturn(false)
-                    .when(eventService)
-                    .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
+        // when
+        final OrderRequest request = new OrderRequest(
+                savedTruck.getId(),
+                "01000000000",
+                List.of(new OrderLineRequest(savedMenu.getId(), 2))
+        );
+        final ValidatableResponse response = post(BASE_URI, request);
 
-            final Truck savedTruck = dataSetup.saveTruck(event);
-            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
-
-            final OrderRequest request = new OrderRequest(
-                    savedTruck.getId(),
-                    "01000000000",
-                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
-            );
-            // when
-            final ValidatableResponse response = post(BASE_URI, request);
-
-            // then
-            response.statusCode(CREATED.value())
-                    .header(LOCATION, startsWith(BASE_URI));
-        }
+        // then
+        response.statusCode(CREATED.value())
+                .header(LOCATION, startsWith(BASE_URI));
     }
 }

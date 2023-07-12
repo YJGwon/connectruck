@@ -62,14 +62,12 @@ class OrderServiceTest extends ServiceTestBase {
         @DisplayName("주문을 생성한다.")
         @Test
         void success() {
-            // given
+            // given & when
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
                     List.of(new OrderLineRequest(savedMenu.getId(), 2))
             );
-
-            // when
             final Long id = orderService.create(request);
 
             // then
@@ -82,13 +80,12 @@ class OrderServiceTest extends ServiceTestBase {
             // given
             setEventClosed(true);
 
+            // when & then
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
                     List.of(new OrderLineRequest(savedMenu.getId(), 2))
             );
-
-            // when & then
             assertThatExceptionOfType(OrderCreationException.class)
                     .isThrownBy(() -> orderService.create(request))
                     .withMessageContaining("운영 시간");
@@ -101,14 +98,13 @@ class OrderServiceTest extends ServiceTestBase {
             final Truck otherTruck = dataSetup.saveTruck(event);
             final Menu menuOfOtherTruck = dataSetup.saveMenu(otherTruck);
 
+            // when & then
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
                     List.of(new OrderLineRequest(savedMenu.getId(), 2),
                             new OrderLineRequest(menuOfOtherTruck.getId(), 1))
             );
-
-            // when & then
             assertThatExceptionOfType(OrderCreationException.class)
                     .isThrownBy(() -> orderService.create(request))
                     .withMessageContaining("다른 푸드트럭");

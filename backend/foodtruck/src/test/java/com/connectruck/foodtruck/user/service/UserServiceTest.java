@@ -35,10 +35,8 @@ public class UserServiceTest extends ServiceTestBase {
         @DisplayName("사용 가능한 아이디일 경우 true를 반환한다.")
         @Test
         void returnTrue_whenUsernameAvailable() {
-            // given
+            // given & when
             final UsernameRequest request = new UsernameRequest(username);
-
-            // when
             final CheckAvailableResponse response = userService.checkUsername(request);
 
             // then
@@ -50,9 +48,9 @@ public class UserServiceTest extends ServiceTestBase {
         void returnFalse_whenUsernameAlreadyExists() {
             // given
             final Account existingUser = dataSetup.saveOwnerAccount();
-            final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
 
             // when
+            final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
             final CheckAvailableResponse response = userService.checkUsername(request);
 
             // then
@@ -67,10 +65,8 @@ public class UserServiceTest extends ServiceTestBase {
         @DisplayName("사용 가능한 아이디일 경우 true를 반환한다.")
         @Test
         void returnTrue_whenPhoneAvailable() {
-            // given
+            // given & when
             final PhoneRequest request = new PhoneRequest(phone);
-
-            // when
             final CheckAvailableResponse response = userService.checkPhone(request);
 
             // then
@@ -82,9 +78,9 @@ public class UserServiceTest extends ServiceTestBase {
         void returnFalse_whenPhoneAlreadyExists() {
             // given
             final Account existingUser = dataSetup.saveOwnerAccount();
-            final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
 
             // when
+            final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
             final CheckAvailableResponse response = userService.checkPhone(request);
 
             // then
@@ -99,10 +95,7 @@ public class UserServiceTest extends ServiceTestBase {
         @DisplayName("사장님 회원 정보를 생성한다.")
         @Test
         void asOwner() {
-            // given
             final UserRequest request = new UserRequest(username, password, phone, Role.OWNER);
-
-            // when & then
             assertThatNoException()
                     .isThrownBy(() -> userService.create(request));
         }
@@ -114,9 +107,8 @@ public class UserServiceTest extends ServiceTestBase {
             final String existingUsername = "exists";
             dataSetup.saveAccount(Account.ofNew(existingUsername, password, "01000000001", Role.OWNER));
 
-            final UserRequest request = new UserRequest(existingUsername, password, phone, Role.OWNER);
-
             // when & then
+            final UserRequest request = new UserRequest(existingUsername, password, phone, Role.OWNER);
             assertThatExceptionOfType(AlreadyExistException.class)
                     .isThrownBy(() -> userService.create(request))
                     .withMessageContaining("존재하는 아이디");
@@ -129,9 +121,8 @@ public class UserServiceTest extends ServiceTestBase {
             final String existingPhone = "01000000001";
             dataSetup.saveAccount(Account.ofNew("test1", password, existingPhone, Role.OWNER));
 
-            final UserRequest request = new UserRequest(username, password, existingPhone, Role.OWNER);
-
             // when & then
+            final UserRequest request = new UserRequest(username, password, existingPhone, Role.OWNER);
             assertThatExceptionOfType(AlreadyExistException.class)
                     .isThrownBy(() -> userService.create(request))
                     .withMessageContaining("존재하는 휴대폰 번호");

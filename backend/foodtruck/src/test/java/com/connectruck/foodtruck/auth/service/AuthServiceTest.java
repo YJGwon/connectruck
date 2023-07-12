@@ -38,9 +38,8 @@ public class AuthServiceTest extends ServiceTestBase {
             final Account account = Account.ofNew(username, password, "01000000000", Role.OWNER);
             dataSetup.saveAccount(account);
 
-            final SignInRequest request = new SignInRequest(username, password);
-
             // when
+            final SignInRequest request = new SignInRequest(username, password);
             final TokenResponse tokenResponse = authService.signIn(request);
 
             // then
@@ -57,10 +56,7 @@ public class AuthServiceTest extends ServiceTestBase {
         @DisplayName("아이디가 잘못되었을 경우 예외가 발생한다.")
         @Test
         void throwsException_whenWrongUsername() {
-            // given
             final SignInRequest request = new SignInRequest("test", "test1234!");
-
-            // when & then
             assertThatExceptionOfType(SignInFailedException.class)
                     .isThrownBy(() -> authService.signIn(request));
         }
@@ -72,10 +68,10 @@ public class AuthServiceTest extends ServiceTestBase {
             final Account account = Account.ofNew(username, password, "01000000000", Role.OWNER);
             dataSetup.saveAccount(account);
 
+            // when & then
             final String wrongPassword = password + "!";
             final SignInRequest request = new SignInRequest(username, wrongPassword);
 
-            // when & then
             assertThatExceptionOfType(SignInFailedException.class)
                     .isThrownBy(() -> authService.signIn(request));
         }
