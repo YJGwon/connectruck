@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.auth.config;
+package com.connectruck.foodtruck.auth.controller;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(controllers = AuthTestController.class)
 @Import({JwtTokenProvider.class, AuthService.class})
-public class AuthenticationResolverConfigTest {
+public class AuthenticationPrincipalArgumentResolverTest {
 
     private static final String PREFIX_BEARER = "Bearer ";
 

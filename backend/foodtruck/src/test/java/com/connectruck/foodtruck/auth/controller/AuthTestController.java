@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.auth.config;
+package com.connectruck.foodtruck.auth.controller;
 
 import com.connectruck.foodtruck.auth.annotation.Authentication;
 import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;

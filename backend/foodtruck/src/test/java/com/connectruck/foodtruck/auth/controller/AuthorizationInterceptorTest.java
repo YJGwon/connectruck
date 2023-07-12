@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.auth.config;
+package com.connectruck.foodtruck.auth.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(controllers = AuthTestController.class)
 @Import({JwtTokenProvider.class, AuthService.class})
-class AuthorizationConfigTest {
+class AuthorizationInterceptorTest {
 
     @Autowired
     private MockMvc mockMvc;
