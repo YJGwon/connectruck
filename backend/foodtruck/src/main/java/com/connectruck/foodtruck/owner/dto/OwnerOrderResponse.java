@@ -7,6 +7,7 @@ public record OwnerOrderResponse(
         Long id,
         Long truckId,
         String phone,
+        String status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -16,6 +17,7 @@ public record OwnerOrderResponse(
                 orderInfo.getId(),
                 orderInfo.getTruckId(),
                 orderInfo.getPhone(),
+                orderInfo.getStatus().toKorean(),
                 orderInfo.getCreatedAt(),
                 orderInfo.getUpdatedAt()
         );

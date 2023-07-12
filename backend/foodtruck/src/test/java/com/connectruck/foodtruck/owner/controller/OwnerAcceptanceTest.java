@@ -110,7 +110,8 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
                     .body("page.currentPage", equalTo(page))
                     .body("page.hasNext", equalTo(false))
                     .body("orders", hasSize(1))
-                    .body("orders.id", contains(expected.getId().intValue()));
+                    .body("orders.id", contains(expected.getId().intValue()))
+                    .body("orders.status", contains("접수 대기"));
         }
 
         @DisplayName("페이지와 사이즈를 지정하지 않으면 첫 20개를 조회한다.")
