@@ -25,20 +25,17 @@ public class TruckService {
     }
 
     public TruckResponse findById(final Long id) {
-        final Truck found = truckRepository.findById(id)
-                .orElseThrow(() -> createTruckNotFoundException(id));
-
+        final Truck found = getOneById(id);
         return TruckResponse.of(found);
     }
 
     public Long findEventIdById(final Long id) {
-        final Truck found = truckRepository.findById(id)
-                .orElseThrow(() -> createTruckNotFoundException(id));
-
+        final Truck found = getOneById(id);
         return found.getEventId();
     }
 
-    private NotFoundException createTruckNotFoundException(final Long truckId) {
-        return NotFoundException.of("푸드트럭", "truckId", truckId);
+    private Truck getOneById(final Long id) {
+        return truckRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("푸드트럭", "truckId", id));
     }
 }

@@ -19,3 +19,4 @@ logging:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
+  cache.disabled: true

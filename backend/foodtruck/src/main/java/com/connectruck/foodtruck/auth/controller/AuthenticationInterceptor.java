@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationInterceptor implements HandlerInterceptor {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -35,6 +37,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             final String token = TokenExtractor.extract(request);
             jwtTokenProvider.validateToken(token);
         } catch (ClassCastException e) {
+            log.error(e.getMessage());
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return false;
         }
