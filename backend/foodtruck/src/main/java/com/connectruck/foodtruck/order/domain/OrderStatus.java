@@ -2,5 +2,5 @@ package com.connectruck.foodtruck.order.domain;
 
 public enum OrderStatus {
 
-    CREATED, ACCEPTED, COMPLETE, CANCELED;
+    CREATED, ACCEPTED, COMPLETE, CANCELED, ALL;
 }

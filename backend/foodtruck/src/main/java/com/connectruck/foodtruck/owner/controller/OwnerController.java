@@ -5,6 +5,7 @@ import static com.connectruck.foodtruck.user.domain.Role.OWNER;
 
 import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
 import com.connectruck.foodtruck.owner.dto.OwnerTruckResponse;
 import com.connectruck.foodtruck.owner.service.OwnerService;
@@ -54,6 +55,6 @@ public class OwnerController {
                                             @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) final int page,
                                             @RequestParam(required = false, defaultValue = DEFAULT_SIZE)
                                             @Positive(message = SIZE_MIN_VALUE_MESSAGE) final int size) {
-        return ownerService.findOrdersOfOwningTruck(ownerId, page, size);
+        return ownerService.findOrdersOfOwningTruckByStatus(ownerId, OrderStatus.ALL, page, size);
     }
 }

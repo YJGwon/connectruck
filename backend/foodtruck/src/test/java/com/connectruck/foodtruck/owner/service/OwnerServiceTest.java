@@ -10,6 +10,7 @@ import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
 import com.connectruck.foodtruck.owner.dto.OwnerTruckResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
@@ -70,13 +71,34 @@ class OwnerServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("소유 푸드트럭 주문 목록 조회")
+    @DisplayName("소유 푸드트럭 상태별 주문 목록 조회")
     @Nested
-    class findOrdersOfOwningTruck {
+    class findOrdersOfOwningTruckByStatus {
 
-        @DisplayName("최신순으로 정렬하여 page 단위로 조회한다.")
+        @DisplayName("특정 주문 상태의 주문 목록을 최신순으로 정렬하여 page 단위로 조회한다.")
         @Test
         void latest_perPage() {
+            // given
+            final Menu savedMenu = dataSetup.saveMenu(owningTruck);
+            dataSetup.saveOrderInfo(owningTruck, savedMenu);
+
+            // 완료 상태의 주문 1건 존재
+            dataSetup.saveOrderInfo(owningTruck, savedMenu, OrderStatus.COMPLETE);
+
+            // when
+            final int page = 0;
+            final int size = 2;
+            final OwnerOrdersResponse response = ownerService.findOrdersOfOwningTruckByStatus(
+                    owner.getId(), OrderStatus.CREATED, page, size
+            );
+
+            // then
+            assertThat(response.orders()).hasSize(1);
+        }
+
+        @DisplayName("상태가 ALL이면 모든 주문을 최신순으로 정렬하여 page 단위로 조회한다.")
+        @Test
+        void all_latest_perPage() {
             // given
             final Menu savedMenu = dataSetup.saveMenu(owningTruck);
             dataSetup.saveOrderInfo(owningTruck, savedMenu);
@@ -90,8 +112,8 @@ class OwnerServiceTest extends ServiceTestBase {
             // when
             final int page = 0;
             final int size = 2;
-            final OwnerOrdersResponse response = ownerService.findOrdersOfOwningTruck(
-                    owner.getId(), page, size
+            final OwnerOrdersResponse response = ownerService.findOrdersOfOwningTruckByStatus(
+                    owner.getId(), OrderStatus.ALL, page, size
             );
 
             // then
@@ -109,7 +131,9 @@ class OwnerServiceTest extends ServiceTestBase {
 
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> ownerService.findOrdersOfOwningTruck(ownerNotHavingTruck.getId(), 0, 2))
+                    .isThrownBy(() -> ownerService.findOrdersOfOwningTruckByStatus(
+                            ownerNotHavingTruck.getId(), OrderStatus.ALL, 0, 2
+                    ))
                     .withMessageContainingAll("푸드트럭", "존재하지 않습니다");
         }
     }
