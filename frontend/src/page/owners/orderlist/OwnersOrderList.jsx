@@ -8,7 +8,9 @@ import {
     TableRow,
     Paper,
     Modal,
-    Fade
+    Fade,
+    Pagination,
+    Stack
 } from '@mui/material';
 
 import {UserContext} from '../../../context/UserContext';
@@ -17,9 +19,9 @@ import './OwnersOrderList.css';
 export const OwnersOrderList = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
-    const [page, setPage] = useState(0);
-    const [size, setSize] = useState(20);
-    const [totalPages, setTotalPages] = useState(0);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
 
     const {isInitialized, accessToken} = useContext(UserContext);
 
@@ -27,7 +29,7 @@ export const OwnersOrderList = () => {
         if (isInitialized) {
             fetchOrders();
         }
-    }, [isInitialized]);
+    }, [isInitialized, page]);
 
     const openModal = (order) => {
         setSelectedOrder(order);
@@ -38,7 +40,10 @@ export const OwnersOrderList = () => {
     };
 
     const fetchOrders = () => {
-        const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page}&size=${size}`;
+        console.log('page: ', page);
+        console.log('size: ', size);
+        console.log('totalPages: ', totalPages);
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page - 1}&size=${size}`;
 
         fetch(url, {
             headers: {
@@ -56,7 +61,6 @@ export const OwnersOrderList = () => {
             })
             .then(data => {
                 setOrders(data.orders);
-                setPage(data.page.currentPage + 1);
                 setTotalPages(data.page.totalPages);
             })
             .catch(error => {
@@ -67,6 +71,10 @@ export const OwnersOrderList = () => {
                     alert('주문 목록을 불러오지 못하였습니다');
                 }
             });
+    };
+
+    const handlePaging = (event, value) => {
+        setPage(value);
     };
 
     return (
@@ -85,7 +93,7 @@ export const OwnersOrderList = () => {
                     <TableBody>
                         {
                             orders.map((order) => (
-                                <TableRow key={order.orderNumber} onClick={() => openModal(order)}>
+                                <TableRow key={order.id} onClick={() => openModal(order)}>
                                     <TableCell>{order.createdAt}</TableCell>
                                     <TableCell>{order.phone}</TableCell>
                                     <TableCell>{order.status}</TableCell>
@@ -96,6 +104,15 @@ export const OwnersOrderList = () => {
                 </Table>
             </TableContainer>
 
+            <Stack spacing={2} alignItems="center">
+                <Pagination 
+                    showFirstButton='true'
+                    showLastButton='true'
+                    count={totalPages} 
+                    page={page} 
+                    onChange={handlePaging}/>
+            </Stack>
+
             <Modal
                 open={selectedOrder !== null}
                 onClose={closeModal}
@@ -103,7 +120,7 @@ export const OwnersOrderList = () => {
                 <Fade in={selectedOrder !== null}>
                     <div className="modal">
                         <TableContainer component={Paper}>
-                          <h2>주문 상세</h2>
+                            <h2>주문 상세</h2>
                             <Table>
                                 <TableBody>
                                     <TableRow>
