@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 public record OrderLineResponse(
         Long id,
         Long menuId,
-        String menuName,
-        BigDecimal menuPrice,
+        String name,
+        BigDecimal price,
         int quantity
 ) {
 
