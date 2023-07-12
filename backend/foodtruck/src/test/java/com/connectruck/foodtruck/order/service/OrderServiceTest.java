@@ -11,7 +11,8 @@ import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
-import com.connectruck.foodtruck.order.dto.OrderMenuRequest;
+import com.connectruck.foodtruck.order.domain.OrderInfo;
+import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
@@ -56,7 +57,7 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
-                    List.of(new OrderMenuRequest(savedMenu.getId(), 2))
+                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
             );
 
             // when
@@ -75,7 +76,7 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
-                    List.of(new OrderMenuRequest(savedMenu.getId(), 2))
+                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
             );
 
             // when & then
@@ -94,8 +95,8 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
-                    List.of(new OrderMenuRequest(savedMenu.getId(), 2),
-                            new OrderMenuRequest(menuOfOtherTruck.getId(), 1))
+                    List.of(new OrderLineRequest(savedMenu.getId(), 2),
+                            new OrderLineRequest(menuOfOtherTruck.getId(), 1))
             );
 
             // when & then

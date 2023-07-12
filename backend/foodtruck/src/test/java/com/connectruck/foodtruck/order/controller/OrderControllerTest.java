@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.connectruck.foodtruck.common.testbase.ControllerTestBase;
-import com.connectruck.foodtruck.order.dto.OrderMenuRequest;
+import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ class OrderControllerTest extends ControllerTestBase {
     class create {
 
         private static final String PHONE = "01000000000";
-        private static final List<OrderMenuRequest> MENUS = List.of(new OrderMenuRequest(1L, 2));
+        private static final List<OrderLineRequest> MENUS = List.of(new OrderLineRequest(1L, 2));
 
         @DisplayName("푸드트럭 id가 없을 경우 Bad Request를 응답한다.")
         @Test
@@ -63,7 +63,7 @@ class OrderControllerTest extends ControllerTestBase {
         @DisplayName("주문 메뉴 목록이 비어있을 경우 Bad Request를 응답한다.")
         @ParameterizedTest
         @NullAndEmptySource
-        void returnBadRequest_whenMenuIsBlank(final List<OrderMenuRequest> blankMenus) throws Exception {
+        void returnBadRequest_whenMenuIsBlank(final List<OrderLineRequest> blankMenus) throws Exception {
             // given
             final OrderRequest request = new OrderRequest(1L, PHONE, blankMenus);
 
@@ -81,7 +81,7 @@ class OrderControllerTest extends ControllerTestBase {
         @Test
         void returnBadRequest_whenMenuIdIsNull() throws Exception {
             // given
-            final OrderRequest request = new OrderRequest(1L, PHONE, List.of(new OrderMenuRequest(null, 2)));
+            final OrderRequest request = new OrderRequest(1L, PHONE, List.of(new OrderLineRequest(null, 2)));
 
             // when
             final ResultActions resultActions = performPost(BASE_URI, request);
@@ -98,7 +98,7 @@ class OrderControllerTest extends ControllerTestBase {
         @ValueSource(ints = {0, -1})
         void returnBadRequest_whenQuantityIsNotPositive(final int quantity) throws Exception {
             // given
-            final OrderRequest request = new OrderRequest(1L, PHONE, List.of(new OrderMenuRequest(1L, quantity)));
+            final OrderRequest request = new OrderRequest(1L, PHONE, List.of(new OrderLineRequest(1L, quantity)));
 
             // when
             final ResultActions resultActions = performPost(BASE_URI, request);
