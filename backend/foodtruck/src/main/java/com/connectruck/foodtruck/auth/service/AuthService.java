@@ -31,6 +31,7 @@ public class AuthService {
     }
 
     public void validateRole(final String token, final Role requiredRole) {
+        jwtTokenProvider.validateToken(token);
         checkRoleInToken(token, requiredRole);
         checkRoleInAccount(token, requiredRole);
     }
