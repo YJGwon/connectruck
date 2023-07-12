@@ -1,6 +1,7 @@
 package com.connectruck.foodtruck.common.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.connectruck.foodtruck.common.exception.ClientException;
@@ -60,6 +61,16 @@ public class ControllerAdvice {
         final String message = extractMessage(e);
         return ErrorResponse.builder(e, BAD_REQUEST, message)
                 .title("요청 본문이 올바르지 않습니다.")
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleError(final Exception e) {
+        log.error(e.getMessage());
+        final String message = extractMessage(e);
+        return ErrorResponse.builder(e, INTERNAL_SERVER_ERROR, message)
+                .title("서버에 에러가 발생했습니다.")
                 .build();
     }
 
