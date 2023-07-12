@@ -3,6 +3,7 @@ import React, {createContext, useState} from 'react';
 export const UserContext = createContext();
 
 export const UserProvider = ({children}) => {
+    const [isInitialized, setIsInitialized] = useState(false);
     const [isLogin, setIsLogin] = useState(false);
 
     const login = (token) => {
@@ -12,6 +13,7 @@ export const UserProvider = ({children}) => {
         }
         setIsLogin(true);
         localStorage.setItem('accessToken', token);
+        setIsInitialized(true);
     };
 
     const logout = () => {
@@ -22,6 +24,7 @@ export const UserProvider = ({children}) => {
         <UserContext.Provider
             value={{
                 isLogin,
+                isInitialized,
                 login,
                 logout
             }}>

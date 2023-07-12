@@ -19,7 +19,6 @@ export const CartProvider = ({children}) => {
     }, [cartItems]);
 
     useEffect(() => {
-        console.log(truckId);
         localStorage.setItem('cartTruckId', truckId);
     }, [truckId]);
 
