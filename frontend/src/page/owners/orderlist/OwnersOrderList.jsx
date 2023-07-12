@@ -18,7 +18,7 @@ import './OwnersOrderList.css';
 
 export const OwnersOrderList = () => {
     const [orders, setOrders] = useState([]);
-    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [orderDetail, setOrderDetail] = useState(null);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(10);
     const [totalPages, setTotalPages] = useState(1);
@@ -32,17 +32,14 @@ export const OwnersOrderList = () => {
     }, [isInitialized, page]);
 
     const openModal = (order) => {
-        setSelectedOrder(order);
+        fetchOrderDetails(order.id);
     };
 
     const closeModal = () => {
-        setSelectedOrder(null);
+        setOrderDetail(null);
     };
 
     const fetchOrders = () => {
-        console.log('page: ', page);
-        console.log('size: ', size);
-        console.log('totalPages: ', totalPages);
         const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page - 1}&size=${size}`;
 
         fetch(url, {
@@ -69,6 +66,32 @@ export const OwnersOrderList = () => {
                     alert(error.message);
                 } else {
                     alert('주문 목록을 불러오지 못하였습니다');
+                }
+            });
+    };
+
+    const fetchOrderDetails = (orderId) => {
+        const url = `${process.env.REACT_APP_API_URL}/api/orders/${orderId}`;
+
+        fetch(url)
+            .then(async response => {
+                const data = await response.json();
+
+                if (response.ok) {
+                    return data;
+                } else {
+                    throw new Error(`api error(${data.title}): ${data.detail}`);
+                }
+            })
+            .then(data => {
+                setOrderDetail(data);
+            })
+            .catch(error => {
+                console.error('Error fetching order detail data:', error);
+                if (error.message.startsWith('api error')) {
+                    alert(error.message);
+                } else {
+                    alert('주문 상세정보를 불러오지 못하였습니다');
                 }
             });
     };
@@ -106,18 +129,18 @@ export const OwnersOrderList = () => {
 
             <Stack spacing={2} alignItems="center">
                 <Pagination 
-                    showFirstButton='true'
-                    showLastButton='true'
+                    showFirstButton={true}
+                    showLastButton={true}
                     count={totalPages} 
                     page={page} 
                     onChange={handlePaging}/>
             </Stack>
 
             <Modal
-                open={selectedOrder !== null}
+                open={orderDetail !== null}
                 onClose={closeModal}
                 closeAfterTransition={true}>
-                <Fade in={selectedOrder !== null}>
+                <Fade in={orderDetail !== null}>
                     <div className="modal">
                         <TableContainer component={Paper}>
                             <h2>주문 상세</h2>
@@ -125,20 +148,25 @@ export const OwnersOrderList = () => {
                                 <TableBody>
                                     <TableRow>
                                         <TableCell>주문 일시:</TableCell>
-                                        <TableCell>{selectedOrder?.createdAt}</TableCell>
+                                        <TableCell>{orderDetail?.createdAt}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>연락처:</TableCell>
-                                        <TableCell>{selectedOrder?.phone}</TableCell>
+                                        <TableCell>{orderDetail?.phone}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell>상태:</TableCell>
-                                        <TableCell>{selectedOrder?.status}</TableCell>
+                                        <TableCell>{orderDetail?.status}</TableCell>
                                     </TableRow>
                                     <TableRow>
                                         <TableCell colSpan={2}>메뉴</TableCell>
                                     </TableRow>
-                                    {/* Render order items here */}
+                                    {orderDetail?.menus.map((menu) => (
+                                    <TableRow key={menu.id}>
+                                        <TableCell>{menu.name}</TableCell>
+                                        <TableCell>{menu.quantity}</TableCell>
+                                    </TableRow>
+                                    ))}
                                     <TableRow>
                                         <TableCell colSpan={2}>총액</TableCell>
                                     </TableRow>
