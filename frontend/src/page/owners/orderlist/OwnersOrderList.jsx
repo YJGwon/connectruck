@@ -16,6 +16,9 @@ import './OwnersOrderList.css';
 export const OwnersOrderList = () => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(20);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
         fetchOrders();
@@ -30,26 +33,36 @@ export const OwnersOrderList = () => {
     };
 
     const fetchOrders = () => {
-        const fetchedOrders = [
-            {
-                createdAt: '2023-07-12 08:30 AM',
-                phone: '01000000000',
-                status: '접수 대기'
-            }, {
-                createdAt: '2023-07-12 09:15 AM',
-                phone: '01000000001',
-                status: '조리중'
-            }, {
-                createdAt: '2023-07-12 09:45 AM',
-                phone: '010000000002',
-                status: '조리 완료'
-            }, {
-                createdAt: '2023-07-12 10:30 AM',
-                phone: '01000000003',
-                status: '픽업 완료'
-            }
-        ];
-        setOrders(fetchedOrders);
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page}&size=${size}`;
+        const accessToken = localStorage.getItem('accessToken');
+
+        fetch(url, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          })
+            .then(async response => {
+                const data = await response.json();
+
+                if (response.ok) {
+                    return data;
+                } else {
+                    throw new Error(`api error(${data.title}): ${data.detail}`);
+                }
+            })
+            .then(data => {
+                setOrders(data.orders);
+                setPage(data.page.currentPage + 1);
+                setTotalPages(data.page.totalPages);
+            })
+            .catch(error => {
+                console.error('Error fetching order data:', error);
+                if (error.message.startsWith('api error')) {
+                    alert(error.message);
+                } else {
+                    alert('주문 목록을 불러오지 못하였습니다');
+                }
+            });
     };
 
     return (
