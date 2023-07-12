@@ -5,11 +5,10 @@ import {UserContext} from '../context/UserContext';
 
 export default function AuthRouter({shouldLogin, root}) {
     const navigate = useNavigate();
-    const {isLogin, isInitialized, login} = useContext(UserContext);
+    const {isLogin, isInitialized, loadSavedToken} = useContext(UserContext);
 
     useEffect(() => {
-        const token = localStorage.getItem('accessToken');
-        login(token);
+        loadSavedToken();
     }, []);
 
     useEffect(() => {
@@ -17,8 +16,6 @@ export default function AuthRouter({shouldLogin, root}) {
             return;
         }
 
-        console.log('shouldLogin: ', shouldLogin);
-        console.log('isLogin: ', isLogin);
         if (shouldLogin && !isLogin) {
             console.log('redirect to login page');
             navigate(`${root}/signin`);

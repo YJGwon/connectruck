@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
     Table,
     TableBody,
@@ -11,6 +11,7 @@ import {
     Fade
 } from '@mui/material';
 
+import {UserContext} from '../../../context/UserContext';
 import './OwnersOrderList.css';
 
 export const OwnersOrderList = () => {
@@ -20,9 +21,13 @@ export const OwnersOrderList = () => {
     const [size, setSize] = useState(20);
     const [totalPages, setTotalPages] = useState(0);
 
+    const {isInitialized, accessToken} = useContext(UserContext);
+
     useEffect(() => {
-        fetchOrders();
-    }, []);
+        if (isInitialized) {
+            fetchOrders();
+        }
+    }, [isInitialized]);
 
     const openModal = (order) => {
         setSelectedOrder(order);
@@ -34,7 +39,6 @@ export const OwnersOrderList = () => {
 
     const fetchOrders = () => {
         const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page}&size=${size}`;
-        const accessToken = localStorage.getItem('accessToken');
 
         fetch(url, {
             headers: {
