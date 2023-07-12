@@ -28,10 +28,8 @@ public class UserControllerTest extends ControllerTestBase {
     @ParameterizedTest
     @NullAndEmptySource
     void checkUsername_returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
-        // given
+        // given & when
         final UsernameRequest request = new UsernameRequest(blank);
-
-        // when
         final ResultActions resultActions = performPost(BASE_URI + "/check-username", request);
 
         // then
@@ -45,10 +43,8 @@ public class UserControllerTest extends ControllerTestBase {
     @ParameterizedTest
     @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
     void checkPhone_returnBadRequest_whenPhoneInvalid(final String invalidPhone) throws Exception {
-        // given
+        // given & when
         final PhoneRequest request = new PhoneRequest(invalidPhone);
-
-        // when
         final ResultActions resultActions = performPost(BASE_URI + "/check-phone", request);
 
         // then
@@ -66,10 +62,8 @@ public class UserControllerTest extends ControllerTestBase {
         @ParameterizedTest
         @NullAndEmptySource
         void returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
-            // given
+            // given & when
             final UserRequest request = new UserRequest(blank, password, phone, Role.OWNER);
-
-            // when
             final ResultActions resultActions = performPost(BASE_URI, request);
 
             // then
@@ -83,10 +77,8 @@ public class UserControllerTest extends ControllerTestBase {
         @ParameterizedTest
         @ValueSource(strings = {"new1234", "12345678!", "newpass!", "newpw1!", "123456789a123456789a123456789a!"})
         void returnBadRequest_whenPasswordInvalid(final String invalidPassword) throws Exception {
-            // given
+            // given & when
             final UserRequest request = new UserRequest(username, invalidPassword, phone, Role.OWNER);
-
-            // when
             final ResultActions resultActions = performPost(BASE_URI, request);
 
             // then
@@ -100,10 +92,8 @@ public class UserControllerTest extends ControllerTestBase {
         @ParameterizedTest
         @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
         void returnBadRequest_whenPhoneInvalid(final String invalidPhone) throws Exception {
-            // given
+            // given & when
             final UserRequest request = new UserRequest(username, password, invalidPhone, Role.OWNER);
-
-            // when
             final ResultActions resultActions = performPost(BASE_URI, request);
 
             // then
@@ -116,10 +106,8 @@ public class UserControllerTest extends ControllerTestBase {
         @DisplayName("계정 권한이 비어있는 경우 Bad Request를 응답한다.")
         @Test
         void returnBadRequest_whenRoleIsNull() throws Exception {
-            // given
+            // given & when
             final UserRequest request = new UserRequest(username, password, phone, null);
-
-            // when
             final ResultActions resultActions = performPost(BASE_URI, request);
 
             // then

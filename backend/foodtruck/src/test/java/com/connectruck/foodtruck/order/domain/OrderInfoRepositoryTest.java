@@ -2,12 +2,15 @@ package com.connectruck.foodtruck.order.domain;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import com.connectruck.foodtruck.common.testbase.RepositoryTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,15 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
     @Autowired
     private OrderInfoRepository orderInfoRepository;
 
+    private Truck savedTruck;
+    private Menu savedMenu;
+
+    @BeforeEach
+    void setUp() {
+        final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        savedTruck = dataSetup.saveTruck(event);
+        savedMenu = dataSetup.saveMenu(savedTruck);
+    }
     @DisplayName("주문 정보 저장")
     @Nested
     class save {
@@ -26,10 +38,6 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         @Test
         void withCreatedAt() {
             // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
-
-            final Truck savedTruck = dataSetup.saveTruck(event);
             final OrderInfo orderInfo = OrderInfo.ofNew(savedTruck.getId(), "01000000000");
 
             // when
@@ -43,12 +51,6 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         @Test
         void withOrderLines() {
             // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
-
-            final Truck savedTruck = dataSetup.saveTruck(event);
-            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
-
             final OrderInfo orderInfo = OrderInfo.ofNew(savedTruck.getId(), "01000000000");
             final OrderLine orderLine = OrderLine.ofNew(
                     savedMenu.getId(), savedMenu.getName(), savedMenu.getPrice(), 1, orderInfo
@@ -61,5 +63,23 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
             // then
             assertThat(orderLine.getId()).isNotNull();
         }
+    }
+
+    @DisplayName("특정 주문 정보를 id로 조회한다.")
+    @Test
+    void findById() {
+        // given
+        final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+        final List<OrderLine> expectedOrderLines = expected.getOrderLines();
+
+        // when
+        final Optional<OrderInfo> found = orderInfoRepository.findById(expected.getId());
+
+        // then
+        final OrderInfo actual = found.get();
+        assertAll(
+                () -> assertThat(actual).isEqualTo(expected),
+                () -> assertThat(actual.getOrderLines()).containsAll(expectedOrderLines)
+        );
     }
 }

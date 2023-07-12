@@ -13,5 +13,5 @@ import java.util.List;
 public record OrderRequest(
         @NotNull(message = MISSING_REQUIRED_INPUT + " : 푸드트럭 id") Long truckId,
         @Pattern(regexp = FormatText.PHONE, message = INVALID_FORMAT + " : 휴대폰 번호") String phone,
-        @NotEmpty(message = MISSING_REQUIRED_INPUT + " : 주문 메뉴") List<@Valid OrderMenuRequest> menus) {
+        @NotEmpty(message = MISSING_REQUIRED_INPUT + " : 주문 메뉴") List<@Valid OrderLineRequest> menus) {
 }

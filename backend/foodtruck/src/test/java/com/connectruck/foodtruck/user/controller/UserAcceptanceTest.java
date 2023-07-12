@@ -26,10 +26,8 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
     @DisplayName("사장님 회원으로 가입한다.")
     @Test
     void create() {
-        // given
+        // given & when
         final UserRequest request = new UserRequest(username, password, phone, Role.OWNER);
-
-        // when
         final ValidatableResponse response = post(BASE_URI, request);
 
         // then
@@ -46,10 +44,8 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         @DisplayName("사용 가능하면 true를 반환한다.")
         @Test
         void returnTrue_whenUsernameAvailable() {
-            // given
+            // given & when
             final UsernameRequest request = new UsernameRequest(username);
-
-            // when
             final ValidatableResponse response = post(URI, request);
 
             // then
@@ -62,9 +58,9 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         void returnFalse_whenUsernameAlreadyExists() {
             // given
             final Account existingUser = dataSetup.saveOwnerAccount();
-            final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
 
             // when
+            final UsernameRequest request = new UsernameRequest(existingUser.getUsername());
             final ValidatableResponse response = post(URI, request);
 
             // then
@@ -82,10 +78,8 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         @DisplayName("사용 가능하면 true를 반환한다.")
         @Test
         void returnTrue_whenPhoneAvailable() {
-            // given
+            // given & when
             final PhoneRequest request = new PhoneRequest(phone);
-
-            // when
             final ValidatableResponse response = post(URI, request);
 
             // then
@@ -98,9 +92,9 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         void returnFalse_whenPhoneAlreadyExists() {
             // given
             final Account existingUser = dataSetup.saveOwnerAccount();
-            final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
 
             // when
+            final PhoneRequest request = new PhoneRequest(existingUser.getPhone());
             final ValidatableResponse response = post(URI, request);
 
             // then

@@ -26,10 +26,8 @@ public class AuthControllerTest extends ControllerTestBase {
         @ParameterizedTest
         @NullAndEmptySource
         void returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
-            // given
+            // given & when
             final SignInRequest request = new SignInRequest(blank, "test1234!");
-
-            // when
             final ResultActions resultActions = performPost(URI, request);
 
             // then
@@ -43,10 +41,8 @@ public class AuthControllerTest extends ControllerTestBase {
         @ParameterizedTest
         @NullAndEmptySource
         void returnBadRequest_whenPasswordIsBlank(final String blank) throws Exception {
-            // given
+            // given & when
             final SignInRequest request = new SignInRequest("test", blank);
-
-            // when
             final ResultActions resultActions = performPost(URI, request);
 
             // then
