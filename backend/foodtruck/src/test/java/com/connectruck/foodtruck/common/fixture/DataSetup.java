@@ -12,11 +12,13 @@ import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +71,17 @@ public class DataSetup {
 
     public OrderInfo saveOrderInfo(final Truck truck, final Menu menu) {
         final OrderInfo orderInfo = OrderInfo.ofNew(truck.getId(), "01000000000");
+        final OrderLine orderLine = OrderLine.ofNew(
+                menu.getId(), menu.getName(), menu.getPrice(), 1, orderInfo
+        );
+        orderInfo.changeOrderLine(List.of(orderLine));
+        return orderInfoRepository.save(orderInfo);
+    }
+
+    public OrderInfo saveOrderInfo(final Truck truck, final Menu menu, final OrderStatus status) {
+        final OrderInfo orderInfo = new OrderInfo(
+                null, truck.getId(), "01000000000", status, Collections.emptyList(), null, null
+        );
         final OrderLine orderLine = OrderLine.ofNew(
                 menu.getId(), menu.getName(), menu.getPrice(), 1, orderInfo
         );

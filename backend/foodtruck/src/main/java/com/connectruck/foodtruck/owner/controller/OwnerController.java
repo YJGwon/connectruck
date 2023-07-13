@@ -50,10 +50,11 @@ public class OwnerController {
     @ApiResponse(responseCode = "404", description = "해당 계정이 소유한 푸드트럭 존재하지 않음")
     @GetMapping("/trucks/my/orders")
     public OwnerOrdersResponse findMyOrders(@AuthenticationPrincipal final Long ownerId,
+                                            @RequestParam(required = false, defaultValue = "ALL") final String status,
                                             @RequestParam(required = false, defaultValue = DEFAULT_PAGE)
                                             @PositiveOrZero(message = PAGE_MIN_VALUE_MESSAGE) final int page,
                                             @RequestParam(required = false, defaultValue = DEFAULT_SIZE)
                                             @Positive(message = SIZE_MIN_VALUE_MESSAGE) final int size) {
-        return ownerService.findOrdersOfOwningTruck(ownerId, page, size);
+        return ownerService.findOrdersOfOwningTruckByStatus(ownerId, status, page, size);
     }
 }

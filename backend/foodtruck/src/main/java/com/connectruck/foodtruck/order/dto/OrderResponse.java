@@ -8,6 +8,7 @@ public record OrderResponse(
         Long id,
         Long truckId,
         String phone,
+        String status,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
         List<OrderLineResponse> menus
@@ -23,6 +24,7 @@ public record OrderResponse(
                 orderInfo.getId(),
                 orderInfo.getTruckId(),
                 orderInfo.getPhone(),
+                orderInfo.getStatus().toKorean(),
                 orderInfo.getCreatedAt(),
                 orderInfo.getUpdatedAt(),
                 menus

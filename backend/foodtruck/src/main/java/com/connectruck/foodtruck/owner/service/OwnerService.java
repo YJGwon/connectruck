@@ -4,6 +4,7 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.owner.domain.OwnerOrderInfoRepository;
 import com.connectruck.foodtruck.owner.domain.OwnerTruckRepository;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
@@ -29,18 +30,28 @@ public class OwnerService {
         return OwnerTruckResponse.of(found);
     }
 
-    public OwnerOrdersResponse findOrdersOfOwningTruck(final Long ownerId, final int page, final int size) {
+    public OwnerOrdersResponse findOrdersOfOwningTruckByStatus(final Long ownerId, final String rawStatus,
+                                                               final int page, final int size) {
         final Long truckId = getOwningTruck(ownerId).getId();
 
         final Sort latest = Sort.by(DESC, "createdAt");
         final PageRequest pageRequest = PageRequest.of(page, size, latest);
-        final Page<OrderInfo> found = ownerOrderInfoRepository.findByTruckId(truckId, pageRequest);
 
+        final OrderStatus status = OrderStatus.valueOf(rawStatus.toUpperCase());
+        final Page<OrderInfo> found = getOrdersByTruckIdAndStatus(status, truckId, pageRequest);
         return OwnerOrdersResponse.of(found);
     }
 
     private Truck getOwningTruck(final Long ownerId) {
         return ownerTruckRepository.findByOwnerId(ownerId)
                 .orElseThrow(() -> NotFoundException.of("푸드트럭", "ownerId", ownerId));
+    }
+
+    private Page<OrderInfo> getOrdersByTruckIdAndStatus(final OrderStatus status, final Long truckId,
+                                                        final PageRequest pageRequest) {
+        if (status == OrderStatus.ALL) {
+            return ownerOrderInfoRepository.findByTruckId(truckId, pageRequest);
+        }
+        return ownerOrderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
     }
 }
