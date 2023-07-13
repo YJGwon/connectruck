@@ -14,6 +14,8 @@ import {
 } from '@mui/material';
 
 import {UserContext} from '../../../context/UserContext';
+import {BoldTableCell} from '../../../component/table/BoldTableCell';
+
 import './OwnersOrderList.css';
 
 export const OwnersOrderList = () => {
@@ -30,6 +32,10 @@ export const OwnersOrderList = () => {
             fetchOrders();
         }
     }, [isInitialized, page]);
+    
+    const calculateSubtotal = () => {
+        return orderDetail.menus.reduce((total, menu) => total + menu.price * menu.quantity, 0);
+    };
 
     const openModal = (order) => {
         fetchOrderDetails(order.id);
@@ -102,15 +108,15 @@ export const OwnersOrderList = () => {
 
     return (
         <div className='orders-container'>
-            <h1>주문 관리</h1>
+            <h1>주문 접수</h1>
             <h2>주문 목록</h2>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>주문 일시</TableCell>
-                            <TableCell>연락처</TableCell>
-                            <TableCell>상태</TableCell>
+                            <BoldTableCell>주문 일시</BoldTableCell>
+                            <BoldTableCell>연락처</BoldTableCell>
+                            <BoldTableCell>상태</BoldTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -144,31 +150,30 @@ export const OwnersOrderList = () => {
                     <div className="modal">
                         <TableContainer component={Paper}>
                             <h2>주문 상세</h2>
+                            <h5>주문 일시: {orderDetail?.createdAt}</h5>
+                            <h5>연락처: {orderDetail?.phone}</h5>
+                            <h5>상태: {orderDetail?.status}</h5>
+                            <h4>메뉴</h4>
                             <Table>
+                                <TableHead>
+                                    <TableRow>
+                                        <BoldTableCell>메뉴 이름</BoldTableCell>
+                                        <BoldTableCell>수량</BoldTableCell>
+                                        <BoldTableCell>금액</BoldTableCell>
+                                    </TableRow>
+                                </TableHead>
                                 <TableBody>
-                                    <TableRow>
-                                        <TableCell>주문 일시:</TableCell>
-                                        <TableCell>{orderDetail?.createdAt}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>연락처:</TableCell>
-                                        <TableCell>{orderDetail?.phone}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>상태:</TableCell>
-                                        <TableCell>{orderDetail?.status}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell colSpan={2}>메뉴</TableCell>
-                                    </TableRow>
                                     {orderDetail?.menus.map((menu) => (
                                     <TableRow key={menu.id}>
                                         <TableCell>{menu.name}</TableCell>
                                         <TableCell>{menu.quantity}</TableCell>
+                                        <TableCell>{menu.price * menu.quantity}</TableCell>
                                     </TableRow>
                                     ))}
                                     <TableRow>
-                                        <TableCell colSpan={2}>총액</TableCell>
+                                        <TableCell></TableCell>
+                                        <BoldTableCell>총액</BoldTableCell>
+                                        <TableCell>{orderDetail && calculateSubtotal()}</TableCell>
                                     </TableRow>
                                     {/* Render total here */}
                                 </TableBody>
