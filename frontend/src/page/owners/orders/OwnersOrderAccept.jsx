@@ -5,7 +5,6 @@ import {OwnersOrderList} from './OwnersOrderList';
 
 export const OwnersOrderAccept = () => {
     const [selectedTab, setSelectedTab] = useState(0);
-    const orderStatus = ['created', 'cooking', 'cooked', 'complete', 'canceled'];
 
     const handleChange = (event, selected) => {
         setSelectedTab(selected);
@@ -23,7 +22,7 @@ export const OwnersOrderAccept = () => {
                     <Tab label='취소됨' />
                 </Tabs>
             </Box>
-            <OwnersOrderList orderStatus={orderStatus[selectedTab]} />
+            <OwnersOrderList selectedStatus={selectedTab} />
         </Box>
     );
 }
