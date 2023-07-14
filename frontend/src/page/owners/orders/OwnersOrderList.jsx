@@ -108,8 +108,7 @@ export const OwnersOrderList = () => {
 
     return (
         <div className='orders-container'>
-            <h1>주문 접수</h1>
-            <h2>주문 목록</h2>
+            <h1>주문 관리</h1>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
