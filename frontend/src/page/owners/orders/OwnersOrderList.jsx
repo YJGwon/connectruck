@@ -29,7 +29,7 @@ export const OwnersOrderList = ({selectedStatus}) => {
 
     const {isInitialized, accessToken} = useContext(UserContext);
 
-    const orderStatus = ['created', 'cooking', 'cooked', 'complete', 'canceled'];
+    const orderStatus = ['CREATED', 'COOKING', 'COOKED', 'COMPLETE', 'CANCLED'];
     const statusButton = ['조리 시작', '조리 완료', '픽업 완료'];
 
     useEffect(() => {
