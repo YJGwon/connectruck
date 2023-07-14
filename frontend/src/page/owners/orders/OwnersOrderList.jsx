@@ -18,7 +18,7 @@ import {BoldTableCell} from '../../../component/table/BoldTableCell';
 
 import './OwnersOrderList.css';
 
-export const OwnersOrderList = () => {
+export const OwnersOrderList = ({orderStatus}) => {
     const [orders, setOrders] = useState([]);
     const [orderDetail, setOrderDetail] = useState(null);
     const [page, setPage] = useState(1);
@@ -28,11 +28,15 @@ export const OwnersOrderList = () => {
     const {isInitialized, accessToken} = useContext(UserContext);
 
     useEffect(() => {
-        if (isInitialized) {
-            fetchOrders();
-        }
+        fetchOrders();
     }, [isInitialized, page]);
-    
+
+    useEffect(() => {
+        setPage(1);
+        setTotalPages(1);
+        fetchOrders();
+    }, [isInitialized, orderStatus]);
+
     const calculateSubtotal = () => {
         return orderDetail.menus.reduce((total, menu) => total + menu.price * menu.quantity, 0);
     };
@@ -46,7 +50,11 @@ export const OwnersOrderList = () => {
     };
 
     const fetchOrders = () => {
-        const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page - 1}&size=${size}`;
+        if (!isInitialized) {
+            return;
+        }
+
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page - 1}&size=${size}&status=${orderStatus}`;
 
         fetch(url, {
             headers: {
@@ -107,8 +115,7 @@ export const OwnersOrderList = () => {
     };
 
     return (
-        <div className='orders-container'>
-            <h1>주문 관리</h1>
+        <div>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>
