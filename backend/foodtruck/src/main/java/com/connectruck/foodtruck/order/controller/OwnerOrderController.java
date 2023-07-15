@@ -62,4 +62,28 @@ public class OwnerOrderController {
         orderService.acceptOrder(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(summary = "주문 조리 완료 처리")
+    @ApiResponse(responseCode = "400", description = "조리중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
+    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
+    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
+    @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
+    @PostMapping("/{orderId}/finish-cooking")
+    public ResponseEntity<Void> finishCooking(@AuthenticationPrincipal final Long ownerId,
+                                              @PathVariable final Long orderId) {
+        orderService.finishCooking(orderId, ownerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "주문 픽업 완료 처리")
+    @ApiResponse(responseCode = "400", description = "조리 완료된 주문이 아님, 소유한 푸드트럭의 주문이 아님")
+    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
+    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
+    @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
+    @PostMapping("/{orderId}/complete")
+    public ResponseEntity<Void> complete(@AuthenticationPrincipal final Long ownerId,
+                                         @PathVariable final Long orderId) {
+        orderService.complete(orderId, ownerId);
+        return ResponseEntity.noContent().build();
+    }
 }

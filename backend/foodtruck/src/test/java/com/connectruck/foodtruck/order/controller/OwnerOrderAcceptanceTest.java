@@ -25,7 +25,6 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI = "/api/owner/orders";
 
-
     private String token;
     private Truck owningTruck;
     private Menu savedMenu;
@@ -116,10 +115,38 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
     @Test
     void acceptOrder() {
         // given
-        final OrderInfo order = dataSetup.saveOrderInfo(owningTruck, savedMenu);
+        final OrderInfo createdOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu);
 
         // when
-        final String uri = BASE_URI + String.format("/%d/accept", order.getId());
+        final String uri = BASE_URI + String.format("/%d/accept", createdOrder.getId());
+        ValidatableResponse response = postWithToken(uri, token);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
+    }
+
+    @DisplayName("조리 중인 주문을 조리 완료 처리한다.")
+    @Test
+    void finishCooking() {
+        // given
+        final OrderInfo cookingOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu, OrderStatus.COOKING);
+
+        // when
+        final String uri = BASE_URI + String.format("/%d/finish-cooking", cookingOrder.getId());
+        ValidatableResponse response = postWithToken(uri, token);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
+    }
+
+    @DisplayName("조리 완료된 주문을 픽업 완료 처리한다.")
+    @Test
+    void complete() {
+        // given
+        final OrderInfo cookedOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu, OrderStatus.COOKED);
+
+        // when
+        final String uri = BASE_URI + String.format("/%d/complete", cookedOrder.getId());
         ValidatableResponse response = postWithToken(uri, token);
 
         // then
