@@ -4,6 +4,7 @@ import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도�
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
@@ -27,6 +28,7 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
     private String token;
     private Truck owningTruck;
+    private Menu savedMenu;
 
     @BeforeEach
     void setUp() {
@@ -36,9 +38,10 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         Account owner = dataSetup.saveAccount(Account.ofNew(username, password, "01000000000", Role.OWNER));
         token = loginAndGetToken(username, password);
 
-        // 소유 푸드트럭 1개 저장
+        // 소유 푸드트럭 1개 저장, 메뉴 저장
         final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
         owningTruck = dataSetup.saveTruck(event, owner.getId());
+        savedMenu = dataSetup.saveMenu(owningTruck);
     }
 
     @DisplayName("소유 푸드트럭의 상태별 주문 목록 조회")
@@ -51,7 +54,6 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         @Test
         void all_perPage() {
             // given
-            final Menu savedMenu = dataSetup.saveMenu(owningTruck);
             final OrderInfo expected = dataSetup.saveOrderInfo(owningTruck, savedMenu);
             dataSetup.saveOrderInfo(owningTruck, savedMenu);
             dataSetup.saveOrderInfo(owningTruck, savedMenu);
@@ -75,7 +77,6 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         @Test
         void byStatus_perPage() {
             // given
-            final Menu savedMenu = dataSetup.saveMenu(owningTruck);
             final OrderInfo expected = dataSetup.saveOrderInfo(owningTruck, savedMenu);
 
             // 완료 상태의 주문 존재
@@ -111,4 +112,17 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         }
     }
 
+    @DisplayName("접수 대기중인 주문을 접수한다.")
+    @Test
+    void acceptOrder() {
+        // given
+        final OrderInfo order = dataSetup.saveOrderInfo(owningTruck, savedMenu);
+
+        // when
+        final String uri = BASE_URI + String.format("/%d/accept", order.getId());
+        ValidatableResponse response = postWithToken(uri, token);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
+    }
 }

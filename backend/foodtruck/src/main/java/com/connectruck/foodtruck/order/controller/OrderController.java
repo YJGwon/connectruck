@@ -35,8 +35,8 @@ public class OrderController {
 
     @Operation(summary = "주문 상세 정보 조회")
     @ApiResponse(responseCode = "404", description = "존재하지 않는 주문 정보 id")
-    @GetMapping("/{orderInfoId}")
-    public OrderResponse findById(@PathVariable final Long orderInfoId) {
-        return orderService.findById(orderInfoId);
+    @GetMapping("/{orderId}")
+    public OrderResponse findById(@PathVariable final Long orderId) {
+        return orderService.findById(orderId);
     }
 }

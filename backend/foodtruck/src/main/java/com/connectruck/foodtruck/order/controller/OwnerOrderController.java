@@ -12,8 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,5 +49,16 @@ public class OwnerOrderController {
                                        @RequestParam(required = false, defaultValue = DEFAULT_SIZE)
                                        @Positive(message = SIZE_MIN_VALUE_MESSAGE) final int size) {
         return orderService.findOrdersByOwnerIdAndStatus(ownerId, status, page, size);
+    }
+
+    @Operation(summary = "주문 접수 처리")
+    @ApiResponse(responseCode = "400", description = "접수 대기중인 주문이 아님")
+    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
+    @ApiResponse(responseCode = "403", description = "사장님 계정 아님, 해당 주문이 해당 계정 소유 푸드트럭 대상이 아님")
+    @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
+    @PostMapping("/{orderId}/accept")
+    public ResponseEntity<Void> acceptOrder(@AuthenticationPrincipal final Long ownerId,
+                                            @PathVariable final Long orderId) {
+        return ResponseEntity.noContent().build();
     }
 }
