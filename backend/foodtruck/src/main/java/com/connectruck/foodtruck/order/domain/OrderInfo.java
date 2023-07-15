@@ -64,6 +64,10 @@ public class OrderInfo {
         this.orderLines = List.copyOf(orderLines);
     }
 
+    public void changeOrderStatus(final OrderStatus orderStatus) {
+
+    }
+
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {
         if (orderLines == null || orderLines.isEmpty()) {
             throw new ClientException("주문 메뉴 내역을 변경할 수 없습니다.", "주문 메뉴 내역을 빈 값으로 변경할 수 없습니다.");

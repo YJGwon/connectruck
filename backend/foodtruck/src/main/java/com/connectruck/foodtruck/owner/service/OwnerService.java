@@ -6,10 +6,10 @@ import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.owner.domain.OwnerOrderInfoRepository;
-import com.connectruck.foodtruck.owner.domain.OwnerTruckRepository;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
 import com.connectruck.foodtruck.owner.dto.OwnerTruckResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OwnerService {
 
-    private final OwnerTruckRepository ownerTruckRepository;
+    private final TruckRepository truckRepository;
     private final OwnerOrderInfoRepository ownerOrderInfoRepository;
 
     public OwnerTruckResponse findOwningTruck(final Long ownerId) {
@@ -43,7 +43,7 @@ public class OwnerService {
     }
 
     private Truck getOwningTruck(final Long ownerId) {
-        return ownerTruckRepository.findByOwnerId(ownerId)
+        return truckRepository.findByOwnerId(ownerId)
                 .orElseThrow(() -> NotFoundException.of("푸드트럭", "ownerId", ownerId));
     }
 
