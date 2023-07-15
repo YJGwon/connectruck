@@ -18,14 +18,20 @@ public class TruckService {
 
     private final TruckRepository truckRepository;
 
+    public TruckResponse findById(final Long id) {
+        final Truck found = getOneById(id);
+        return TruckResponse.of(found);
+    }
+
     public TrucksResponse findByEvent(final Long eventId, final int page, final int size) {
         final Slice<Truck> found = truckRepository.findByEventId(eventId,
                 PageRequest.of(page, size));
         return TrucksResponse.of(found);
     }
 
-    public TruckResponse findById(final Long id) {
-        final Truck found = getOneById(id);
+    public TruckResponse findByOwnerId(final Long ownerId) {
+        final Truck found = truckRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> NotFoundException.of("푸드트럭", "ownerId", ownerId));
         return TruckResponse.of(found);
     }
 

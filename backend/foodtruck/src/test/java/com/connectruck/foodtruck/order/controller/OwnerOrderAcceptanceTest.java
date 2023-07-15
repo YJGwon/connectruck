@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.owner.controller;
+package com.connectruck.foodtruck.order.controller;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.hamcrest.Matchers.contains;
@@ -20,12 +20,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class OwnerAcceptanceTest extends AcceptanceTestBase {
+public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
-    private static final String BASE_URI = "/api/owner";
+    private static final String BASE_URI = "/api/owner/orders";
+
 
     private String token;
-    private Event event;
     private Truck owningTruck;
 
     @BeforeEach
@@ -37,31 +37,15 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
         token = loginAndGetToken(username, password);
 
         // 소유 푸드트럭 1개 저장
-        event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
         owningTruck = dataSetup.saveTruck(event, owner.getId());
-    }
-
-    @DisplayName("소유 푸드트럭의 정보를 사장님 id로 조회한다.")
-    @Test
-    void findMyTruck() {
-        // given
-        // 해당 계정의 소유 아닌 푸드트럭 1개 존재
-        dataSetup.saveTruck(event);
-
-        // when
-        final ValidatableResponse response = getWithToken(BASE_URI + "/trucks/my", token);
-
-        // then
-        response.statusCode(OK.value())
-                .body("id", equalTo(owningTruck.getId().intValue()))
-                .body("name", equalTo(owningTruck.getName()));
     }
 
     @DisplayName("소유 푸드트럭의 상태별 주문 목록 조회")
     @Nested
     class findMyOrders {
 
-        private static final String URI = BASE_URI + "/trucks/my/orders";
+        private static final String URI = BASE_URI + "/my";
 
         @DisplayName("모든 주문을 최신순으로 정렬하여 특정 페이지를 조회한다.")
         @Test
@@ -126,4 +110,5 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
                     .body("page.currentPage", equalTo(0));
         }
     }
+
 }

@@ -1,9 +1,9 @@
-package com.connectruck.foodtruck.owner.dto;
+package com.connectruck.foodtruck.order.dto;
 
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import java.time.LocalDateTime;
 
-public record OwnerOrderResponse(
+public record OrderSummaryResponse(
         Long id,
         Long truckId,
         String phone,
@@ -12,8 +12,8 @@ public record OwnerOrderResponse(
         LocalDateTime updatedAt
 ) {
 
-    public static OwnerOrderResponse of(final OrderInfo orderInfo) {
-        return new OwnerOrderResponse(
+    public static OrderSummaryResponse of(final OrderInfo orderInfo) {
+        return new OrderSummaryResponse(
                 orderInfo.getId(),
                 orderInfo.getTruckId(),
                 orderInfo.getPhone(),
