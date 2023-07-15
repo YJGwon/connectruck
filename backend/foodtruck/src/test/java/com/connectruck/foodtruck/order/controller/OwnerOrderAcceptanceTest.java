@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.owner.controller;
+package com.connectruck.foodtruck.order.controller;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.hamcrest.Matchers.contains;
@@ -20,12 +20,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class OwnerAcceptanceTest extends AcceptanceTestBase {
+public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
-    private static final String BASE_URI = "/api/owner";
+    private static final String BASE_URI = "/api/owner/orders";
+
 
     private String token;
-    private Event event;
     private Truck owningTruck;
 
     @BeforeEach
@@ -37,7 +37,7 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
         token = loginAndGetToken(username, password);
 
         // 소유 푸드트럭 1개 저장
-        event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
         owningTruck = dataSetup.saveTruck(event, owner.getId());
     }
 
@@ -45,7 +45,7 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
     @Nested
     class findMyOrders {
 
-        private static final String URI = BASE_URI + "/trucks/my/orders";
+        private static final String URI = BASE_URI + "/my";
 
         @DisplayName("모든 주문을 최신순으로 정렬하여 특정 페이지를 조회한다.")
         @Test
@@ -110,4 +110,5 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
                     .body("page.currentPage", equalTo(0));
         }
     }
+
 }

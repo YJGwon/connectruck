@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.owner.controller;
+package com.connectruck.foodtruck.order.controller;
 
 import static com.connectruck.foodtruck.common.validation.ValidationMessage.SMALLER_THAN_MIN_VALUE;
 import static com.connectruck.foodtruck.user.domain.Role.OWNER;
@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Authorization(OWNER)
-@RequestMapping("/api/owner")
+@RequestMapping("/api/owner/orders")
 @RequiredArgsConstructor
 @Validated
-public class OwnerController {
+public class OwnerOrderController {
 
     private static final String DEFAULT_PAGE = "0";
     private static final String DEFAULT_SIZE = "20";
@@ -38,7 +38,7 @@ public class OwnerController {
     @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
     @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
     @ApiResponse(responseCode = "404", description = "해당 계정이 소유한 푸드트럭 존재하지 않음")
-    @GetMapping("/trucks/my/orders")
+    @GetMapping("/my")
     public OrdersResponse findMyOrders(@AuthenticationPrincipal final Long ownerId,
                                        @RequestParam(required = false, defaultValue = "ALL") final String status,
                                        @RequestParam(required = false, defaultValue = DEFAULT_PAGE)

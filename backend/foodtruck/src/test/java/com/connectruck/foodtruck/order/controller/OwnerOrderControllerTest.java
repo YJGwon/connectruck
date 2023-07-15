@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.owner.controller;
+package com.connectruck.foodtruck.order.controller;
 
 import static org.hamcrest.Matchers.stringContainsInOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -11,9 +11,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.test.web.servlet.ResultActions;
 
-class OwnerControllerTest extends ControllerTestBase {
+public class OwnerOrderControllerTest extends ControllerTestBase {
 
-    private static final String BASE_URI = "/api/owner";
+    private static final String BASE_URI = "/api/owner/orders";
 
     @DisplayName("소유 푸드트럭 주문 목록 조회")
     @Nested
@@ -25,7 +25,7 @@ class OwnerControllerTest extends ControllerTestBase {
         void returnBadRequest_whenPageIsNegative(final String paramKey) throws Exception {
             // given & when
             final String param = String.format("?%s=-1", paramKey);
-            final ResultActions resultActions = performGetWithToken(BASE_URI + "/trucks/my/orders" + param);
+            final ResultActions resultActions = performGetWithToken(BASE_URI + "/my" + param);
 
             // then
             resultActions
