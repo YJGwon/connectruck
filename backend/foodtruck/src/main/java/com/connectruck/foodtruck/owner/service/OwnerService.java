@@ -7,7 +7,6 @@ import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.owner.domain.OwnerOrderInfoRepository;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
-import com.connectruck.foodtruck.owner.dto.OwnerTruckResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +23,6 @@ public class OwnerService {
 
     private final TruckRepository truckRepository;
     private final OwnerOrderInfoRepository ownerOrderInfoRepository;
-
-    public OwnerTruckResponse findOwningTruck(final Long ownerId) {
-        final Truck found = getOwningTruck(ownerId);
-        return OwnerTruckResponse.of(found);
-    }
 
     public OwnerOrdersResponse findOrdersOfOwningTruckByStatus(final Long ownerId, final String rawStatus,
                                                                final int page, final int size) {

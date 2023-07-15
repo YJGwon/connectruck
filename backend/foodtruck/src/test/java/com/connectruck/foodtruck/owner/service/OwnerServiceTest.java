@@ -12,7 +12,6 @@ import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
-import com.connectruck.foodtruck.owner.dto.OwnerTruckResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,40 +34,6 @@ class OwnerServiceTest extends ServiceTestBase {
         event = dataSetup.saveEvent(밤도깨비_야시장.create());
         owner = dataSetup.saveOwnerAccount();
         owningTruck = dataSetup.saveTruck(event, owner.getId());
-    }
-
-    @DisplayName("소유 푸드트럭 정보 조회")
-    @Nested
-    class findOwningTruck {
-
-        @DisplayName("특정 푸드트럭의 정보를 사장님 계정 id로 조회한다.")
-        @Test
-        void success() {
-            // given
-            // 해당 계정의 소유 아닌 푸드트럭 1개 존재
-            dataSetup.saveTruck(event);
-
-            // when
-            final OwnerTruckResponse response = ownerService.findOwningTruck(owner.getId());
-
-            // then
-            assertAll(
-                    () -> assertThat(response.id()).isEqualTo(owningTruck.getId()),
-                    () -> assertThat(response.name()).isEqualTo(owningTruck.getName())
-            );
-        }
-
-        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
-        @Test
-        void throwsException_whenTruckNotFound() {
-            // given
-            final Account ownerNotHavingTruck = dataSetup.saveOwnerAccount();
-
-            // when & then
-            assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> ownerService.findOwningTruck(ownerNotHavingTruck.getId()))
-                    .withMessageContainingAll("푸드트럭", "존재하지 않습니다");
-        }
     }
 
     @DisplayName("소유 푸드트럭 상태별 주문 목록 조회")
