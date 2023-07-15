@@ -20,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
@@ -147,6 +149,22 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
         // when
         final String uri = BASE_URI + String.format("/%d/complete", cookedOrder.getId());
+        ValidatableResponse response = postWithToken(uri, token);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
+    }
+
+    @DisplayName("진행중인 주문을 취소 처리한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"CREATED", "COOKING", "COOKED"})
+    void cancel(final String inProgressStatus) {
+        // given
+        final OrderInfo inProgressOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu,
+                OrderStatus.valueOf(inProgressStatus));
+
+        // when
+        final String uri = BASE_URI + String.format("/%d/cancel", inProgressOrder.getId());
         ValidatableResponse response = postWithToken(uri, token);
 
         // then

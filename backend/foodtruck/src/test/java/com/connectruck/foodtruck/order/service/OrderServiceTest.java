@@ -33,6 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -299,6 +301,36 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatExceptionOfType(NotOwnerOfOrderException.class)
                     .isThrownBy(() -> orderService.complete(orderToOtherTruck.getId(), owner.getId()));
+        }
+    }
+
+    @DisplayName("주문 취소 처리")
+    @Nested
+    class cancel {
+
+        @DisplayName("진행중인 주문을 취소 처리한다.")
+        @ParameterizedTest
+        @ValueSource(strings = {"CREATED", "COOKING", "COOKED"})
+        void success(final String inProgressStatus) {
+            // given
+            final OrderInfo inProgressOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu,
+                    OrderStatus.valueOf(inProgressStatus));
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.cancel(inProgressOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.CREATED);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.cancel(orderToOtherTruck.getId(), owner.getId()));
         }
     }
 }

@@ -49,7 +49,7 @@ class OrderInfoTest {
     @ValueSource(strings = {"CREATED", "COOKED", "COMPLETE", "CANCELED"})
     void finishCooking(final String notCookingStatus) {
         // given
-        final OrderInfo unacceptableOrder = new OrderInfo(
+        final OrderInfo notCookingOrder = new OrderInfo(
                 null, 0L, "01000000000",
                 OrderStatus.valueOf(notCookingStatus),
                 Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now()
@@ -57,7 +57,7 @@ class OrderInfoTest {
 
         // when & then
         assertThatExceptionOfType(IllegalOrderStatusException.class)
-                .isThrownBy(unacceptableOrder::finishCooking)
+                .isThrownBy(notCookingOrder::finishCooking)
                 .withMessageContaining("변경할 수 없습니다");
     }
 
@@ -66,7 +66,7 @@ class OrderInfoTest {
     @ValueSource(strings = {"CREATED", "COOKING", "COMPLETE", "CANCELED"})
     void complete(final String notCookedStatus) {
         // given
-        final OrderInfo unacceptableOrder = new OrderInfo(
+        final OrderInfo notCookedOrder = new OrderInfo(
                 null, 0L, "01000000000",
                 OrderStatus.valueOf(notCookedStatus),
                 Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now()
@@ -74,7 +74,24 @@ class OrderInfoTest {
 
         // when & then
         assertThatExceptionOfType(IllegalOrderStatusException.class)
-                .isThrownBy(unacceptableOrder::complete)
+                .isThrownBy(notCookedOrder::complete)
+                .withMessageContaining("변경할 수 없습니다");
+    }
+
+    @DisplayName("진행중이 아닌 주문을 취소 처리하면 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"COMPLETE", "CANCELED"})
+    void cancel(final String notInProgressStatus) {
+        // given
+        final OrderInfo notInProgressOrder = new OrderInfo(
+                null, 0L, "01000000000",
+                OrderStatus.valueOf(notInProgressStatus),
+                Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now()
+        );
+
+        // when & then
+        assertThatExceptionOfType(IllegalOrderStatusException.class)
+                .isThrownBy(notInProgressOrder::cancel)
                 .withMessageContaining("변경할 수 없습니다");
     }
 }

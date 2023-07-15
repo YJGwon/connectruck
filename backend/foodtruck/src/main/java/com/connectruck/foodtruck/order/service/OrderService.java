@@ -122,6 +122,13 @@ public class OrderService {
         order.complete();
     }
 
+    @Transactional
+    public void cancel(Long id, Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.cancel();
+    }
+
     private OrderInfo getOneById(final Long id) {
         return orderInfoRepository.findById(id)
                 .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));

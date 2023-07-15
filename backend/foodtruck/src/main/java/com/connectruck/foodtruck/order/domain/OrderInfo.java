@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.order.domain;
 
+import static com.connectruck.foodtruck.order.domain.OrderStatus.CANCELED;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.COMPLETE;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKED;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKING;
@@ -87,6 +88,13 @@ public class OrderInfo {
             throw IllegalOrderStatusException.ofNotChangeable(status, COMPLETE);
         }
         status = COMPLETE;
+    }
+
+    public void cancel() {
+        if (!status.isInProgress()) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, CANCELED);
+        }
+        status = CANCELED;
     }
 
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {

@@ -37,10 +37,6 @@ public class OwnerOrderController {
     private final OrderService orderService;
 
     @Operation(summary = "사장님 계정의 소유 푸드트럭 주문 목록 조회")
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 parameter")
-    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
-    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
-    @ApiResponse(responseCode = "404", description = "해당 계정이 소유한 푸드트럭 존재하지 않음")
     @GetMapping("/my")
     public OrdersResponse findMyOrders(@AuthenticationPrincipal final Long ownerId,
                                        @RequestParam(required = false, defaultValue = "ALL") final String status,
@@ -53,9 +49,6 @@ public class OwnerOrderController {
 
     @Operation(summary = "주문 접수 처리")
     @ApiResponse(responseCode = "400", description = "접수 대기중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
-    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
-    @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
     @PostMapping("/{orderId}/accept")
     public ResponseEntity<Void> acceptOrder(@AuthenticationPrincipal final Long ownerId,
                                             @PathVariable final Long orderId) {
@@ -65,9 +58,6 @@ public class OwnerOrderController {
 
     @Operation(summary = "주문 조리 완료 처리")
     @ApiResponse(responseCode = "400", description = "조리중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
-    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
-    @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
     @PostMapping("/{orderId}/finish-cooking")
     public ResponseEntity<Void> finishCooking(@AuthenticationPrincipal final Long ownerId,
                                               @PathVariable final Long orderId) {
@@ -77,13 +67,19 @@ public class OwnerOrderController {
 
     @Operation(summary = "주문 픽업 완료 처리")
     @ApiResponse(responseCode = "400", description = "조리 완료된 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
-    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
-    @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
     @PostMapping("/{orderId}/complete")
     public ResponseEntity<Void> complete(@AuthenticationPrincipal final Long ownerId,
                                          @PathVariable final Long orderId) {
         orderService.complete(orderId, ownerId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "주문 취소")
+    @ApiResponse(responseCode = "400", description = "진행 중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
+    @PostMapping("/{orderId}/cancel")
+    public ResponseEntity<Void> cancel(@AuthenticationPrincipal final Long ownerId,
+                                       @PathVariable final Long orderId) {
+        orderService.cancel(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -18,4 +18,8 @@ public enum OrderStatus {
     public String toKorean() {
         return korean;
     }
+
+    public boolean isInProgress() {
+        return this != COMPLETE && this != CANCELED;
+    }
 }
