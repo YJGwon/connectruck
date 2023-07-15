@@ -14,6 +14,7 @@ import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
+import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
@@ -103,11 +104,18 @@ public class OrderService {
     @Transactional
     public void acceptOrder(final Long id, final Long ownerId) {
         final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(ownerId, order);
         order.accept();
     }
 
     private OrderInfo getOneById(Long id) {
         return orderInfoRepository.findById(id)
                 .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+    }
+
+    private void checkOwnerOfOrder(Long ownerId, OrderInfo order) {
+        if (!ownerId.equals(truckService.findOwnerIdById(order.getTruckId()))) {
+            throw new NotOwnerOfOrderException();
+        }
     }
 }

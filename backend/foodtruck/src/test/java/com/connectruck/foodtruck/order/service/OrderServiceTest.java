@@ -23,6 +23,7 @@ import com.connectruck.foodtruck.order.dto.OrderLineResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
+import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
@@ -230,6 +231,18 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 접수하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.acceptOrder(orderToOtherTruck.getId(), owner.getId()));
         }
     }
 }

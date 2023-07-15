@@ -52,9 +52,9 @@ public class OwnerOrderController {
     }
 
     @Operation(summary = "주문 접수 처리")
-    @ApiResponse(responseCode = "400", description = "접수 대기중인 주문이 아님")
+    @ApiResponse(responseCode = "400", description = "접수 대기중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
     @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
-    @ApiResponse(responseCode = "403", description = "사장님 계정 아님, 해당 주문이 해당 계정 소유 푸드트럭 대상이 아님")
+    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
     @ApiResponse(responseCode = "404", description = "해당하는 주문 존재하지 않음")
     @PostMapping("/{orderId}/accept")
     public ResponseEntity<Void> acceptOrder(@AuthenticationPrincipal final Long ownerId,
