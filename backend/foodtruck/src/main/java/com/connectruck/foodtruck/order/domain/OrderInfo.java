@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.order.domain;
 
+import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKING;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.CREATED;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -64,8 +65,8 @@ public class OrderInfo {
         this.orderLines = List.copyOf(orderLines);
     }
 
-    public void changeOrderStatus(final OrderStatus orderStatus) {
-
+    public void accept() {
+        status = COOKING;
     }
 
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {

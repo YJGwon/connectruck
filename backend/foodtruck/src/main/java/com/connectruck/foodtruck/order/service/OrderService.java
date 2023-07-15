@@ -42,6 +42,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public Long create(final OrderRequest request) {
         final Long truckId = request.truckId();
         checkEventOpened(truckId);
@@ -74,8 +75,7 @@ public class OrderService {
     }
 
     public OrderResponse findById(final Long id) {
-        final OrderInfo found = orderInfoRepository.findById(id)
-                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+        final OrderInfo found = getOneById(id);
 
         return OrderResponse.of(found);
     }
@@ -98,5 +98,16 @@ public class OrderService {
             return orderInfoRepository.findByTruckId(truckId, pageRequest);
         }
         return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
+    }
+
+    @Transactional
+    public void acceptOrder(final Long id, final Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        order.accept();
+    }
+
+    private OrderInfo getOneById(Long id) {
+        return orderInfoRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
     }
 }

@@ -3,6 +3,7 @@ package com.connectruck.foodtruck.order.service;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -213,6 +214,22 @@ class OrderServiceTest extends ServiceTestBase {
                     () -> assertThat(response.orders()).hasSize(2),
                     () -> assertThat(response.page()).isEqualTo(new PageResponse(size, 1, page, false))
             );
+        }
+    }
+
+    @DisplayName("주문 접수")
+    @Nested
+    class acceptOrder {
+
+        @DisplayName("접수 대기 중인 주문을 접수한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo createdOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), owner.getId()));
         }
     }
 }

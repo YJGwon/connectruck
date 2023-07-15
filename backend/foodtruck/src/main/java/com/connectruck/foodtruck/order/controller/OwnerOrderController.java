@@ -59,6 +59,7 @@ public class OwnerOrderController {
     @PostMapping("/{orderId}/accept")
     public ResponseEntity<Void> acceptOrder(@AuthenticationPrincipal final Long ownerId,
                                             @PathVariable final Long orderId) {
+        orderService.acceptOrder(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 }
