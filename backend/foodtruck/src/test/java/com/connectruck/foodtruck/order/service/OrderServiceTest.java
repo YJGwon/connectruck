@@ -245,4 +245,60 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.acceptOrder(orderToOtherTruck.getId(), owner.getId()));
         }
     }
+
+    @DisplayName("주문 조리 완료 처리")
+    @Nested
+    class finishCooking {
+
+        @DisplayName("조리 중인 주문을 조리 완료 처리한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo cookingOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKING);
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 조리 완료 처리하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKING);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.finishCooking(orderToOtherTruck.getId(), owner.getId()));
+        }
+    }
+
+    @DisplayName("주문 픽업 완료 처리")
+    @Nested
+    class complete {
+
+        @DisplayName("조리 완료된 주문을 픽업 완료 처리한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo cookedOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKED);
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.complete(cookedOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKED);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.complete(orderToOtherTruck.getId(), owner.getId()));
+        }
+    }
 }

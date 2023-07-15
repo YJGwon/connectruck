@@ -104,16 +104,30 @@ public class OrderService {
     @Transactional
     public void acceptOrder(final Long id, final Long ownerId) {
         final OrderInfo order = getOneById(id);
-        checkOwnerOfOrder(ownerId, order);
+        checkOwnerOfOrder(order, ownerId);
         order.accept();
     }
 
-    private OrderInfo getOneById(Long id) {
+    @Transactional
+    public void finishCooking(final Long id, final Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.finishCooking();
+    }
+
+    @Transactional
+    public void complete(final Long id, final Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.complete();
+    }
+
+    private OrderInfo getOneById(final Long id) {
         return orderInfoRepository.findById(id)
                 .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
     }
 
-    private void checkOwnerOfOrder(Long ownerId, OrderInfo order) {
+    private void checkOwnerOfOrder(final OrderInfo order, final Long ownerId) {
         if (!ownerId.equals(truckService.findOwnerIdById(order.getTruckId()))) {
             throw new NotOwnerOfOrderException();
         }
