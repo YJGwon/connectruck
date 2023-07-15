@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.order.service;
 
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.dto.MenuResponse;
@@ -7,14 +9,19 @@ import com.connectruck.foodtruck.menu.service.MenuService;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
+import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,5 +78,25 @@ public class OrderService {
                 .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
 
         return OrderResponse.of(found);
+    }
+
+    public OrdersResponse findOrdersByOwnerIdAndStatus(final Long ownerId, final String rawStatus,
+                                                       final int page, final int size) {
+        final Long truckId = truckService.findByOwnerId(ownerId).id();
+
+        final Sort latest = Sort.by(DESC, "createdAt");
+        final PageRequest pageRequest = PageRequest.of(page, size, latest);
+
+        final OrderStatus status = OrderStatus.valueOf(rawStatus.toUpperCase());
+        final Page<OrderInfo> found = getOrdersByTruckIdAndStatus(status, truckId, pageRequest);
+        return OrdersResponse.of(found);
+    }
+
+    private Page<OrderInfo> getOrdersByTruckIdAndStatus(final OrderStatus status, final Long truckId,
+                                                        final PageRequest pageRequest) {
+        if (status == OrderStatus.ALL) {
+            return orderInfoRepository.findByTruckId(truckId, pageRequest);
+        }
+        return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
     }
 }

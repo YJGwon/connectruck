@@ -10,7 +10,6 @@ import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.service.MenuService;
 import com.connectruck.foodtruck.order.service.OrderService;
-import com.connectruck.foodtruck.owner.service.OwnerService;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import com.connectruck.foodtruck.user.sevice.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,9 +44,6 @@ public abstract class ControllerTestBase {
 
     @MockBean
     protected AuthService authService;
-
-    @MockBean
-    protected OwnerService ownerService;
 
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;

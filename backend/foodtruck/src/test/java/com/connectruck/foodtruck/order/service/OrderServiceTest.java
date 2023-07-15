@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
+import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
@@ -15,12 +16,15 @@ import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderLine;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderLineResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
+import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.user.domain.Account;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,13 +44,15 @@ class OrderServiceTest extends ServiceTestBase {
 
 
     private Event event;
+    private Account owner;
     private Truck savedTruck;
     private Menu savedMenu;
 
     @BeforeEach
     void setUp() {
         event = dataSetup.saveEvent(밤도깨비_야시장.create());
-        savedTruck = dataSetup.saveTruck(event);
+        owner = dataSetup.saveOwnerAccount();
+        savedTruck = dataSetup.saveTruck(event, owner.getId());
         savedMenu = dataSetup.saveMenu(savedTruck);
     }
 
@@ -156,6 +162,57 @@ class OrderServiceTest extends ServiceTestBase {
             assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> orderService.findById(fakeId))
                     .withMessageContaining("주문 정보", "존재하지 않습니다");
+        }
+    }
+
+    @DisplayName("사장님 소유 푸드트럭의 상태별 주문 목록 조회")
+    @Nested
+    class findOrdersByOwnerIdAndStatus {
+
+        @DisplayName("특정 주문 상태의 주문 목록을 최신순으로 정렬하여 page 단위로 조회한다.")
+        @Test
+        void latest_perPage() {
+            // given
+            dataSetup.saveOrderInfo(savedTruck, savedMenu);
+
+            // 완료 상태의 주문 1건 존재
+            dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COMPLETE);
+
+            // when
+            final int page = 0;
+            final int size = 2;
+            final OrdersResponse response = orderService.findOrdersByOwnerIdAndStatus(
+                    owner.getId(), OrderStatus.CREATED.name(), page, size
+            );
+
+            // then
+            assertThat(response.orders()).hasSize(1);
+        }
+
+        @DisplayName("상태가 ALL이면 모든 주문을 최신순으로 정렬하여 page 단위로 조회한다.")
+        @Test
+        void all_latest_perPage() {
+            // given
+            dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            dataSetup.saveOrderInfo(savedTruck, savedMenu);
+
+            // 소유하지 않은 푸드트럭의 주문 1건 존재
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Menu menuOfOtherTruck = dataSetup.saveMenu(otherTruck);
+            dataSetup.saveOrderInfo(otherTruck, menuOfOtherTruck);
+
+            // when
+            final int page = 0;
+            final int size = 2;
+            final OrdersResponse response = orderService.findOrdersByOwnerIdAndStatus(
+                    owner.getId(), OrderStatus.ALL.name(), page, size
+            );
+
+            // then
+            assertAll(
+                    () -> assertThat(response.orders()).hasSize(2),
+                    () -> assertThat(response.page()).isEqualTo(new PageResponse(size, 1, page, false))
+            );
         }
     }
 }
