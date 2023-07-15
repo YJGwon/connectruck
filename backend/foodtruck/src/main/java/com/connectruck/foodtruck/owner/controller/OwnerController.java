@@ -7,8 +7,6 @@ import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
 import com.connectruck.foodtruck.owner.service.OwnerService;
-import com.connectruck.foodtruck.truck.dto.TruckResponse;
-import com.connectruck.foodtruck.truck.service.TruckService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Positive;
@@ -33,17 +31,7 @@ public class OwnerController {
     private static final String PAGE_MIN_VALUE_MESSAGE = SMALLER_THAN_MIN_VALUE + " : 페이지 번호, 최소값 0";
     private static final String SIZE_MIN_VALUE_MESSAGE = SMALLER_THAN_MIN_VALUE + " : 사이즈, 최소값 1";
 
-    private final TruckService truckService;
     private final OwnerService ownerService;
-
-    @Operation(summary = "사장님 계정의 소유 푸드트럭 정보 조회")
-    @ApiResponse(responseCode = "401", description = "로그인 하지 않음")
-    @ApiResponse(responseCode = "403", description = "사장님 계정 아님")
-    @ApiResponse(responseCode = "404", description = "해당 계정이 소유한 푸드트럭 존재하지 않음")
-    @GetMapping("/trucks/my")
-    public TruckResponse findMyTruck(@AuthenticationPrincipal final Long ownerId) {
-        return truckService.findByOwnerId(ownerId);
-    }
 
     @Operation(summary = "사장님 계정의 소유 푸드트럭 주문 목록 조회")
     @ApiResponse(responseCode = "400", description = "잘못된 요청 parameter")

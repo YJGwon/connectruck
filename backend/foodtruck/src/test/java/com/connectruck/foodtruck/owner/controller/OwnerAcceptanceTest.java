@@ -41,22 +41,6 @@ class OwnerAcceptanceTest extends AcceptanceTestBase {
         owningTruck = dataSetup.saveTruck(event, owner.getId());
     }
 
-    @DisplayName("소유 푸드트럭의 정보를 사장님 id로 조회한다.")
-    @Test
-    void findMyTruck() {
-        // given
-        // 해당 계정의 소유 아닌 푸드트럭 1개 존재
-        dataSetup.saveTruck(event);
-
-        // when
-        final ValidatableResponse response = getWithToken(BASE_URI + "/trucks/my", token);
-
-        // then
-        response.statusCode(OK.value())
-                .body("id", equalTo(owningTruck.getId().intValue()))
-                .body("name", equalTo(owningTruck.getName()));
-    }
-
     @DisplayName("소유 푸드트럭의 상태별 주문 목록 조회")
     @Nested
     class findMyOrders {
