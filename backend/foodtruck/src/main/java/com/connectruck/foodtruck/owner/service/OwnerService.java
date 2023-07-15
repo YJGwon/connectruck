@@ -4,8 +4,8 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
+import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
-import com.connectruck.foodtruck.owner.domain.OwnerOrderInfoRepository;
 import com.connectruck.foodtruck.owner.dto.OwnerOrdersResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OwnerService {
 
     private final TruckRepository truckRepository;
-    private final OwnerOrderInfoRepository ownerOrderInfoRepository;
+    private final OrderInfoRepository orderInfoRepository;
 
     public OwnerOrdersResponse findOrdersOfOwningTruckByStatus(final Long ownerId, final String rawStatus,
                                                                final int page, final int size) {
@@ -44,8 +44,8 @@ public class OwnerService {
     private Page<OrderInfo> getOrdersByTruckIdAndStatus(final OrderStatus status, final Long truckId,
                                                         final PageRequest pageRequest) {
         if (status == OrderStatus.ALL) {
-            return ownerOrderInfoRepository.findByTruckId(truckId, pageRequest);
+            return orderInfoRepository.findByTruckId(truckId, pageRequest);
         }
-        return ownerOrderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
+        return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
     }
 }
