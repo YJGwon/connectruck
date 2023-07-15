@@ -41,6 +41,40 @@ class OrderInfoTest {
         // when & then
         assertThatExceptionOfType(IllegalOrderStatusException.class)
                 .isThrownBy(unacceptableOrder::accept)
-                .withMessageContaining("접수할 수 없습니다");
+                .withMessageContaining("변경할 수 없습니다");
+    }
+
+    @DisplayName("조리중 상태가 아닌 주문을 조리 완료 처리하면 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"CREATED", "COOKED", "COMPLETE", "CANCELED"})
+    void finishCooking(final String notCookingStatus) {
+        // given
+        final OrderInfo unacceptableOrder = new OrderInfo(
+                null, 0L, "01000000000",
+                OrderStatus.valueOf(notCookingStatus),
+                Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now()
+        );
+
+        // when & then
+        assertThatExceptionOfType(IllegalOrderStatusException.class)
+                .isThrownBy(unacceptableOrder::finishCooking)
+                .withMessageContaining("변경할 수 없습니다");
+    }
+
+    @DisplayName("조리 완료 상태가 아닌 주문을 픽업 완료 처리하면 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"CREATED", "COOKING", "COMPLETE", "CANCELED"})
+    void complete(final String notCookedStatus) {
+        // given
+        final OrderInfo unacceptableOrder = new OrderInfo(
+                null, 0L, "01000000000",
+                OrderStatus.valueOf(notCookedStatus),
+                Collections.emptyList(), LocalDateTime.now(), LocalDateTime.now()
+        );
+
+        // when & then
+        assertThatExceptionOfType(IllegalOrderStatusException.class)
+                .isThrownBy(unacceptableOrder::complete)
+                .withMessageContaining("변경할 수 없습니다");
     }
 }

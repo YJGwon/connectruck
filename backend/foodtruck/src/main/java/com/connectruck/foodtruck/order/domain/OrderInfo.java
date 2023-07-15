@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.order.domain;
 
+import static com.connectruck.foodtruck.order.domain.OrderStatus.COMPLETE;
+import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKED;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKING;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.CREATED;
 import static lombok.AccessLevel.PROTECTED;
@@ -67,19 +69,29 @@ public class OrderInfo {
     }
 
     public void accept() {
-        checkStatusAcceptable();
+        if (status != CREATED) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, COOKING);
+        }
         status = COOKING;
+    }
+
+    public void finishCooking() {
+        if (status != COOKING) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, COOKED);
+        }
+        status = COOKED;
+    }
+
+    public void complete() {
+        if (status != COOKED) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, COMPLETE);
+        }
+        status = COMPLETE;
     }
 
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {
         if (orderLines == null || orderLines.isEmpty()) {
             throw new ClientException("주문 메뉴 내역을 변경할 수 없습니다.", "주문 메뉴 내역을 빈 값으로 변경할 수 없습니다.");
-        }
-    }
-
-    private void checkStatusAcceptable() {
-        if (!status.isAcceptable()) {
-            throw IllegalOrderStatusException.ofUnacceptable(status);
         }
     }
 }

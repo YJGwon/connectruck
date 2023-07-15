@@ -15,10 +15,6 @@ public enum OrderStatus {
         this.korean = korean;
     }
 
-    public boolean isAcceptable() {
-        return this == CREATED;
-    }
-
     public String toKorean() {
         return korean;
     }
