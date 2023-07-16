@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 
 import {UserContext} from '../../../context/UserContext';
-import {fetchData} from '../../../function/CustomFetch';
+import {fetchData, fetchApi} from '../../../function/CustomFetch';
 import {BoldTableCell} from '../../../component/table/BoldTableCell';
 
 import './OwnersOrderList.css';
@@ -110,31 +110,18 @@ export const OwnersOrderList = ({selectedStatus}) => {
 
     const processOrder = async (action) => {
         const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/${orderDetail.id}/${action}`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            });
-
-            if (response.ok) {
-                alert('처리되었습니다.');
-                closeModal();
-                fetchOrders();
-            } else {
-                const data = await response.json();
-                throw new Error(`api error(${data.title}): ${data.detail}`);
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${accessToken}`
             }
-        } catch (error) {
-            console.error('Error processing order:', error);
-            if (error.message.startsWith('api error')) {
-                alert(error.message);
-            } else {
-                alert('주문을 처리하지 못하였습니다.');
-            }
-        }
+        };
+        const onSuccess = () => {
+            alert('처리되었습니다.');
+            closeModal();
+            fetchOrders();
+        };
+        fetchApi({url, requestInfo}, onSuccess);
     };
 
     return (

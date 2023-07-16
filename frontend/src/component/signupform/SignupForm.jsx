@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {TextField, Button} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 
-import {fetchData} from '../../function/CustomFetch';
+import {fetchData, fetchApi} from '../../function/CustomFetch';
 
 import './SignupForm.css';
 
@@ -99,33 +99,19 @@ export default function SignupForm({root, role}) {
             return;
         }
 
-        try {
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/users`,
-                {
+        const url = `${process.env.REACT_APP_API_URL}/api/users`;
+        const requestInfo = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({username, password, phone, role})
-                }
-            );
-
-            if (response.ok) {
+            body: JSON.stringify({ username, password, phone, role })
+        };
+        const onSuccess = () => {
             alert('가입되었습니다.');
             navigate(`${root}/signin`);
-            } else {
-                const data = await response.json();
-                throw new Error(`api error(${data.title}): ${data.detail}`);
-            }
-        } catch (error) {
-            console.error('Error fetching signup:', error);
-            if (error.message.startsWith('api error')) {
-                alert(error.message);
-            } else {
-                alert('가입하지 못하였습니다.');
-            }
-        }
+        };
+        fetchApi({url, requestInfo}, onSuccess);
 
         setUsername('');
         setPassword('');

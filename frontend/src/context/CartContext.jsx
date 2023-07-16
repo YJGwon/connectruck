@@ -1,5 +1,7 @@
 import React, {createContext, useState, useEffect} from 'react';
 
+import {fetchApi} from '../function/CustomFetch';
+
 export const CartContext = createContext();
 
 export const CartProvider = ({children}) => {
@@ -86,37 +88,23 @@ export const CartProvider = ({children}) => {
 
     const checkOut = async (phone) => {
         const url = `${process.env.REACT_APP_API_URL}/api/orders`;
-
         const data = {
             truckId,
             phone,
             menus: cartItems.map((item) => ({menuId: item.id, quantity: item.quantity}))
         };
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                setCartItems([]);
-                alert('주문이 완료되었습니다.');
-            } else {
-                const data = await response.json();
-                throw new Error(`api error(${data.title}): ${data.detail}`);
-            }
-        } catch (error) {
-            console.error('Error creating order:', error);
-            if (error.message.startsWith('api error')) {
-                alert(error.message);
-            } else {
-                alert('주문을 처리하지 못하였습니다.');
-            }
-        }
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        const onSuccess = () => {
+            setCartItems([]);
+            alert('주문이 완료되었습니다.');
+        };
+        fetchApi({url, requestInfo}, onSuccess);
     };
 
     return (
