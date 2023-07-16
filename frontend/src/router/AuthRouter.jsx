@@ -17,11 +17,9 @@ export default function AuthRouter({shouldLogin, root}) {
         }
 
         if (shouldLogin && !isLogin) {
-            console.log('redirect to login page');
             navigate(`${root}/signin`);
         }
         if (!shouldLogin && isLogin) {
-            console.log('redirect to root page');
             navigate(root);
         }
     }, [navigate, isLogin, isInitialized]);

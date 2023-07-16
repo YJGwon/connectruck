@@ -2,11 +2,10 @@ export const fetchData = async ({url, requestInfo}, onSuccess) => {
     await fetch(url, requestInfo)
         .then(async response => {
             const data = await response.json();
-
             if (response.ok) {
                 return data;
             } else {
-                throw new Error(`api error(${data.title}): ${data.detail}`);
+                handleErrorResponse(response.status, data);
             }
         })
         .then(data => {
@@ -29,7 +28,7 @@ export const fetchApi = async ({ url, requestInfo }, onSuccess) => {
                 onSuccess();
             } else {
                 const data = await response.json();
-                throw new Error(`api error(${data.title}): ${data.detail}`);
+                handleErrorResponse(response.status, data);
             }
         })
         .catch(error => {
@@ -40,4 +39,13 @@ export const fetchApi = async ({ url, requestInfo }, onSuccess) => {
                 alert('처리하지 못하였습니다');
             }
         });
+};
+
+const handleErrorResponse = (status, data) => {
+    if (status === 401) {
+        alert('토큰이 만료되었습니다.');
+        window.location.href = '/logout';
+    } else {
+        throw new Error(`api error(${data.title}): ${data.detail}`);
+    }
 };
