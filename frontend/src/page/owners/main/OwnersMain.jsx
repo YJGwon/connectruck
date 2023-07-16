@@ -10,7 +10,6 @@ import AuthRouter from '../../../router/AuthRouter';
 import LoginForm from '../../../component/loginform/LoginForm';
 import SignupForm from '../../../component/signupform/SignupForm';
 import {OwnersOrderAccept} from '../orders/OwnersOrderAccept';
-import {OwnersOrderList} from '../orders/OwnersOrderList';
 
 export default function OwnersMain() {
     const {isLogin} = useContext(UserContext);

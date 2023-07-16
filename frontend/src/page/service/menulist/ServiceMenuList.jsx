@@ -2,6 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {Typography, List, ListItem, ListItemText, Button} from '@mui/material';
 
 import {CartContext} from '../../../context/CartContext';
+import {fetchData} from '../../../function/CustomFetch';
 
 export default function ServiceMenuList({truckId}) {
     const [menus, setMenus] = useState([]);
@@ -13,27 +14,10 @@ export default function ServiceMenuList({truckId}) {
 
     const fetchMenus = (truckId) => {
         const url = `${process.env.REACT_APP_API_URL}/api/trucks/${truckId}/menus`;
-
-        fetch(url)
-            .then(async response => {
-                const data = await response.json();
-                if (response.ok) {
-                    return data;
-                } else {
-                    throw new Error(`api error(${data.title}): ${data.detail}`);
-                }
-            })
-            .then(data => {
-                setMenus(data.menus);
-            })
-            .catch(error => {
-                console.error('Error fetching menu data:', error);
-                if (error.message.startsWith('api error')) {
-                    alert(error.message);
-                } else {
-                    alert('메뉴 목록을 불러오지 못하였습니다');
-                }
-            });
+        const onSuccess = (data) => {
+            setMenus(data.menus);
+        };
+        fetchData({url}, onSuccess);
     }
 
     return (

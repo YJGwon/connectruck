@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 
 import {UserContext} from '../../../context/UserContext';
+import {fetchData} from '../../../function/CustomFetch';
 import {BoldTableCell} from '../../../component/table/BoldTableCell';
 
 import './OwnersOrderList.css';
@@ -81,59 +82,26 @@ export const OwnersOrderList = ({selectedStatus}) => {
         }
 
         const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/my?page=${page - 1}&size=${size}&status=${orderStatus[selectedStatus].value}`;
-
-        fetch(url, {
+        const requestInfo = {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          })
-            .then(async response => {
-                const data = await response.json();
+                Authorization: `Bearer ${accessToken}`,
+            }
+        };
+        const onSuccess = (data) => {
+            setOrders(data.orders);
+            setTotalPages(data.page.totalPages);
+        };
 
-                if (response.ok) {
-                    return data;
-                } else {
-                    throw new Error(`api error(${data.title}): ${data.detail}`);
-                }
-            })
-            .then(data => {
-                setOrders(data.orders);
-                setTotalPages(data.page.totalPages);
-            })
-            .catch(error => {
-                console.error('Error fetching order data:', error);
-                if (error.message.startsWith('api error')) {
-                    alert(error.message);
-                } else {
-                    alert('주문 목록을 불러오지 못하였습니다');
-                }
-            });
+        fetchData({ url, requestInfo }, onSuccess);
     };
 
     const fetchOrderDetails = (orderId) => {
         const url = `${process.env.REACT_APP_API_URL}/api/orders/${orderId}`;
+        const onSuccess = (data) => {
+            setOrderDetail(data);
+        };
 
-        fetch(url)
-            .then(async response => {
-                const data = await response.json();
-
-                if (response.ok) {
-                    return data;
-                } else {
-                    throw new Error(`api error(${data.title}): ${data.detail}`);
-                }
-            })
-            .then(data => {
-                setOrderDetail(data);
-            })
-            .catch(error => {
-                console.error('Error fetching order detail data:', error);
-                if (error.message.startsWith('api error')) {
-                    alert(error.message);
-                } else {
-                    alert('주문 상세정보를 불러오지 못하였습니다');
-                }
-            });
+        fetchData({url}, onSuccess);
     };
 
     const handlePaging = (event, value) => {
