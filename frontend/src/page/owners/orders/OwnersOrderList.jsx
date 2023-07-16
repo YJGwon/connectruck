@@ -29,8 +29,29 @@ export const OwnersOrderList = ({selectedStatus}) => {
 
     const {isInitialized, accessToken} = useContext(UserContext);
 
-    const orderStatus = ['CREATED', 'COOKING', 'COOKED', 'COMPLETE', 'CANCLED'];
-    const statusButton = ['조리 시작', '조리 완료', '픽업 완료'];
+    const orderStatus = [
+        {
+            value: 'CREATED',
+            button: '조리 시작',
+            action: 'accept'
+        }, 
+        {
+            value: 'COOKING',
+            button: '조리 완료',
+            action: 'finish-cooking'
+        }, 
+        {
+            value: 'COOKED',
+            button: '픽업 완료',
+            action: 'complete'
+        }, 
+        {
+            value: 'COMPLETE'
+        }, 
+        {
+            value: 'CANCELED'
+        }
+    ];
 
     useEffect(() => {
         fetchOrders();
@@ -59,7 +80,7 @@ export const OwnersOrderList = ({selectedStatus}) => {
             return;
         }
 
-        const url = `${process.env.REACT_APP_API_URL}/api/owner/trucks/my/orders?page=${page - 1}&size=${size}&status=${orderStatus[selectedStatus]}`;
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/my?page=${page - 1}&size=${size}&status=${orderStatus[selectedStatus].value}`;
 
         fetch(url, {
             headers: {
@@ -116,7 +137,36 @@ export const OwnersOrderList = ({selectedStatus}) => {
     };
 
     const handlePaging = (event, value) => {
-        setPage(value);
+        setPage(value); 
+    };
+
+    const processOrder = async (action) => {
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/${orderDetail.id}/${action}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            if (response.ok) {
+                alert('처리되었습니다.');
+                closeModal();
+                fetchOrders();
+            } else {
+                const data = await response.json();
+                throw new Error(`api error(${data.title}): ${data.detail}`);
+            }
+        } catch (error) {
+            console.error('Error processing order:', error);
+            if (error.message.startsWith('api error')) {
+                alert(error.message);
+            } else {
+                alert('주문을 처리하지 못하였습니다.');
+            }
+        }
     };
 
     return (
@@ -202,8 +252,12 @@ export const OwnersOrderList = ({selectedStatus}) => {
                             {
                                 selectedStatus !== 3 && selectedStatus !== 4 &&
                                 <Stack spacing={2} direction="row" sx={{ p: 2, justifyContent: 'center' }}>
-                                    <Button variant="contained">{statusButton[selectedStatus]}</Button>
-                                    <Button variant="contained" color="error">주문 취소</Button>
+                                        <Button variant="contained" onClick={() => processOrder(orderStatus[selectedStatus].action)}>
+                                            {orderStatus[selectedStatus].button}
+                                        </Button>
+                                        <Button variant="contained" onClick={() => processOrder('cancel')} color="error">
+                                            주문 취소
+                                        </Button>
                                 </Stack>
                             }
                             <Button variant="outlined" onClick={() => closeModal()}>닫기</Button>
