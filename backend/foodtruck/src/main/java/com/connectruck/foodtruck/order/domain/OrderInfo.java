@@ -1,10 +1,15 @@
 package com.connectruck.foodtruck.order.domain;
 
+import static com.connectruck.foodtruck.order.domain.OrderStatus.CANCELED;
+import static com.connectruck.foodtruck.order.domain.OrderStatus.COMPLETE;
+import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKED;
+import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKING;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.CREATED;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.validation.Validator;
+import com.connectruck.foodtruck.order.exception.IllegalOrderStatusException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,8 +69,32 @@ public class OrderInfo {
         this.orderLines = List.copyOf(orderLines);
     }
 
-    public void changeOrderStatus(final OrderStatus orderStatus) {
+    public void accept() {
+        if (status != CREATED) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, COOKING);
+        }
+        status = COOKING;
+    }
 
+    public void finishCooking() {
+        if (status != COOKING) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, COOKED);
+        }
+        status = COOKED;
+    }
+
+    public void complete() {
+        if (status != COOKED) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, COMPLETE);
+        }
+        status = COMPLETE;
+    }
+
+    public void cancel() {
+        if (!status.isInProgress()) {
+            throw IllegalOrderStatusException.ofNotChangeable(status, CANCELED);
+        }
+        status = CANCELED;
     }
 
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {

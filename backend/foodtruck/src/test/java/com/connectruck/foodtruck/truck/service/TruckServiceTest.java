@@ -136,8 +136,6 @@ class TruckServiceTest extends ServiceTestBase {
         @Test
         void success() {
             // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
             final Truck savedTruck = dataSetup.saveTruck(event);
 
             // when
@@ -156,6 +154,37 @@ class TruckServiceTest extends ServiceTestBase {
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> truckService.findEventIdById(fakeId))
+                    .withMessageContaining("존재하지 않습니다");
+        }
+    }
+
+    @DisplayName("푸드트럭의 사장님 id 조회")
+    @Nested
+    class findOwnerIdById {
+
+        @DisplayName("특정 푸드트럭의 사장님 id를 id로 조회한다.")
+        @Test
+        void success() {
+            // given
+            final Account owner = dataSetup.saveOwnerAccount();
+            final Truck owningTruck = dataSetup.saveTruck(event, owner.getId());
+
+            // when
+            final Long actual = truckService.findOwnerIdById(owningTruck.getId());
+
+            // then
+            assertThat(actual).isEqualTo(owner.getId());
+        }
+
+        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenTruckNotFound() {
+            // given
+            final long fakeId = 0L;
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> truckService.findOwnerIdById(fakeId))
                     .withMessageContaining("존재하지 않습니다");
         }
     }

@@ -3,6 +3,7 @@ package com.connectruck.foodtruck.order.service;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,6 +23,7 @@ import com.connectruck.foodtruck.order.dto.OrderLineResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
+import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
@@ -31,6 +33,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
@@ -213,6 +217,120 @@ class OrderServiceTest extends ServiceTestBase {
                     () -> assertThat(response.orders()).hasSize(2),
                     () -> assertThat(response.page()).isEqualTo(new PageResponse(size, 1, page, false))
             );
+        }
+    }
+
+    @DisplayName("주문 접수")
+    @Nested
+    class acceptOrder {
+
+        @DisplayName("접수 대기 중인 주문을 접수한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo createdOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 접수하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.acceptOrder(orderToOtherTruck.getId(), owner.getId()));
+        }
+    }
+
+    @DisplayName("주문 조리 완료 처리")
+    @Nested
+    class finishCooking {
+
+        @DisplayName("조리 중인 주문을 조리 완료 처리한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo cookingOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKING);
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 조리 완료 처리하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKING);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.finishCooking(orderToOtherTruck.getId(), owner.getId()));
+        }
+    }
+
+    @DisplayName("주문 픽업 완료 처리")
+    @Nested
+    class complete {
+
+        @DisplayName("조리 완료된 주문을 픽업 완료 처리한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo cookedOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKED);
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.complete(cookedOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKED);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.complete(orderToOtherTruck.getId(), owner.getId()));
+        }
+    }
+
+    @DisplayName("주문 취소 처리")
+    @Nested
+    class cancel {
+
+        @DisplayName("진행중인 주문을 취소 처리한다.")
+        @ParameterizedTest
+        @ValueSource(strings = {"CREATED", "COOKING", "COOKED"})
+        void success(final String inProgressStatus) {
+            // given
+            final OrderInfo inProgressOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu,
+                    OrderStatus.valueOf(inProgressStatus));
+
+            // when & then
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.cancel(inProgressOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.CREATED);
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.cancel(orderToOtherTruck.getId(), owner.getId()));
         }
     }
 }

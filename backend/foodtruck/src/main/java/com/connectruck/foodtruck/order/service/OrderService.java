@@ -14,6 +14,7 @@ import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
+import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public Long create(final OrderRequest request) {
         final Long truckId = request.truckId();
         checkEventOpened(truckId);
@@ -74,8 +76,7 @@ public class OrderService {
     }
 
     public OrderResponse findById(final Long id) {
-        final OrderInfo found = orderInfoRepository.findById(id)
-                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+        final OrderInfo found = getOneById(id);
 
         return OrderResponse.of(found);
     }
@@ -98,5 +99,44 @@ public class OrderService {
             return orderInfoRepository.findByTruckId(truckId, pageRequest);
         }
         return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
+    }
+
+    @Transactional
+    public void acceptOrder(final Long id, final Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.accept();
+    }
+
+    @Transactional
+    public void finishCooking(final Long id, final Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.finishCooking();
+    }
+
+    @Transactional
+    public void complete(final Long id, final Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.complete();
+    }
+
+    @Transactional
+    public void cancel(Long id, Long ownerId) {
+        final OrderInfo order = getOneById(id);
+        checkOwnerOfOrder(order, ownerId);
+        order.cancel();
+    }
+
+    private OrderInfo getOneById(final Long id) {
+        return orderInfoRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+    }
+
+    private void checkOwnerOfOrder(final OrderInfo order, final Long ownerId) {
+        if (!ownerId.equals(truckService.findOwnerIdById(order.getTruckId()))) {
+            throw new NotOwnerOfOrderException();
+        }
     }
 }

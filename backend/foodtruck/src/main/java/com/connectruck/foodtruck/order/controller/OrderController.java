@@ -25,7 +25,6 @@ public class OrderController {
 
     @Operation(summary = "푸드트럭 메뉴 주문")
     @ApiResponse(responseCode = "400", description = "운영 중이지 않은 행사 또는 해당 푸드트럭에 없는 메뉴 주문")
-    @ApiResponse(responseCode = "404", description = "존재하지 않는 푸드트럭, 메뉴 id")
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid final OrderRequest request) {
         final Long id = orderService.create(request);
@@ -34,9 +33,8 @@ public class OrderController {
     }
 
     @Operation(summary = "주문 상세 정보 조회")
-    @ApiResponse(responseCode = "404", description = "존재하지 않는 주문 정보 id")
-    @GetMapping("/{orderInfoId}")
-    public OrderResponse findById(@PathVariable final Long orderInfoId) {
-        return orderService.findById(orderInfoId);
+    @GetMapping("/{orderId}")
+    public OrderResponse findById(@PathVariable final Long orderId) {
+        return orderService.findById(orderId);
     }
 }

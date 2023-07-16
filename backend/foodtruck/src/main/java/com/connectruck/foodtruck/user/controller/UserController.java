@@ -6,7 +6,6 @@ import com.connectruck.foodtruck.user.dto.UserRequest;
 import com.connectruck.foodtruck.user.dto.UsernameRequest;
 import com.connectruck.foodtruck.user.sevice.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
@@ -24,21 +23,18 @@ public class UserController {
     private final UserService userService;
 
     @Operation(summary = "아이디 검사")
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 body")
     @PostMapping("/check-username")
     public CheckAvailableResponse checkUsername(@RequestBody @Valid UsernameRequest request) {
         return userService.checkUsername(request);
     }
 
     @Operation(summary = "휴대폰 번호 검사")
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 body")
     @PostMapping("/check-phone")
     public CheckAvailableResponse checkPhone(@RequestBody @Valid PhoneRequest request) {
         return userService.checkPhone(request);
     }
 
     @Operation(summary = "회원 가입")
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 body")
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid UserRequest request) {
         userService.create(request);

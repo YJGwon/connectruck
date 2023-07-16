@@ -17,11 +17,10 @@ import org.springframework.test.context.jdbc.Sql;
 @Sql("classpath:truncate.sql")
 public abstract class AcceptanceTestBase {
 
-    @LocalServerPort
-    int port;
-
     @Autowired
     protected DataSetup dataSetup;
+    @LocalServerPort
+    private int port;
 
     @BeforeEach
     void setPort() {
@@ -49,6 +48,16 @@ public abstract class AcceptanceTestBase {
         return RestAssured
                 .given().log().all()
                 .body(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().post(uri)
+                .then().log().all();
+    }
+
+    protected ValidatableResponse postWithToken(final String uri, final String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post(uri)
