@@ -20,7 +20,7 @@ public abstract class AcceptanceTestBase {
     @Autowired
     protected DataSetup dataSetup;
     @LocalServerPort
-    int port;
+    private int port;
 
     @BeforeEach
     void setPort() {

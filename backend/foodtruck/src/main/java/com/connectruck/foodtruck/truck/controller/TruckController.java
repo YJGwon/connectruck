@@ -6,7 +6,6 @@ import com.connectruck.foodtruck.truck.dto.TruckResponse;
 import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ public class TruckController {
     private final TruckService truckService;
 
     @Operation(summary = "행사 참가 푸드트럭 목록 페이지 단위 조회")
-    @ApiResponse(responseCode = "400", description = "잘못된 요청 parameter")
     @GetMapping
     public TrucksResponse findByEvent(
             @RequestParam final Long eventId,
@@ -44,7 +42,6 @@ public class TruckController {
     }
 
     @Operation(summary = "푸드트럭 정보 조회")
-    @ApiResponse(responseCode = "404", description = "존재하지 않는 푸드트럭 id")
     @GetMapping("/{truckId}")
     public TruckResponse findById(@PathVariable final Long truckId) {
         return truckService.findById(truckId);
