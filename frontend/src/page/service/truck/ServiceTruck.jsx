@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Routes, Route, useParams } from 'react-router-dom';
 
+import {fetchData} from '../../../function/CustomFetch';
 import ServiceMenuList from '../menulist/ServiceMenuList';
 
 export default function ServiceTruck() {
@@ -15,27 +16,10 @@ export default function ServiceTruck() {
 
     const fetchTruck = (truckId) => {
         const url = `${process.env.REACT_APP_API_URL}/api/trucks/${truckId}`;
-
-        fetch(url)
-            .then(async response => {
-                const data = await response.json();
-                if (response.ok) {
-                    return data;
-                } else {
-                    throw new Error(`api error(${data.title}): ${data.detail}`);
-                }
-            })
-            .then(data => {
-                setName(data.name);
-            })
-            .catch(error => {
-                console.error('Error fetching truck data:', error);
-                if (error.message.startsWith('api error')) {
-                    alert(error.message);
-                } else {
-                    alert('푸드트럭 정보를 불러오지 못하였습니다');
-                }
-            });
+        const onSuccess = (data) => {
+            setName(data.name);
+        };
+        fetchData({url}, onSuccess);
     }
 
 

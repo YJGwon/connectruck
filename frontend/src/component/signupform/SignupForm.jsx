@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {TextField, Button} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 
+import {fetchData, fetchApi} from '../../function/CustomFetch';
+
 import './SignupForm.css';
 
 export default function SignupForm({root, role}) {
@@ -21,40 +23,24 @@ export default function SignupForm({root, role}) {
             return;
         }
 
-        try {
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/users/check-username`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({username})
-                }
-            );
-
-            const data = await response.json();
-            if (response.ok) {
-
-                if (data.isAvailable) {
-                    setIsUsernameAvailable(true);
-                    alert('사용 가능한 아이디입니다.');
-                } else {
-                    setIsUsernameAvailable(false);
-                    alert('사용 중인 아이디입니다.');
-                }
+        const url = `${process.env.REACT_APP_API_URL}/api/users/check-username`;
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username})
+        };
+        const onSuccess = (data) => {
+            if (data.isAvailable) {
+                setIsUsernameAvailable(true);
+                alert('사용 가능한 아이디입니다.');
             } else {
-                throw new Error(`api error(${data.title}): ${data.detail}`);
+                setIsUsernameAvailable(false);
+                alert('사용 중인 아이디입니다.');
             }
-
-        } catch (error) {
-            console.error('Error checking username:', error);
-            if (error.message.startsWith('api error')) {
-                alert(error.message);
-            } else {
-                alert('아이디 검사를 수행하지 못했습니다.');
-            }
-        }
+        };
+        fetchData({url, requestInfo}, onSuccess);
     };
 
     // 휴대폰 번호 검사
@@ -64,38 +50,24 @@ export default function SignupForm({root, role}) {
             return;
         }
 
-        try {
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/users/check-phone`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({phone})
-                }
-            );
-            if (response.ok) {
-                const data = await response.json();
-
-                if (data.isAvailable) {
-                    setIsPhoneAvailable(true);
-                    alert('사용 가능한 번호입니다.');
-                } else {
-                    setIsPhoneAvailable(false);
-                    alert('사용 중인 번호입니다.');
-                }
+        const url = `${process.env.REACT_APP_API_URL}/api/users/check-phone`;
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({phone})
+        };
+        const onSuccess = (data) => {
+            if (data.isAvailable) {
+                setIsPhoneAvailable(true);
+                alert('사용 가능한 번호입니다.');
             } else {
-                throw new Error(`api error: ${response.json().title}`);
+                setIsPhoneAvailable(false);
+                alert('사용 중인 번호입니다.');
             }
-        } catch (error) {
-            console.error('Error checking phone:', error);
-            if (error.message.startsWith('api error:')) {
-                alert(error.message);
-            } else {
-                alert('휴대폰 번호 검사를 수행하지 못했습니다.');
-            }
-        }
+        };
+        fetchData({ url, requestInfo }, onSuccess);
     };
 
     // 회원가입 요청
@@ -127,33 +99,19 @@ export default function SignupForm({root, role}) {
             return;
         }
 
-        try {
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/users`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({username, password, phone, role})
-                }
-            );
-
-            if (response.ok) {
-                alert('가입되었습니다.');
-                navigate(`${root}/signin`);
-            } else {
-                const data = await response.json();
-                throw new Error(`api error(${data.title}): ${data.detail}`);
-            }
-        } catch (error) {
-            console.error('Error fetching signup:', error);
-            if (error.message.startsWith('api error')) {
-                alert(error.message);
-            } else {
-                alert('가입하지 못하였습니다.');
-            }
-        }
+        const url = `${process.env.REACT_APP_API_URL}/api/users`;
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, phone, role })
+        };
+        const onSuccess = () => {
+            alert('가입되었습니다.');
+            navigate(`${root}/signin`);
+        };
+        fetchApi({url, requestInfo}, onSuccess);
 
         setUsername('');
         setPassword('');

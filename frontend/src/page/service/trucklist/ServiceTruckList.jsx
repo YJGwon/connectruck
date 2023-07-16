@@ -1,5 +1,7 @@
 import React, {useState, useEffect, useLayoutEffect, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
+
+import {fetchData} from '../../../function/CustomFetch';
 import './ServiceTruckList.css';
 
 export default function ServiceTruckList({eventId}) {
@@ -49,30 +51,14 @@ export default function ServiceTruckList({eventId}) {
         setIsLoading(true);
 
         const url = `${process.env.REACT_APP_API_URL}/api/trucks?eventId=${eventId}&page=${page}&size=${size}`;
+        const onSuccess = (data) => {
+            setTrucks(trucks.concat(data.trucks));
+            setPage(data.page.currentPage + 1);
+            setIsLoading(false);
+            setHasNext(data.page.hasNext);
+        };
 
-        fetch(url)
-            .then(async response => {
-                const data = await response.json();
-                if (response.ok) {
-                    return data;
-                } else {
-                    throw new Error(`api error(${data.title}): ${data.detail}`);
-                }
-            })
-            .then(data => {
-                setTrucks(trucks.concat(data.trucks));
-                setPage(data.page.currentPage + 1);
-                setIsLoading(false);
-                setHasNext(data.page.hasNext);
-            })
-            .catch(error => {
-                console.error('Error fetching truck data:', error);
-                if (error.message.startsWith('api error')) {
-                    alert(error.message);
-                } else {
-                    alert('푸드트럭 목록을 불러오지 못하였습니다');
-                }
-            });
+        fetchData({url}, onSuccess);
     }
 
     const handleTruckItemClick = (truckId) => {

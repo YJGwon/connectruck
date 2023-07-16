@@ -14,6 +14,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import {CartContext} from '../../../context/CartContext';
+import {fetchData} from '../../../function/CustomFetch';
 
 import './ServiceCart.css';
 
@@ -32,7 +33,6 @@ export default function ServiceCart() {
     const [phoneNumber, setPhoneNumber] = useState('');
 
     useEffect(() => {
-        console.log('truckId: ', truckId);
         if (!truckId || truckId == 0) {
             setTruckName('');
             return;
@@ -42,27 +42,11 @@ export default function ServiceCart() {
 
     const fetchTruck = () => {
         const url = `${process.env.REACT_APP_API_URL}/api/trucks/${truckId}`;
+        const onSuccess = (data) => {
+            setTruckName(data.name);
+        };
 
-        fetch(url)
-            .then(async response => {
-                const data = await response.json();
-                if (response.ok) {
-                    return data;
-                } else {
-                    throw new Error(`api error(${data.title}): ${data.detail}`);
-                }
-            })
-            .then(data => {
-                setTruckName(data.name);
-            })
-            .catch(error => {
-                console.error('Error fetching truck data:', error);
-                if (error.message.startsWith('api error')) {
-                    alert(error.message);
-                } else {
-                    alert('푸드트럭 정보를 불러오지 못하였습니다');
-                }
-            });
+        fetchData({url}, onSuccess);
     }
 
     const handleCheckOut = () => {

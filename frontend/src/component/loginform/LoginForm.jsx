@@ -2,7 +2,8 @@ import React, {useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {TextField, Button} from '@mui/material';
 
-import { UserContext } from '../../context/UserContext';
+import {UserContext} from '../../context/UserContext';
+import {fetchData} from '../../function/CustomFetch';
 
 import './LoginForm.css';
 
@@ -21,32 +22,20 @@ export default function LoginForm({root}) {
             return;
         }
 
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/signin`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({username, password})
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                const accessToken = data.accessToken;
-                // Save the access token to local storage
-                login(accessToken);
-            } else {
-                throw new Error(`api error(${data.title}): ${data.detail}`);
-            }
+        const url = `${process.env.REACT_APP_API_URL}/api/auth/signin`;
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        };
+        const onSuccess = (data) => {
+            const accessToken = data.accessToken;
+            login(accessToken);
             navigate(root);
-        } catch (error) {
-            console.error('Error fetching login:', error);
-            if (error.message.startsWith('api error')) {
-                alert(error.message);
-            } else {
-                alert('로그인 하지 못하였습니다.');
-            }
-        }
+        };
+        fetchData({url, requestInfo}, onSuccess);
 
         setUsername('');
         setPassword('');
