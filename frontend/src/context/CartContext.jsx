@@ -19,7 +19,6 @@ export const CartProvider = ({children}) => {
     }, [cartItems]);
 
     useEffect(() => {
-        console.log(truckId);
         localStorage.setItem('cartTruckId', truckId);
     }, [truckId]);
 
@@ -111,7 +110,7 @@ export const CartProvider = ({children}) => {
                 throw new Error(`api error(${data.title}): ${data.detail}`);
             }
         } catch (error) {
-            console.error('Error fetching order:', error);
+            console.error('Error creating order:', error);
             if (error.message.startsWith('api error')) {
                 alert(error.message);
             } else {

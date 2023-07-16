@@ -9,6 +9,8 @@ import { Routes, Route } from 'react-router-dom';
 import AuthRouter from '../../../router/AuthRouter';
 import LoginForm from '../../../component/loginform/LoginForm';
 import SignupForm from '../../../component/signupform/SignupForm';
+import {OwnersOrderAccept} from '../orders/OwnersOrderAccept';
+import {OwnersOrderList} from '../orders/OwnersOrderList';
 
 export default function OwnersMain() {
     const {isLogin} = useContext(UserContext);
@@ -31,6 +33,10 @@ export default function OwnersMain() {
 
     const sideButtonsLoggedIn = [
         {
+            link: '/owners/accept',
+            name: '주문 접수'
+        },
+        {
             link: '/logout',
             name: '로그아웃'
         }
@@ -45,6 +51,7 @@ export default function OwnersMain() {
                     <Routes>
                         <Route element={<AuthRouter shouldLogin={true} root={root} />}>
                             <Route exact='exact' path='/' element="사장님 페이지"/>
+                            <Route path='/accept' element={<OwnersOrderAccept/>}/>
                         </Route>
                         <Route element={<AuthRouter shouldLogin={false} root={root} />}>
                             <Route path='/signin' element={<LoginForm root={root}/>}/>
