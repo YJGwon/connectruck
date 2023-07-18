@@ -6,6 +6,7 @@ import com.connectruck.foodtruck.truck.service.TruckService;
 import java.io.IOException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -14,8 +15,10 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
 
+    private static final Long SUBSCRIBE_TIME_OUT = 60L * 1000L;
     private static final String SSE_EVENT_ID_FORMAT = "%d_%d";
 
     private final SseEmitterRepository sseEmitterRepository;
@@ -25,7 +28,12 @@ public class NotificationService {
     public SseEmitter subscribeOrders(final Long ownerId) {
         final Long truckId = truckService.findByOwnerId(ownerId).id();
 
-        final SseEmitter sseEmitter = new SseEmitter();
+        final SseEmitter sseEmitter = new SseEmitter(SUBSCRIBE_TIME_OUT);
+        sseEmitter.onTimeout(sseEmitter::complete);
+        sseEmitter.onCompletion(() -> {
+            log.info("SSE connection complete - {}", truckId);
+            sseEmitterRepository.deleteById(truckId);
+        });
         sseEmitterRepository.save(truckId, sseEmitter);
 
         final SseEventBuilder eventBuilder = SseEmitter.event()
@@ -34,6 +42,7 @@ public class NotificationService {
                 .data("connected on orders for " + truckId);
         send(sseEmitter, eventBuilder);
 
+        log.info("SSE connection startted - {}", truckId);
         return sseEmitter;
     }
 
@@ -59,6 +68,7 @@ public class NotificationService {
         try {
             sseEmitter.send(eventBuilder);
         } catch (IOException e) {
+            sseEmitter.completeWithError(e);
             throw new NotificationException(e);
         }
     }

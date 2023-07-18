@@ -17,4 +17,8 @@ public class SseEmitterRepository {
     public Optional<SseEmitter> findById(final Long id) {
         return Optional.ofNullable(emitters.get(id));
     }
+
+    public void deleteById(final Long id) {
+        emitters.remove(id);
+    }
 }
