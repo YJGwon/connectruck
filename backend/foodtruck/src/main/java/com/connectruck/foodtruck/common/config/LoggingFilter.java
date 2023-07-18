@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-@WebFilter(urlPatterns = "/api/*")
+@WebFilter(urlPatterns = "/api/*", asyncSupported = true)
 @Slf4j
 public class LoggingFilter extends OncePerRequestFilter {
 

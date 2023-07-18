@@ -36,7 +36,7 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         // 사장님 계정 생성, 로그인
         final String username = "test";
         final String password = "test1234!";
-        Account owner = dataSetup.saveAccount(Account.ofNew(username, password, "01000000000", Role.OWNER));
+        final Account owner = dataSetup.saveAccount(Account.ofNew(username, password, "01000000000", Role.OWNER));
         token = loginAndGetToken(username, password);
 
         // 소유 푸드트럭 1개 저장, 메뉴 저장
