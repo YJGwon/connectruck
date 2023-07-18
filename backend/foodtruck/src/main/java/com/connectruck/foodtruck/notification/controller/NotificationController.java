@@ -7,6 +7,8 @@ import com.connectruck.foodtruck.auth.annotation.Authorization;
 import com.connectruck.foodtruck.notification.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +24,10 @@ public class NotificationController {
     @Operation(summary = "사장님 계정의 소유 푸드트럭 주문 알림 구독")
     @Authorization(OWNER)
     @GetMapping("/orders/my")
-    public SseEmitter subscribeOrders(@AuthenticationPrincipal final Long ownerId) {
-        return notificationService.subscribeOrders(ownerId);
+    public ResponseEntity<SseEmitter> subscribeOrders(@AuthenticationPrincipal final Long ownerId) {
+        final SseEmitter sseEmitter = notificationService.subscribeOrders(ownerId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.TRANSFER_ENCODING, "chunked")
+                .body(sseEmitter);
     }
 }
