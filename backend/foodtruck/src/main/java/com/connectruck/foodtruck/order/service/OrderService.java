@@ -6,6 +6,7 @@ import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.dto.MenuResponse;
 import com.connectruck.foodtruck.menu.service.MenuService;
+import com.connectruck.foodtruck.notification.service.NotificationService;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -36,6 +37,7 @@ public class OrderService {
     private final MenuService menuService;
     private final TruckService truckService;
     private final EventService eventService;
+    private final NotificationService notificationService;
 
     private static void checkTruckHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
         if (!orderInfo.getTruckId().equals(menuResponse.truckId())) {
@@ -56,7 +58,9 @@ public class OrderService {
         orderInfo.changeOrderLine(orderLines);
 
         orderInfoRepository.save(orderInfo);
-        return orderInfo.getId();
+        final Long id = orderInfo.getId();
+        notificationService.notifyOrderCreated(truckId, id);
+        return id;
     }
 
     private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderLineRequest orderLineRequest) {
