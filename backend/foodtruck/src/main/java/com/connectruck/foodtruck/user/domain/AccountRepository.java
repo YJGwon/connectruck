@@ -5,13 +5,13 @@ import org.springframework.data.repository.Repository;
 
 public interface AccountRepository extends Repository<Account, Long> {
 
-    Account save(final Account account);
+    Account save(Account account);
 
     Optional<Account> findById(Long id);
 
-    Optional<Account> findByUsername(final String username);
+    Optional<Account> findByUsername(String username);
 
-    boolean existsByUsername(final String username);
+    boolean existsByUsername(String username);
 
-    boolean existsByPhone(final String phone);
+    boolean existsByPhone(String phone);
 }

@@ -6,5 +6,5 @@ import org.springframework.data.repository.Repository;
 
 public interface ScheduleRepository extends Repository<Schedule, Long> {
 
-    Optional<Schedule> findByEventIdAndEventDate(final Long eventId, final LocalDate eventDate);
+    Optional<Schedule> findByEventIdAndEventDate(Long eventId, LocalDate eventDate);
 }

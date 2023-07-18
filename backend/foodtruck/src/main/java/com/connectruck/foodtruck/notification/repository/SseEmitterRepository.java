@@ -1,24 +1,13 @@
 package com.connectruck.foodtruck.notification.repository;
 
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@Component
-public class SseEmitterRepository {
+public interface SseEmitterRepository {
 
-    private final ConcurrentHashMap<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
+    void save(Long id, SseEmitter sseEmitter);
 
-    public void save(final Long id, final SseEmitter sseEmitter) {
-        emitters.put(id, sseEmitter);
-    }
+    Optional<SseEmitter> findById(Long id);
 
-    public Optional<SseEmitter> findById(final Long id) {
-        return Optional.ofNullable(emitters.get(id));
-    }
-
-    public void deleteById(final Long id) {
-        emitters.remove(id);
-    }
+    void deleteById(Long id);
 }
