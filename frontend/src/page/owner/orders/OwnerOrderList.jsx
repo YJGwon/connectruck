@@ -19,9 +19,9 @@ import {UserContext} from '../../../context/UserContext';
 import {fetchData, fetchApi} from '../../../function/CustomFetch';
 import {BoldTableCell} from '../../../component/table/BoldTableCell';
 
-import './OwnersOrderList.css';
+import './OwnerOrderList.css';
 
-export const OwnersOrderList = ({selectedStatus}) => {
+export const OwnerOrderList = ({selectedStatus}) => {
     const [orders, setOrders] = useState([]);
     const [orderDetail, setOrderDetail] = useState(null);
     const [page, setPage] = useState(1);

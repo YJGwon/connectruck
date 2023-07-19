@@ -4,7 +4,7 @@ import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 
 import Index from './page/index/Index';
 import ServiceMain from './page/service/main/ServiceMain';
-import OwnersMain from './page/owners/main/OwnersMain';
+import OwnerMain from './page/owner/main/OwnerMain';
 
 import './App.css';
 
@@ -14,7 +14,7 @@ export default function App() {
             <Routes>
                 <Route exact="exact" path="/" element={<Index />}/>
                 <Route path="/events/:eventId/*" element={<ServiceMain />}/>
-                <Route path="/owners/*" element={<OwnersMain />}/>
+                <Route path="/owner/*" element={<OwnerMain />}/>
                 <Route path="/logout" element={<Logout />}/>
             </Routes>
         </BrowserRouter>
