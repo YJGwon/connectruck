@@ -1,10 +1,11 @@
-import React, {useContext} from 'react';
+import React, {useState, useContext} from 'react';
 import {Routes, Route} from 'react-router-dom';
 
 import {UserContext} from '../../../context/UserContext';
 import TopBar from '../../../component/topbar/TopBar';
 import SideBar from '../../../component/sidebar/SideBar';
 import SimpleSideBarButton from '../../../component/sidebar/SimpleSideBarButton';
+import BadgedSideBarButton from '../../../component/sidebar/BadgedSideBarButton';
 
 import AuthRouter from '../../../router/AuthRouter';
 import LoginForm from '../../../component/loginform/LoginForm';
@@ -14,6 +15,8 @@ import {OwnerOrderAccept} from '../orders/OwnerOrderAccept';
 import './OwnerMain.css';
 
 export default function OwnerMain() {
+    const [newOrders, setNewOrders] = useState([]);
+
     const {isLogin} = useContext(UserContext);
     const root = "/owner";
 
@@ -29,7 +32,11 @@ export default function OwnerMain() {
 
     const sideButtonsLoggedIn  = (
         <React.Fragment>
-            <SimpleSideBarButton key={0} link={`${root}/accept`} name='주문 접수'/>
+            <BadgedSideBarButton 
+                key={0} 
+                link={`${root}/accept`} 
+                name='주문 접수' 
+                badgeContent={newOrders.length}/>
             <SimpleSideBarButton key={1} link={`/logout`} name='로그아웃'/>
         </React.Fragment>
     );
