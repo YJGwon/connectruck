@@ -1,7 +1,9 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Routes, Route} from 'react-router-dom';
+import {EventSourcePolyfill} from 'event-source-polyfill';
 
 import {UserContext} from '../../../context/UserContext';
+
 import TopBar from '../../../component/topbar/TopBar';
 import SideBar from '../../../component/sidebar/SideBar';
 import SimpleSideBarButton from '../../../component/sidebar/SimpleSideBarButton';
@@ -17,7 +19,7 @@ import './OwnerMain.css';
 export default function OwnerMain() {
     const [newOrders, setNewOrders] = useState([]);
 
-    const {isLogin} = useContext(UserContext);
+    const {isLogin, accessToken} = useContext(UserContext);
     const root = "/owner";
 
     useEffect(() => {
@@ -31,10 +33,37 @@ export default function OwnerMain() {
         localStorage.setItem('newOrders', JSON.stringify(newOrders));
     }, [newOrders]);
 
+    useEffect(() => {
+        if (isLogin) {
+            fetchOrderSse();
+        }
+    }, [isLogin]);
+
     const removeFromNewOrders = (orderId) => {
         const updatedNewOrders = newOrders.filter(newOrderId => newOrderId !== orderId);
         setNewOrders(updatedNewOrders);
     }
+
+    const fetchOrderSse = () => {
+        const url = `${process.env.REACT_APP_API_URL}/api/notification/orders/my`;
+        const eventSource = new EventSourcePolyfill(url, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+            heartbeatTimeout: 3 * 60 * 1000,
+        });
+
+        eventSource.addEventListener("order created", (e) => {
+            const newOrderId = Number(e.data);
+            setNewOrders(newOrders.concat(newOrderId));
+        });
+    
+        eventSource.onerror = (e) => {
+            if (!e.error.message.includes("No activity")) {
+                eventSource.close();
+            }
+        };
+    };
 
     // topbar props
     const title = '사장님 서비스 🚚';

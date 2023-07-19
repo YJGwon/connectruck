@@ -65,6 +65,13 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
         fetchOrders();
     }, [isInitialized, selectedStatus]);
 
+    useEffect(() => {
+        console.log('newOrders: ', newOrders);
+        if (selectedStatus === 0 && page === 1) {
+            fetchOrders();
+        }
+    }, [newOrders]);
+
     const calculateSubtotal = () => {
         return orderDetail.menus.reduce((total, menu) => total + menu.price * menu.quantity, 0);
     };
