@@ -1,6 +1,5 @@
 package com.connectruck.foodtruck.notification.service;
 
-import com.connectruck.foodtruck.notification.exception.NotificationException;
 import com.connectruck.foodtruck.notification.repository.SseEmitterRepository;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.io.IOException;
@@ -18,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 @Slf4j
 public class NotificationService {
 
-    private static final Long SUBSCRIBE_TIME_OUT = 60L * 1000L;
+    private static final Long SUBSCRIBE_TIME_OUT = 5L * 60L * 1000L;
     private static final String SSE_EVENT_ID_FORMAT = "%d_%d";
 
     private final SseEmitterRepository sseEmitterRepository;
@@ -42,7 +41,7 @@ public class NotificationService {
                 .data("connected on orders for " + truckId);
         send(sseEmitter, eventBuilder);
 
-        log.info("SSE connection startted - {}", truckId);
+        log.info("SSE connection started - {}", truckId);
         return sseEmitter;
     }
 
@@ -69,7 +68,6 @@ public class NotificationService {
             sseEmitter.send(eventBuilder);
         } catch (IOException e) {
             sseEmitter.completeWithError(e);
-            throw new NotificationException(e);
         }
     }
 }
