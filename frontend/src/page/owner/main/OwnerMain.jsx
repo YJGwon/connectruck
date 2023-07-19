@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Routes, Route} from 'react-router-dom';
 
 import {UserContext} from '../../../context/UserContext';
@@ -20,24 +20,41 @@ export default function OwnerMain() {
     const {isLogin} = useContext(UserContext);
     const root = "/owner";
 
+    useEffect(() => {
+        const rawNewOrders = localStorage.getItem('newOrders');
+        if (rawNewOrders !== null) {
+            setNewOrders(JSON.parse(rawNewOrders));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('newOrders', JSON.stringify(newOrders));
+    }, [newOrders]);
+
+    const removeFromNewOrders = (orderId) => {
+        const updatedNewOrders = newOrders.filter(newOrderId => newOrderId !== orderId);
+        setNewOrders(updatedNewOrders);
+    }
+
     // topbar props
     const title = '사장님 서비스 🚚';
 
+    // sidebar buttons
     const sideButtonsLoggedOut  = (
         <React.Fragment>
-            <SimpleSideBarButton key={0} link={`${root}/signin`} name='로그인'/>
-            <SimpleSideBarButton key={1} link={`${root}/signup`} name='회원가입'/>
+            <SimpleSideBarButton index={0} link={`${root}/signin`} name='로그인'/>
+            <SimpleSideBarButton index={1} link={`${root}/signup`} name='회원가입'/>
         </React.Fragment>
     );
 
     const sideButtonsLoggedIn  = (
         <React.Fragment>
             <BadgedSideBarButton 
-                key={0} 
+                index={0} 
                 link={`${root}/accept`} 
                 name='주문 접수' 
                 badgeContent={newOrders.length}/>
-            <SimpleSideBarButton key={1} link={`/logout`} name='로그아웃'/>
+            <SimpleSideBarButton index={1} link={`/logout`} name='로그아웃'/>
         </React.Fragment>
     );
 
@@ -50,7 +67,7 @@ export default function OwnerMain() {
                     <Routes>
                         <Route element={<AuthRouter shouldLogin={true} root={root} />}>
                             <Route exact='exact' path='/' element="사장님 페이지"/>
-                            <Route path='/accept' element={<OwnerOrderAccept/>}/>
+                            <Route path='/accept' element={<OwnerOrderAccept newOrders={newOrders} handleOnOrderClick={removeFromNewOrders}/>}/>
                         </Route>
                         <Route element={<AuthRouter shouldLogin={false} root={root} />}>
                             <Route path='/signin' element={<LoginForm root={root}/>}/>

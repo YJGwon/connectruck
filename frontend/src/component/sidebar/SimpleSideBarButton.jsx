@@ -1,10 +1,10 @@
 import React from 'react';
 import {ListItemButton, ListItemText} from '@mui/material';
 
-export default function SimpleSideBarButton({key, link, name}) {
+export default function SimpleSideBarButton({index, link, name}) {
     return (
         <ListItemButton 
-            key={key}
+            key={index}
             href={link}>
             <ListItemText primary={name}/>
         </ListItemButton>

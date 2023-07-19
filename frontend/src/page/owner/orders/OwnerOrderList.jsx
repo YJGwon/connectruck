@@ -12,7 +12,8 @@ import {
     Fade,
     Pagination,
     Stack,
-    Button
+    Button,
+    Chip
 } from '@mui/material';
 
 import {UserContext} from '../../../context/UserContext';
@@ -21,7 +22,7 @@ import {BoldTableCell} from '../../../component/table/BoldTableCell';
 
 import './OwnerOrderList.css';
 
-export const OwnerOrderList = ({selectedStatus}) => {
+export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) => {
     const [orders, setOrders] = useState([]);
     const [orderDetail, setOrderDetail] = useState(null);
     const [page, setPage] = useState(1);
@@ -67,6 +68,11 @@ export const OwnerOrderList = ({selectedStatus}) => {
     const calculateSubtotal = () => {
         return orderDetail.menus.reduce((total, menu) => total + menu.price * menu.quantity, 0);
     };
+
+    const handleOnRowClick = (order) => {
+        handleOnOrderClick(order.id);
+        openModal(order);
+    }
 
     const openModal = (order) => {
         fetchOrderDetails(order.id);
@@ -130,6 +136,7 @@ export const OwnerOrderList = ({selectedStatus}) => {
                 <Table>
                     <TableHead>
                         <TableRow>
+                            <TableCell></TableCell>
                             <BoldTableCell>주문 일시</BoldTableCell>
                             <BoldTableCell>연락처</BoldTableCell>
                             <BoldTableCell>상태</BoldTableCell>
@@ -141,12 +148,11 @@ export const OwnerOrderList = ({selectedStatus}) => {
                                 <TableRow 
                                     key={order.id} 
                                     hover={true} 
-                                    onClick={() => openModal(order)} 
+                                    onClick={() => handleOnRowClick(order)} 
                                     sx={{
-                                        '&:hover': {
-                                        cursor: 'pointer'
-                                        }
+                                        '&:hover': {cursor: 'pointer'},
                                     }}>
+                                    <TableCell>{newOrders.includes(order.id) && <Chip label="new" color="primary" />}</TableCell>
                                     <TableCell>{order.createdAt}</TableCell>
                                     <TableCell>{order.phone}</TableCell>
                                     <TableCell>{order.status}</TableCell>
