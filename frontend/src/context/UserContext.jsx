@@ -17,9 +17,9 @@ export const UserProvider = ({children}) => {
             setIsLogin(false);
             return;
         }
-        setIsLogin(true);
         localStorage.setItem('accessToken', token);
         setAccessToken(token);
+        setIsLogin(true);
         setIsInitialized(true);
     };
 
