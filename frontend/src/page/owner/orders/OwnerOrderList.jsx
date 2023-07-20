@@ -66,7 +66,6 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
     }, [isInitialized, selectedStatus]);
 
     useEffect(() => {
-        console.log('newOrders: ', newOrders);
         if (selectedStatus === 0 && page === 1) {
             fetchOrders();
         }

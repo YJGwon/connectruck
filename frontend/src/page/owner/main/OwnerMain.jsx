@@ -3,6 +3,7 @@ import {Routes, Route} from 'react-router-dom';
 import {EventSourcePolyfill} from 'event-source-polyfill';
 
 import {UserContext} from '../../../context/UserContext';
+import {sendNotification} from '../../../function/BrowserNotification';
 
 import TopBar from '../../../component/topbar/TopBar';
 import SideBar from '../../../component/sidebar/SideBar';
@@ -21,7 +22,7 @@ export default function OwnerMain() {
 
     const {isLogin, accessToken} = useContext(UserContext);
     const root = "/owner";
-
+    
     useEffect(() => {
         const rawNewOrders = localStorage.getItem('newOrders');
         if (rawNewOrders !== null) {
@@ -55,11 +56,16 @@ export default function OwnerMain() {
 
         eventSource.addEventListener("order created", (e) => {
             const newOrderId = Number(e.data);
-            setNewOrders(newOrders.concat(newOrderId));
+            setNewOrders(prevNewOrders => [...prevNewOrders, newOrderId]);
+            sendNotification('새로운 주문 도착!');
         });
     
         eventSource.onerror = (e) => {
-            if (!e.error.message.includes("No activity")) {
+            if (e.status === 401) {
+                alert('토큰이 만료되었습니다.');
+                window.location.href = '/logout';
+            }
+            if (e.error && !e.error.message.includes("No activity")) {
                 eventSource.close();
             }
         };
