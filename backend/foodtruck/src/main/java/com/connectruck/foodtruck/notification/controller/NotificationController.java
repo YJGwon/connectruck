@@ -24,7 +24,7 @@ public class NotificationController {
     @Authorization(OWNER)
     @GetMapping("/orders/my")
     public SseEmitter subscribeOrders(@AuthenticationPrincipal final Long ownerId,
-                                      @RequestParam(required = false) final String lastEventId) {
-        return notificationService.subscribeOrders(ownerId);
+                                      @RequestParam(required = false, defaultValue = "") final String lastEventId) {
+        return notificationService.subscribeOrders(ownerId, lastEventId);
     }
 }
