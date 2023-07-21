@@ -51,7 +51,7 @@ export default function OwnerMain() {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-            heartbeatTimeout: 3 * 60 * 1000,
+            heartbeatTimeout: 45 * 60 * 1000,
         });
 
         eventSource.addEventListener("order created", (e) => {
@@ -59,7 +59,7 @@ export default function OwnerMain() {
             setNewOrders(prevNewOrders => [...prevNewOrders, newOrderId]);
             sendNotification('새로운 주문 도착!');
         });
-    
+
         eventSource.onerror = (e) => {
             if (e.status === 401) {
                 alert('토큰이 만료되었습니다.');
