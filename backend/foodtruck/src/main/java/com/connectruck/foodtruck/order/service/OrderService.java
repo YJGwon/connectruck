@@ -21,6 +21,7 @@ import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderInfoRepository orderInfoRepository;
@@ -59,24 +61,9 @@ public class OrderService {
 
         orderInfoRepository.save(orderInfo);
         final Long id = orderInfo.getId();
-        notificationService.notifyOrderCreated(truckId, id);
+
+        notifyNewOrderCreated(truckId, id);
         return id;
-    }
-
-    private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderLineRequest orderLineRequest) {
-        final Long menuId = orderLineRequest.menuId();
-        final MenuResponse menuResponse = menuService.findById(menuId);
-        checkTruckHasMenu(orderInfo, menuResponse);
-
-        return OrderLine.ofNew(menuResponse.id(), menuResponse.name(), menuResponse.price(),
-                orderLineRequest.quantity(), orderInfo);
-    }
-
-    private void checkEventOpened(final Long truckId) {
-        final Long eventId = truckService.findEventIdById(truckId);
-        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
-            throw OrderCreationException.ofClosed();
-        }
     }
 
     public OrderResponse findById(final Long id) {
@@ -95,14 +82,6 @@ public class OrderService {
         final OrderStatus status = OrderStatus.valueOf(rawStatus.toUpperCase());
         final Page<OrderInfo> found = getOrdersByTruckIdAndStatus(status, truckId, pageRequest);
         return OrdersResponse.of(found);
-    }
-
-    private Page<OrderInfo> getOrdersByTruckIdAndStatus(final OrderStatus status, final Long truckId,
-                                                        final PageRequest pageRequest) {
-        if (status == OrderStatus.ALL) {
-            return orderInfoRepository.findByTruckId(truckId, pageRequest);
-        }
-        return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
     }
 
     @Transactional
@@ -133,14 +112,46 @@ public class OrderService {
         order.cancel();
     }
 
-    private OrderInfo getOneById(final Long id) {
-        return orderInfoRepository.findById(id)
-                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+    private void checkEventOpened(final Long truckId) {
+        final Long eventId = truckService.findEventIdById(truckId);
+        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
+            throw OrderCreationException.ofClosed();
+        }
+    }
+
+    private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderLineRequest orderLineRequest) {
+        final Long menuId = orderLineRequest.menuId();
+        final MenuResponse menuResponse = menuService.findById(menuId);
+        checkTruckHasMenu(orderInfo, menuResponse);
+
+        return OrderLine.ofNew(menuResponse.id(), menuResponse.name(), menuResponse.price(),
+                orderLineRequest.quantity(), orderInfo);
+    }
+
+    private void notifyNewOrderCreated(Long truckId, Long id) {
+        try {
+            notificationService.notifyOrderCreated(truckId, id);
+        } catch (Exception e) {
+            log.error("Order notification failed", e);
+        }
     }
 
     private void checkOwnerOfOrder(final OrderInfo order, final Long ownerId) {
         if (!ownerId.equals(truckService.findOwnerIdById(order.getTruckId()))) {
             throw new NotOwnerOfOrderException();
         }
+    }
+
+    private OrderInfo getOneById(final Long id) {
+        return orderInfoRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
+    }
+
+    private Page<OrderInfo> getOrdersByTruckIdAndStatus(final OrderStatus status, final Long truckId,
+                                                        final PageRequest pageRequest) {
+        if (status == OrderStatus.ALL) {
+            return orderInfoRepository.findByTruckId(truckId, pageRequest);
+        }
+        return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
     }
 }

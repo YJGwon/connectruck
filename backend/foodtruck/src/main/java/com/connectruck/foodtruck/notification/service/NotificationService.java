@@ -10,6 +10,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
@@ -46,6 +47,7 @@ public class NotificationService {
         return sseEmitter;
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void notifyOrderCreated(final Long truckId, final Long orderId) {
         final SseEvent sseEvent = new SseEvent(
                 generateSseEventId(truckId),
