@@ -7,9 +7,9 @@ import org.springframework.data.repository.Repository;
 
 public interface TruckRepository extends Repository<Truck, Long> {
 
-    Optional<Truck> findById(final Long id);
+    Optional<Truck> findById(Long id);
 
-    Slice<Truck> findByEventId(final Long eventId, final Pageable pageable);
+    Slice<Truck> findByEventId(Long eventId, Pageable pageable);
 
-    Optional<Truck> findByOwnerId(final Long ownerId);
+    Optional<Truck> findByOwnerId(Long ownerId);
 }

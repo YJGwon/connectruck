@@ -7,11 +7,11 @@ import org.springframework.data.repository.Repository;
 
 public interface OrderInfoRepository extends Repository<OrderInfo, Long> {
 
-    OrderInfo save(final OrderInfo orderInfo);
+    OrderInfo save(OrderInfo orderInfo);
 
-    Optional<OrderInfo> findById(final Long id);
+    Optional<OrderInfo> findById(Long id);
 
-    Page<OrderInfo> findByTruckId(final Long truckId, final Pageable pageable);
+    Page<OrderInfo> findByTruckId(Long truckId, Pageable pageable);
 
-    Page<OrderInfo> findByTruckIdAndStatus(final Long truckId, final OrderStatus status, final Pageable pageable);
+    Page<OrderInfo> findByTruckIdAndStatus(Long truckId, OrderStatus status, Pageable pageable);
 }

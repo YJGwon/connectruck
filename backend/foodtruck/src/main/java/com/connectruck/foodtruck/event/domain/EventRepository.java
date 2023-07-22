@@ -5,5 +5,5 @@ import org.springframework.data.repository.Repository;
 
 public interface EventRepository extends Repository<Event, Long> {
 
-    Optional<Event> findById(final Long id);
+    Optional<Event> findById(Long id);
 }

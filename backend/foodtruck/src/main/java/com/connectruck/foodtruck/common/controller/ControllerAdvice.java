@@ -67,7 +67,7 @@ public class ControllerAdvice {
     @ExceptionHandler
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public ErrorResponse handleError(final Exception e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         final String message = extractMessage(e);
         return ErrorResponse.builder(e, INTERNAL_SERVER_ERROR, message)
                 .title("서버에 에러가 발생했습니다.")

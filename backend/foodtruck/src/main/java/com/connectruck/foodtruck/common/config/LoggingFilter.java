@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
-@WebFilter(urlPatterns = "/api/*")
+@WebFilter(urlPatterns = "/api/*", asyncSupported = true)
 @Slf4j
 public class LoggingFilter extends OncePerRequestFilter {
 
@@ -32,17 +32,22 @@ public class LoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
+        MDC.put("traceId", UUID.randomUUID().toString());
+
+        if (request.getRequestURI().startsWith("/api/notification")) {
+            filterChain.doFilter(request, response);
+            MDC.clear();
+            return;
+        }
+
         final ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
         final ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
         final long startTime = System.currentTimeMillis();
-
-        MDC.put("traceId", UUID.randomUUID().toString());
 
         filterChain.doFilter(wrappedRequest, wrappedResponse); // process request
 
         logRequest(wrappedRequest);
         logResponse(wrappedResponse, System.currentTimeMillis() - startTime);
-        MDC.clear();
         wrappedResponse.copyBodyToResponse();
     }
 

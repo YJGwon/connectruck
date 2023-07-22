@@ -6,7 +6,7 @@ import org.springframework.data.repository.Repository;
 
 public interface MenuRepository extends Repository<Menu, Long> {
 
-    Optional<Menu> findById(final long id);
+    Optional<Menu> findById(Long id);
 
-    List<Menu> findByTruckId(final long truckId);
+    List<Menu> findByTruckId(Long truckId);
 }
