@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {Box, Tabs, Tab} from '@mui/material';
+import React, {useState} from 'react';
+import {Box, Tabs, Tab, Badge} from '@mui/material';
 
-import {OwnersOrderList} from './OwnersOrderList';
+import {OwnerOrderList} from './OwnerOrderList';
 
-export const OwnersOrderAccept = () => {
+export const OwnerOrderAccept = ({newOrders, handleOnOrderClick}) => {
     const [selectedTab, setSelectedTab] = useState(0);
 
     const handleChange = (event, selected) => {
@@ -15,14 +15,14 @@ export const OwnersOrderAccept = () => {
             <h1>주문 접수</h1>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={selectedTab} onChange={handleChange}>
-                    <Tab label='접수 대기' />
+                    <Tab label='접수 대기' icon={<Badge variant="dot" color='primary' invisible={newOrders.length === 0}/>} iconPosition="end"/>
                     <Tab label='조리중' />
                     <Tab label='조리 완료'/>
                     <Tab label='픽업 완료' />
                     <Tab label='취소됨' />
                 </Tabs>
             </Box>
-            <OwnersOrderList selectedStatus={selectedTab} />
+            <OwnerOrderList selectedStatus={selectedTab} newOrders={newOrders} handleOnOrderClick={handleOnOrderClick} />
         </Box>
     );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import {styled} from '@mui/system';
-import {Drawer, List, ListItemButton, ListItemText} from '@mui/material';
+import {Drawer, List} from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -14,22 +14,12 @@ const StyledDrawer = styled(Drawer)(({theme}) => ({
     }
 }));
 
-export default function SideBar(props) {
-    const buttons = props.buttons;
-
+export default function SideBar({buttons}) {
     return (
         <div className='sidebar'>
             <StyledDrawer variant="permanent">
                 <List>
-                    {
-                        buttons.map((button, index) => (
-                            <ListItemButton 
-                                key={index} 
-                                href={button.link}>
-                                <ListItemText primary={button.name}/>
-                            </ListItemButton>
-                        ))
-                    }
+                    {buttons}
                 </List>
             </StyledDrawer>
         </div>

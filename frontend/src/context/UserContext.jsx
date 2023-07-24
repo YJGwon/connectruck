@@ -15,11 +15,12 @@ export const UserProvider = ({children}) => {
     const login = (token) => {
         if (!token) {
             setIsLogin(false);
+            setIsInitialized(true);
             return;
         }
-        setIsLogin(true);
         localStorage.setItem('accessToken', token);
         setAccessToken(token);
+        setIsLogin(true);
         setIsInitialized(true);
     };
 
