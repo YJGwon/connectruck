@@ -6,7 +6,8 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
-  #      ddl-auto: validate
+    #      ddl-auto: validate
+    open-in-view: false # OSIV off
   # h2 in-memory db
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
@@ -17,7 +18,13 @@ spring:
   # flyway
   flyway:
     enabled: false # disable
-#    locations: [ classpath:db/migration, classpath:db/data ] # initialize default data
+  #    locations: [ classpath:db/migration, classpath:db/data ] # initialize default data
+  # redis
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: test1234
 
 logging:
   level:

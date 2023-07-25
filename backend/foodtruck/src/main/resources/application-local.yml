@@ -13,6 +13,12 @@ spring:
   # flyway
   flyway:
     locations: [ classpath:db/migration, classpath:db/data ] # initialize default data
+  # redis
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: test1234
 
 # log config
 logging:
