@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.order.infra;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import com.connectruck.foodtruck.order.config.RedisMessageTemplateConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 import org.springframework.context.annotation.Import;
 
 @DataRedisTest
-@Import(RedisOrderMessagePublisher.class)
+@Import({RedisMessageTemplateConfig.class, RedisOrderMessagePublisher.class})
 class RedisOrderMessagePublisherTest {
 
     @Autowired
