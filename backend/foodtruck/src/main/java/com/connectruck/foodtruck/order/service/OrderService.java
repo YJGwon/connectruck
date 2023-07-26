@@ -6,7 +6,6 @@ import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.dto.MenuResponse;
 import com.connectruck.foodtruck.menu.service.MenuService;
-import com.connectruck.foodtruck.notification.service.NotificationService;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -17,6 +16,8 @@ import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
+import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
+import com.connectruck.foodtruck.order.infra.OrderMessagePublisher;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,11 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderInfoRepository orderInfoRepository;
+    private final OrderMessagePublisher orderMessagePublisher;
 
     private final MenuService menuService;
     private final TruckService truckService;
     private final EventService eventService;
-    private final NotificationService notificationService;
 
     private static void checkTruckHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
         if (!orderInfo.getTruckId().equals(menuResponse.truckId())) {
@@ -62,7 +63,7 @@ public class OrderService {
         orderInfoRepository.save(orderInfo);
         final Long id = orderInfo.getId();
 
-        notifyNewOrderCreated(truckId, id);
+        publishOrderCreatedMessage(truckId, id);
         return id;
     }
 
@@ -128,11 +129,11 @@ public class OrderService {
                 orderLineRequest.quantity(), orderInfo);
     }
 
-    private void notifyNewOrderCreated(Long truckId, Long id) {
+    private void publishOrderCreatedMessage(Long truckId, Long id) {
         try {
-            notificationService.notifyOrderCreated(truckId, id);
+            orderMessagePublisher.publishCreatedMessage(new OrderCreatedMessage(truckId, id));
         } catch (Exception e) {
-            log.error("Order notification failed", e);
+            log.error("failed to send order created message", e);
         }
     }
 

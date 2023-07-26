@@ -22,11 +22,14 @@ dependencies {
     // spring web
     implementation("org.springframework.boot:spring-boot-starter-web")
 
+    // spring validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
     // spring data jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // spring validation
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    // spring data redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")

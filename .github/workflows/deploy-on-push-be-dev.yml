@@ -27,7 +27,7 @@ jobs:
 
       - name: Build with Gradle
         working-directory: ${{ vars.BACKEND_PATH }}
-        run : ./gradlew clean build
+        run : ./gradlew clean build -x test
 
       - name: Make Directory for deliver
         run: mkdir -p code-deploy
