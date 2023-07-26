@@ -1,13 +1,14 @@
 package com.connectruck.foodtruck.notification.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class SseEvent {
 
-    private final String id;
+    private final Long groupId;
     private final String name;
     private final String data;
+    private final long timestamp = System.currentTimeMillis();
 }

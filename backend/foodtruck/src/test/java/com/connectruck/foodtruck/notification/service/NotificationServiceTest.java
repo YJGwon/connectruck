@@ -42,11 +42,12 @@ class NotificationServiceTest extends ServiceTestBase {
             // given
             final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
             final Account owner = dataSetup.saveOwnerAccount();
-            dataSetup.saveTruck(event, owner.getId());
+            final Truck truck = dataSetup.saveTruck(event, owner.getId());
 
             // when & then
+            final String lastEventId = truck.getId() + "_" + System.currentTimeMillis();
             assertThatNoException()
-                    .isThrownBy(() -> notificationService.subscribeOrders(owner.getId(), "fakeId"));
+                    .isThrownBy(() -> notificationService.subscribeOrders(owner.getId(), lastEventId));
         }
     }
 

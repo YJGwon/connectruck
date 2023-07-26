@@ -8,20 +8,23 @@ import org.junit.jupiter.api.Test;
 
 class SseEventRepositoryTest {
 
-    private final SseEventRepository sseEventRepository = new SseEventRepositoryImpl();
+    private final SseEventRepository sseEventRepository = new LocalSseEventRepository();
 
-    @DisplayName("특정 group에서 id가 더 큰 SSE 기록을 조회한다.")
+    @DisplayName("특정 group에서 timestamp 값이 더 큰 SSE 기록을 조회한다.")
     @Test
-    void findByGroupIdAndIdGraterThan() {
+    void findByGroupIdAndTimestampGraterThan() {
         // given
         final Long groupId = 0L;
-        final SseEvent expected = new SseEvent("0_003", "event", "something3");
-        sseEventRepository.save(groupId, new SseEvent("0_001", "event", "something1"));
-        sseEventRepository.save(groupId, new SseEvent("0_002", "event", "something2"));
-        sseEventRepository.save(groupId, expected);
+
+        sseEventRepository.save(new SseEvent(groupId, "event", "something1"));
+        sseEventRepository.save(new SseEvent(groupId, "event", "something2"));
+
+        final long timestamp = System.currentTimeMillis();
+        final SseEvent expected = new SseEvent(groupId, "event", "something3");
+        sseEventRepository.save(expected);
 
         // when
-        final List<SseEvent> found = sseEventRepository.findByGroupIdAndIdGraterThan(groupId, "0_002");
+        final List<SseEvent> found = sseEventRepository.findByGroupIdAndTimestampGraterThan(groupId, timestamp);
 
         // then
         assertThat(found).containsExactly(expected);

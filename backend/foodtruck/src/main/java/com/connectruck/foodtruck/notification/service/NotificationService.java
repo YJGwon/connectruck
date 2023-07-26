@@ -7,6 +7,7 @@ import com.connectruck.foodtruck.truck.service.TruckService;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 public class NotificationService {
 
     private static final Long SUBSCRIBE_TIME_OUT = 60L * 60L * 1000L;
-    private static final String SSE_EVENT_ID_FORMAT = "%d_%d";
+    private static final String SSE_EVENT_ID_DELIMITER = "_";
 
     private final SseEmitterRepository sseEmitterRepository;
     private final SseEventRepository sseEventRepository;
@@ -40,7 +41,7 @@ public class NotificationService {
         sendInitialEvent(truckId, sseEmitter);
         log.info("SSE connection started - {}", truckId);
 
-        sendLickedEvents(lastEventId, truckId, sseEmitter);
+        sendLickedEvents(lastEventId, sseEmitter);
 
         sseEmitterRepository.save(truckId, sseEmitter);
         return sseEmitter;
@@ -48,11 +49,11 @@ public class NotificationService {
 
     public void notifyOrderCreated(final Long truckId, final Long orderId) {
         final SseEvent sseEvent = new SseEvent(
-                generateSseEventId(truckId),
+                truckId,
                 "order created",
                 orderId.toString()
         );
-        sseEventRepository.save(truckId, sseEvent);
+        sseEventRepository.save(sseEvent);
 
         final Optional<SseEmitter> found = sseEmitterRepository.findById(truckId);
         if (found.isEmpty()) {
@@ -63,25 +64,25 @@ public class NotificationService {
         send(sseEmitter, sseEvent);
     }
 
-    private String generateSseEventId(final Long truckId) {
-        return String.format(SSE_EVENT_ID_FORMAT, truckId, System.currentTimeMillis());
-    }
-
     private void sendInitialEvent(final Long truckId, final SseEmitter sseEmitter) {
         final SseEvent sseEvent = new SseEvent(
-                generateSseEventId(truckId),
+                truckId,
                 "connect",
                 "connected on orders for " + truckId
         );
         send(sseEmitter, sseEvent);
     }
 
-    private void sendLickedEvents(final String lastEventId, final Long truckId, final SseEmitter sseEmitter) {
+    private void sendLickedEvents(final String lastEventId, final SseEmitter sseEmitter) {
         if (lastEventId.isBlank()) {
             return;
         }
 
-        final List<SseEvent> lickedEvents = sseEventRepository.findByGroupIdAndIdGraterThan(truckId, lastEventId);
+        final StringTokenizer stringTokenizer = new StringTokenizer(lastEventId, SSE_EVENT_ID_DELIMITER);
+        final long truckId = Long.parseLong(stringTokenizer.nextToken());
+        final long timestamp = Long.parseLong(stringTokenizer.nextToken());
+
+        final List<SseEvent> lickedEvents = sseEventRepository.findByGroupIdAndTimestampGraterThan(truckId, timestamp);
         for (SseEvent lickedEvent : lickedEvents) {
             send(sseEmitter, lickedEvent);
         }
@@ -90,7 +91,7 @@ public class NotificationService {
     private void send(final SseEmitter sseEmitter, final SseEvent sseEvent) {
         try {
             final SseEventBuilder eventBuilder = SseEmitter.event()
-                    .id(sseEvent.getId())
+                    .id(sseEvent.getGroupId() + SSE_EVENT_ID_DELIMITER + sseEvent.getTimestamp())
                     .name(sseEvent.getName())
                     .data(sseEvent.getData());
             sseEmitter.send(eventBuilder);

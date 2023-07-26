@@ -6,21 +6,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SseEventRepositoryImpl implements SseEventRepository {
+public class LocalSseEventRepository implements SseEventRepository {
 
     private final ConcurrentHashMap<Long, CopyOnWriteArrayList<SseEvent>> logs = new ConcurrentHashMap<>();
 
     @Override
-    public void save(final Long groupId, final SseEvent sseEvent) {
+    public void save(final SseEvent sseEvent) {
+        final Long groupId = sseEvent.getGroupId();
         logs.putIfAbsent(groupId, new CopyOnWriteArrayList<>());
         logs.get(groupId).add(sseEvent);
     }
 
     @Override
-    public List<SseEvent> findByGroupIdAndIdGraterThan(final Long groupId, final String id) {
+    public List<SseEvent> findByGroupIdAndTimestampGraterThan(final Long groupId, final long timestamp) {
         return logs.getOrDefault(groupId, new CopyOnWriteArrayList<>())
                 .stream()
-                .filter(sseEvent -> sseEvent.getId().compareTo(id) > 0)
+                .filter(sseEvent -> sseEvent.getTimestamp() > timestamp)
                 .toList();
     }
 }

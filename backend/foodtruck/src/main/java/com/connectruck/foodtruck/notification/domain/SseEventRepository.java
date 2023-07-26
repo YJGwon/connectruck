@@ -5,7 +5,7 @@ import java.util.List;
 public interface SseEventRepository {
 
 
-    void save(Long groupId, SseEvent sseEvent);
+    void save(SseEvent sseEvent);
 
-    List<SseEvent> findByGroupIdAndIdGraterThan(Long groupId, String id);
+    List<SseEvent> findByGroupIdAndTimestampGraterThan(Long groupId, long timestamp);
 }
