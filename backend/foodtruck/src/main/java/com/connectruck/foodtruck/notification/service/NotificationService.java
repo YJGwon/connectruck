@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 @Slf4j
 public class NotificationService {
 
-    private static final Long SUBSCRIBE_TIME_OUT = 60L * 60L * 1000L;
+    private static final Long SUBSCRIBE_TIME_OUT = 7L * 60L * 1000L;
     private static final String SSE_EVENT_ID_DELIMITER = "_";
 
     private final SseEmitterRepository sseEmitterRepository;

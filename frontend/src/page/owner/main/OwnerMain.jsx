@@ -51,7 +51,7 @@ export default function OwnerMain() {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
-            heartbeatTimeout: 45 * 60 * 1000,
+            heartbeatTimeout: 5 * 60 * 1000,
         });
 
         eventSource.addEventListener("order created", (e) => {
