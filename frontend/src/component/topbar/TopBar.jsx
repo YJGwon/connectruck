@@ -7,14 +7,11 @@ import {
     IconButton,
     Drawer,
     Box,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText
+    List
 } from '@mui/material';
 import {Menu} from '@mui/icons-material';
 
-export default function TobBar({title, root, buttons}) {
+export default function TobBar({title, root, icon, buttons}) {
 
     const [openMenu, setOpenMenu] = useState(false);
 
@@ -41,7 +38,7 @@ export default function TobBar({title, root, buttons}) {
                         edge="end"
                         color="inherit"
                         onClick={toggleMenu(true)}>
-                        <Menu/>
+                        {icon ? icon : <Menu/>}
                     </IconButton>}
                     <Drawer
                         anchor="right"
@@ -51,13 +48,7 @@ export default function TobBar({title, root, buttons}) {
                             sx={{ width: 250 }}
                             onKeyDown={toggleMenu(false)}>
                             <List>
-                                {buttons && buttons.map((button, index) => (
-                                <ListItem key={index} disablePadding={true}>
-                                    <ListItemButton href={button.link}>
-                                        <ListItemText primary={button.name}/>
-                                    </ListItemButton>
-                                </ListItem>
-                                ))}
+                                {buttons}
                             </List>
                         </Box>
                     </Drawer>

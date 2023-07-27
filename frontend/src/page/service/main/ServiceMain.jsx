@@ -3,6 +3,7 @@ import {Routes, Route, useParams} from 'react-router-dom';
 
 import {fetchData} from '../../../function/CustomFetch';
 import TopBar from '../../../component/topbar/TopBar';
+import SimpleSideBarButton from '../../../component/topbar/button/SimpleSideBarButton';
 import ServiceTruckList from '../trucklist/ServiceTruckList';
 import ServiceTruck from '../truck/ServiceTruck';
 import ServiceCart from '../cart/ServiceCart';
@@ -27,16 +28,15 @@ export default function ServiceMain() {
 
     const title = `Connectruck 🚚 - ${name}`;
     const root = `/events/${eventId}`;
-    const buttons = [
-        {
-            link: `${root}/cart`,
-            name: '장바구니'
-        }
-    ];
+    const sideButtons  = (
+        <React.Fragment>
+            <SimpleSideBarButton index={0} link={`${root}/cart`} name='장바구니'/>
+        </React.Fragment>
+    );
 
     return (
         <div>
-            <TopBar title={title} root={root} buttons={buttons}/>
+            <TopBar title={title} root={root} buttons={sideButtons}/>
             <div className="container">
                 <Routes>
                     <Route
