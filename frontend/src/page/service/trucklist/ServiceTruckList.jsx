@@ -69,11 +69,9 @@ export default function ServiceTruckList({eventId}) {
         <div
             ref={scrollRef}
             style={{
-                height: '400px',
+                height: '600px',
                 overflow: 'auto'
             }}>
-            <h1>푸드트럭</h1>
-
             {
                 trucks.map((truck, index) => (
                     <div

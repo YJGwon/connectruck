@@ -25,7 +25,7 @@ export default function ServiceMain() {
         fetchData({url}, onSuccess);
     }
 
-    const title = `${name} 푸드트럭 주문 by Connectruck 🚚`;
+    const title = `Connectruck 🚚 - ${name}`;
     const root = `/events/${eventId}`;
     const buttons = [
         {
