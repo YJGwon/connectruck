@@ -1,13 +1,25 @@
 package com.connectruck.foodtruck.notification.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import static lombok.AccessLevel.PROTECTED;
 
-@AllArgsConstructor
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = PROTECTED)
 @Getter
+@EqualsAndHashCode
 public class SseEvent {
 
-    private final String id;
-    private final String name;
-    private final String data;
+    private Long groupId;
+    private String name;
+    private String data;
+    private long timestamp = System.currentTimeMillis();
+
+    public SseEvent(final Long groupId, final String name, final String data) {
+        this.groupId = groupId;
+        this.name = name;
+        this.data = data;
+        this.timestamp = System.currentTimeMillis();
+    }
 }
