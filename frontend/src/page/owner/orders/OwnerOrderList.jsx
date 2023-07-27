@@ -18,6 +18,7 @@ import {
 
 import {UserContext} from '../../../context/UserContext';
 import {fetchData, fetchApi} from '../../../function/CustomFetch';
+import {OrderDetailTable} from '../../../component/table/OrderDetailTable';
 import {BoldTableCell} from '../../../component/table/BoldTableCell';
 
 import './OwnerOrderList.css';
@@ -184,37 +185,7 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
                 closeAfterTransition={true}>
                 <Fade in={orderDetail !== null}>
                     <Box component={Paper}>
-                        <TableContainer>
-                            <h2>주문 상세</h2>
-                            <h5>주문 일시: {orderDetail?.createdAt}</h5>
-                            <h5>연락처: {orderDetail?.phone}</h5>
-                            <h5>상태: {orderDetail?.status}</h5>
-                            <h4>메뉴</h4>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <BoldTableCell>메뉴 이름</BoldTableCell>
-                                        <BoldTableCell>수량</BoldTableCell>
-                                        <BoldTableCell>금액</BoldTableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {orderDetail?.menus.map((menu) => (
-                                    <TableRow key={menu.id}>
-                                        <TableCell>{menu.name}</TableCell>
-                                        <TableCell>{menu.quantity}</TableCell>
-                                        <TableCell>{menu.price * menu.quantity}</TableCell>
-                                    </TableRow>
-                                    ))}
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <BoldTableCell>총액</BoldTableCell>
-                                        <TableCell>{orderDetail && calculateSubtotal()}</TableCell>
-                                    </TableRow>
-                                    {/* Render total here */}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
+                        {orderDetail && <OrderDetailTable orderDetail={orderDetail}/>}
                         <Stack spacing={2} direction="column" sx={{ p: 2, justifyContent: 'center' }}>
                             {
                                 selectedStatus !== 3 && selectedStatus !== 4 &&
