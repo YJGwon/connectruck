@@ -73,6 +73,13 @@ public class OrderService {
         return OrderResponse.of(found);
     }
 
+
+    public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {
+        final OrderInfo found = getOneById(id);
+        checkOwnerOfOrder(found, ownerId);
+        return OrderResponse.of(found);
+    }
+
     public OrdersResponse findOrdersByOwnerIdAndStatus(final Long ownerId, final String rawStatus,
                                                        final int page, final int size) {
         final Long truckId = truckService.findByOwnerId(ownerId).id();

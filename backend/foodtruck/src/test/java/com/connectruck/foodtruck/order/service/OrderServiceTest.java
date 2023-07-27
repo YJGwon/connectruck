@@ -127,11 +127,11 @@ class OrderServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("특정 주문 정보 조회")
+    @DisplayName("사장님 소유 푸드트럭의 특정 주문 정보 조회")
     @Nested
-    class findById {
+    class findByIdAndOwnerId {
 
-        @DisplayName("특정 주문 정보를 id로 조회한다.")
+        @DisplayName("소유한 푸드트럭의 주문 정보를 id로 조회한다.")
         @Test
         void success() {
             // given
@@ -142,7 +142,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .toList();
 
             // when
-            final OrderResponse response = orderService.findById(expected.getId());
+            final OrderResponse response = orderService.findByIdAndOwnerId(expected.getId(), owner.getId());
 
             // then
             final List<Long> actualOrderLineIds = response.menus()
@@ -156,6 +156,18 @@ class OrderServiceTest extends ServiceTestBase {
             );
         }
 
+        @DisplayName("소유하지 않은 푸드트럭의 주문 정보를 조회하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfOrder() {
+            // given
+            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Long fakeId = 0L;
+
+            // when & then
+            assertThatExceptionOfType(NotOwnerOfOrderException.class)
+                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderInfo.getId(), fakeId));
+        }
+
         @DisplayName("해당하는 주문 정보가 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenOrderInfoNotFound() {
@@ -164,7 +176,7 @@ class OrderServiceTest extends ServiceTestBase {
 
             // when & then
             assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> orderService.findById(fakeId))
+                    .isThrownBy(() -> orderService.findByIdAndOwnerId(fakeId, owner.getId()))
                     .withMessageContaining("주문 정보", "존재하지 않습니다");
         }
     }
