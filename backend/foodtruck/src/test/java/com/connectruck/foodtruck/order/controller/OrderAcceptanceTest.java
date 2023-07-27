@@ -20,6 +20,7 @@ import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderLine;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
+import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import java.time.LocalDateTime;
@@ -69,22 +70,27 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
                 .header(LOCATION, startsWith(BASE_URI));
     }
 
-    @DisplayName("주문 상세 정보를 id로 조회한다.")
+
+    @DisplayName("주문 상세정보를 주문 id와 주문자 정보로 조회한다.")
     @Test
-    void findById() {
+    void findByIdAndOrdererInfo() {
         // given
         final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+        final String expectedTruckName = savedTruck.getName();
         final String[] expectedMenuNames = expected.getOrderLines()
                 .stream()
                 .map(OrderLine::getMenuName)
                 .toArray(String[]::new);
 
         // when
-        final ValidatableResponse response = get(BASE_URI + "/" + expected.getId());
+        final OrdererInfoRequest request = new OrdererInfoRequest(expected.getPhone());
+        final String uri = BASE_URI + "/" + expected.getId();
+        final ValidatableResponse response = post(uri, request);
 
         // then
         response.statusCode(OK.value())
                 .body("id", equalTo(expected.getId().intValue()))
+                .body("truck.name", equalTo(expectedTruckName))
                 .body("phone", equalTo(expected.getPhone()))
                 .body("menus", hasSize(expectedMenuNames.length))
                 .body("menus.name", contains(expectedMenuNames));

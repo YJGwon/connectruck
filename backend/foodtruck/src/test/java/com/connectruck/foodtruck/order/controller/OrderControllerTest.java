@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.connectruck.foodtruck.common.testbase.ControllerTestBase;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
+import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,7 +49,7 @@ class OrderControllerTest extends ControllerTestBase {
         @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
         void returnBadRequest_whenPhoneInvalid(final String invalidPhone) throws Exception {
             // given
-            final OrderRequest request = new OrderRequest(null, invalidPhone, MENUS);
+            final OrderRequest request = new OrderRequest(1L, invalidPhone, MENUS);
 
             // when
             final ResultActions resultActions = performPost(BASE_URI, request);
@@ -108,6 +109,28 @@ class OrderControllerTest extends ControllerTestBase {
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
                     .andExpect(jsonPath("detail", stringContainsInOrder("최소값", "수량")));
+        }
+    }
+
+    @DisplayName("주문 상세 정보 조회")
+    @Nested
+    class findByIdAndOrdererInfo {
+
+        @DisplayName("휴대폰 번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
+        @ParameterizedTest
+        @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
+        void returnBadRequest_whenPhoneInvalid(final String invalidPhone) throws Exception {
+            // given
+            final OrdererInfoRequest request = new OrdererInfoRequest(invalidPhone);
+
+            // when
+            final ResultActions resultActions = performPost(BASE_URI + "/1", request);
+
+            // then
+            resultActions
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("title").value("요청 본문이 올바르지 않습니다."))
+                    .andExpect(jsonPath("detail", stringContainsInOrder("형식", "휴대폰 번호")));
         }
     }
 }

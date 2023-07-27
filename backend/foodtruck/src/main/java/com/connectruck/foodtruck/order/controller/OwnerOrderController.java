@@ -5,6 +5,7 @@ import static com.connectruck.foodtruck.user.domain.Role.OWNER;
 
 import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
+import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -81,5 +82,13 @@ public class OwnerOrderController {
                                        @PathVariable final Long orderId) {
         orderService.cancel(orderId, ownerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "주문 상세 정보 조회")
+    @ApiResponse(responseCode = "400", description = "소유한 푸드트럭의 주문이 아님")
+    @GetMapping("/{orderId}")
+    public OrderResponse findById(@AuthenticationPrincipal final Long ownerId,
+                                  @PathVariable final Long orderId) {
+        return orderService.findByIdAndOwnerId(orderId, ownerId);
     }
 }
