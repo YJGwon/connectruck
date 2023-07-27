@@ -54,6 +54,24 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         );
     }
 
+    @DisplayName("특정 주문 정보를 id와 휴대폰 번호로 조회한다.")
+    @Test
+    void findByIdAndPhone() {
+        // given
+        final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+        final List<OrderLine> expectedOrderLines = expected.getOrderLines();
+
+        // when
+        final Optional<OrderInfo> found = orderInfoRepository.findByIdAndPhone(expected.getId(), expected.getPhone());
+
+        // then
+        final OrderInfo actual = found.get();
+        assertAll(
+                () -> assertThat(actual).isEqualTo(expected),
+                () -> assertThat(actual.getOrderLines()).containsAll(expectedOrderLines)
+        );
+    }
+
     @DisplayName("주문 정보 저장")
     @Nested
     class save {

@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.order.service;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
+import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.dto.MenuResponse;
@@ -10,14 +11,17 @@ import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
+import com.connectruck.foodtruck.order.dto.OrderDetailResponse;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
+import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
 import com.connectruck.foodtruck.order.infra.OrderMessagePublisher;
+import com.connectruck.foodtruck.truck.dto.TruckResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,6 +77,13 @@ public class OrderService {
         return OrderResponse.of(found);
     }
 
+    public OrderDetailResponse findByIdAndOrdererInfo(final Long id, final OrdererInfoRequest request) {
+        final OrderInfo found = orderInfoRepository.findByIdAndPhone(id, request.phone())
+                .orElseThrow(() -> new ClientException("주문 정보를 조회할 수 없습니다.", "잘못된 주문 정보 입니다."));
+        final TruckResponse truck = truckService.findById(found.getTruckId());
+
+        return OrderDetailResponse.of(truck, found);
+    }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {
         final OrderInfo found = getOneById(id);

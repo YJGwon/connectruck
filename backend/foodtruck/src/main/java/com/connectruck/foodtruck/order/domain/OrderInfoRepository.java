@@ -11,6 +11,8 @@ public interface OrderInfoRepository extends Repository<OrderInfo, Long> {
 
     Optional<OrderInfo> findById(Long id);
 
+    Optional<OrderInfo> findByIdAndPhone(Long id, String phone);
+
     Page<OrderInfo> findByTruckId(Long truckId, Pageable pageable);
 
     Page<OrderInfo> findByTruckIdAndStatus(Long truckId, OrderStatus status, Pageable pageable);

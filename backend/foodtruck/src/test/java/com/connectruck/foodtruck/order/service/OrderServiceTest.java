@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 
 import com.connectruck.foodtruck.common.dto.PageResponse;
+import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
@@ -18,10 +19,12 @@ import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderLine;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
+import com.connectruck.foodtruck.order.dto.OrderDetailResponse;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderLineResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
+import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
@@ -124,6 +127,67 @@ class OrderServiceTest extends ServiceTestBase {
             doReturn(value)
                     .when(eventService)
                     .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
+        }
+    }
+
+    @DisplayName("주문자 주문 상세 정보 조회")
+    @Nested
+    class findByIdAndOrdererInfo {
+
+        @DisplayName("주문 상세 정보를 id와 주문자 정보로 조회한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final String expectedTruckName = savedTruck.getName();
+            final List<Long> expectedOrderLineIds = expected.getOrderLines()
+                    .stream()
+                    .map(OrderLine::getId)
+                    .toList();
+
+            // when
+            final OrdererInfoRequest request = new OrdererInfoRequest(expected.getPhone());
+            final OrderDetailResponse response = orderService.findByIdAndOrdererInfo(expected.getId(), request);
+
+            // then
+            final List<Long> actualOrderLineIds = response.menus()
+                    .stream()
+                    .map(OrderLineResponse::id)
+                    .toList();
+
+            assertAll(
+                    () -> assertThat(response.id()).isEqualTo(expected.getId()),
+                    () -> assertThat(response.truck().name()).isEqualTo(expectedTruckName),
+                    () -> assertThat(actualOrderLineIds).containsAll(expectedOrderLineIds)
+            );
+        }
+
+        @DisplayName("id가 옳지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenWrongId() {
+            // given
+            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Long fakeId = 0L;
+
+            // when & then
+            final OrdererInfoRequest request = new OrdererInfoRequest(orderInfo.getPhone());
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.findByIdAndOrdererInfo(fakeId, request))
+                    .withMessageContaining("잘못된 주문 정보");
+        }
+
+        @DisplayName("휴대폰 번호가 옳지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenWrongPhone() {
+            // given
+            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final String fakePhone = "01099999999";
+
+            // when & then
+            final OrdererInfoRequest request = new OrdererInfoRequest(fakePhone);
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.findByIdAndOrdererInfo(orderInfo.getId(), request))
+                    .withMessageContaining("잘못된 주문 정보");
         }
     }
 
