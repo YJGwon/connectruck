@@ -184,7 +184,8 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
                 onClose={closeModal}
                 closeAfterTransition={true}>
                 <Fade in={orderDetail !== null}>
-                    <Box component={Paper}>
+                    <Box component={Paper} sx={{p: 1, height: '100%', overflow: 'auto'}}>
+                        <h2>주문 상세</h2>
                         {orderDetail && <OrderDetailTable orderDetail={orderDetail}/>}
                         <Stack spacing={2} direction="column" sx={{ p: 2, justifyContent: 'center' }}>
                             {

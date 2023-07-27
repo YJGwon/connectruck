@@ -17,7 +17,6 @@ export const OrderDetailTable = ({orderDetail}) => {
 
     return (
         <TableContainer>
-            <h2>주문 상세</h2>
             <h5>주문 일시: {orderDetail.createdAt}</h5>
             <h5>연락처: {orderDetail.phone}</h5>
             <h5>상태: {orderDetail.status}</h5>
