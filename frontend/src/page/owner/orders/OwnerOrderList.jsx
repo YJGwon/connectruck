@@ -109,12 +109,17 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
     };
 
     const fetchOrderDetails = (orderId) => {
-        const url = `${process.env.REACT_APP_API_URL}/api/orders/${orderId}`;
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/${orderId}`;
+        const requestInfo = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            }
+        };
         const onSuccess = (data) => {
             setOrderDetail(data);
         };
 
-        fetchData({url}, onSuccess);
+        fetchData({url, requestInfo}, onSuccess);
     };
 
     const handlePaging = (event, value) => {
