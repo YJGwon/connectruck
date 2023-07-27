@@ -71,12 +71,6 @@ public class OrderService {
         return id;
     }
 
-    public OrderResponse findById(final Long id) {
-        final OrderInfo found = getOneById(id);
-
-        return OrderResponse.of(found);
-    }
-
     public OrderDetailResponse findByIdAndOrdererInfo(final Long id, final OrdererInfoRequest request) {
         final OrderInfo found = orderInfoRepository.findByIdAndPhone(id, request.phone())
                 .orElseThrow(() -> new ClientException("주문 정보를 조회할 수 없습니다.", "잘못된 주문 정보 입니다."));

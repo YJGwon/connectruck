@@ -2,7 +2,6 @@ package com.connectruck.foodtruck.order.controller;
 
 import com.connectruck.foodtruck.order.dto.OrderDetailResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
-import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,8 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +30,9 @@ public class OrderController {
     public ResponseEntity<Void> create(@RequestBody @Valid final OrderRequest request) {
         final Long id = orderService.create(request);
         final URI location = URI.create(String.format("/api/orders/%d", id));
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location)
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.LOCATION)
+                .build();
     }
 
     @Operation(summary = "주문 상세 정보 조회")
@@ -39,11 +40,5 @@ public class OrderController {
     public OrderDetailResponse findByIdAndOrdererInfo(@PathVariable final Long orderId,
                                                       @RequestBody @Valid final OrdererInfoRequest request) {
         return orderService.findByIdAndOrdererInfo(orderId, request);
-    }
-
-    @Operation(summary = "주문 상세 정보 조회")
-    @GetMapping("/{orderId}")
-    public OrderResponse findById(@PathVariable final Long orderId) {
-        return orderService.findById(orderId);
     }
 }
