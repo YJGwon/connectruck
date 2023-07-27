@@ -25,7 +25,7 @@ export const fetchApi = async ({ url, requestInfo }, onSuccess) => {
     await fetch(url, requestInfo)
         .then(async response => {
             if (response.ok) {
-                onSuccess();
+                onSuccess(response);
             } else {
                 const data = await response.json();
                 handleErrorResponse(response.status, data);

@@ -100,9 +100,11 @@ export const CartProvider = ({children}) => {
             },
             body: JSON.stringify(data)
         };
-        const onSuccess = () => {
+        const onSuccess = (response) => {
+            const location = response.headers.get('location');
+            const orderId = location.slice(location.lastIndexOf('/') + 1);
+            alert(`주문이 완료되었습니다. 주문 조회시 아래 주문 번호를 입력하세요.\n주문 번호: ${orderId}`);
             setCartItems([]);
-            alert('주문이 완료되었습니다.');
         };
         fetchApi({url, requestInfo}, onSuccess);
     };
