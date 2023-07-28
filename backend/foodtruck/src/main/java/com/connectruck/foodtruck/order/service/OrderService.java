@@ -4,7 +4,8 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
-import com.connectruck.foodtruck.event.service.EventService;
+import com.connectruck.foodtruck.event.domain.Schedule;
+import com.connectruck.foodtruck.event.domain.ScheduleRepository;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.menu.domain.MenuRepository;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
@@ -25,6 +26,7 @@ import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,10 +44,9 @@ public class OrderService {
     private final OrderInfoRepository orderInfoRepository;
     private final MenuRepository menuRepository;
     private final TruckRepository truckRepository;
+    private final ScheduleRepository scheduleRepository;
 
     private final OrderMessagePublisher orderMessagePublisher;
-
-    private final EventService eventService;
 
     @Transactional
     public Long create(final OrderRequest request) {
@@ -142,8 +143,11 @@ public class OrderService {
         final Long eventId = truckRepository.findById(truckId)
                 .orElseThrow(() -> NotFoundException.of("푸드트럭", "truckId", truckId))
                 .getEventId();
+        final LocalDateTime now = LocalDateTime.now();
 
-        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
+        final Optional<Schedule> scheduleToday =
+                scheduleRepository.findByEventIdAndEventDate(eventId, now.toLocalDate());
+        if (scheduleToday.isEmpty() || scheduleToday.get().isClosedAt(now.toLocalTime())) {
             throw OrderCreationException.ofClosed();
         }
     }

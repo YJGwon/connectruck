@@ -1,20 +1,17 @@
 package com.connectruck.foodtruck.order.service;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
+import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 
 import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -30,7 +27,6 @@ import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,16 +35,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 class OrderServiceTest extends ServiceTestBase {
 
-    @SpyBean
-    private EventService eventService;
-
     @Autowired
     private OrderService orderService;
-
 
     private Event event;
     private Account owner;
@@ -69,7 +60,7 @@ class OrderServiceTest extends ServiceTestBase {
 
         @BeforeEach
         void setUp() {
-            setEventClosed(false);
+            dataSetup.setEventOpen(event);
         }
 
         @DisplayName("주문을 생성한다.")
@@ -91,13 +82,15 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenEventIsClosed() {
             // given
-            setEventClosed(true);
+            final Event closedEvent = dataSetup.saveEvent(서울FC_경기.create());
+            final Truck truckOfClosedEvent = dataSetup.saveTruck(closedEvent);
+            final Menu menu = dataSetup.saveMenu(truckOfClosedEvent);
 
             // when & then
             final OrderRequest request = new OrderRequest(
-                    savedTruck.getId(),
+                    truckOfClosedEvent.getId(),
                     "01000000000",
-                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
+                    List.of(new OrderLineRequest(menu.getId(), 2))
             );
             assertThatExceptionOfType(OrderCreationException.class)
                     .isThrownBy(() -> orderService.create(request))
@@ -155,12 +148,6 @@ class OrderServiceTest extends ServiceTestBase {
             assertThatExceptionOfType(OrderCreationException.class)
                     .isThrownBy(() -> orderService.create(request))
                     .withMessageContaining("다른 푸드트럭");
-        }
-
-        private void setEventClosed(final boolean value) {
-            doReturn(value)
-                    .when(eventService)
-                    .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
         }
     }
 

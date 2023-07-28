@@ -5,16 +5,12 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.startsWith;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -23,12 +19,10 @@ import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 public class OrderAcceptanceTest extends AcceptanceTestBase {
 
@@ -45,17 +39,11 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
         savedMenu = dataSetup.saveMenu(savedTruck);
     }
 
-    @SpyBean
-    private EventService eventService;
-
     @DisplayName("한 푸드트럭에 대해 메뉴를 주문한다.")
     @Test
     void order() {
         // given
-        // 이벤트 진행 시간 검증 통과
-        doReturn(false)
-                .when(eventService)
-                .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
+        dataSetup.setEventOpen(event);
 
         // when
         final OrderRequest request = new OrderRequest(
