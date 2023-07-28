@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
@@ -19,6 +20,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Event {
+
+    @Transient
+    public static final Event NULL = Event.ofNew("존재하지 않는 행사", null);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

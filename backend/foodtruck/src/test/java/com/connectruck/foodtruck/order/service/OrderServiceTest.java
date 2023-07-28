@@ -1,20 +1,17 @@
 package com.connectruck.foodtruck.order.service;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
+import static com.connectruck.foodtruck.common.fixture.data.EventFixture.서울FC_경기;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 
 import com.connectruck.foodtruck.common.dto.PageResponse;
 import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -30,7 +27,6 @@ import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,16 +35,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 class OrderServiceTest extends ServiceTestBase {
 
-    @SpyBean
-    private EventService eventService;
-
     @Autowired
     private OrderService orderService;
-
 
     private Event event;
     private Account owner;
@@ -69,7 +60,7 @@ class OrderServiceTest extends ServiceTestBase {
 
         @BeforeEach
         void setUp() {
-            setEventClosed(false);
+            dataSetup.setEventOpen(event);
         }
 
         @DisplayName("주문을 생성한다.")
@@ -91,17 +82,53 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenEventIsClosed() {
             // given
-            setEventClosed(true);
+            final Event closedEvent = dataSetup.saveEvent(서울FC_경기.create());
+            final Truck truckOfClosedEvent = dataSetup.saveTruck(closedEvent);
+            final Menu menu = dataSetup.saveMenu(truckOfClosedEvent);
+
+            // when & then
+            final OrderRequest request = new OrderRequest(
+                    truckOfClosedEvent.getId(),
+                    "01000000000",
+                    List.of(new OrderLineRequest(menu.getId(), 2))
+            );
+            assertThatExceptionOfType(OrderCreationException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("운영 시간");
+        }
+
+        @DisplayName("존재하지 않는 푸드트럭에 주문하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenTruckNotFound() {
+            // given
+            final Long fakeTruckId = 0L;
+
+            // when & then
+            final OrderRequest request = new OrderRequest(
+                    fakeTruckId,
+                    "01000000000",
+                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
+            );
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("푸드트럭");
+        }
+
+        @DisplayName("존재하지 않는 메뉴를 주문하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenMenuNotFound() {
+            // given
+            final Long fakeMenuId = 0L;
 
             // when & then
             final OrderRequest request = new OrderRequest(
                     savedTruck.getId(),
                     "01000000000",
-                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
+                    List.of(new OrderLineRequest(fakeMenuId, 2))
             );
-            assertThatExceptionOfType(OrderCreationException.class)
+            assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> orderService.create(request))
-                    .withMessageContaining("운영 시간");
+                    .withMessageContaining("메뉴");
         }
 
         @DisplayName("해당 푸드트럭의 메뉴가 아닌 메뉴를 주문하면 예외가 발생한다.")
@@ -122,12 +149,6 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.create(request))
                     .withMessageContaining("다른 푸드트럭");
         }
-
-        private void setEventClosed(final boolean value) {
-            doReturn(value)
-                    .when(eventService)
-                    .isEventClosedAt(eq(event.getId()), any(LocalDateTime.class));
-        }
     }
 
     @DisplayName("주문자 주문 상세 정보 조회")
@@ -139,6 +160,7 @@ class OrderServiceTest extends ServiceTestBase {
         void success() {
             // given
             final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final String expectedEventName = event.getName();
             final String expectedTruckName = savedTruck.getName();
             final List<Long> expectedOrderLineIds = expected.getOrderLines()
                     .stream()
@@ -157,6 +179,7 @@ class OrderServiceTest extends ServiceTestBase {
 
             assertAll(
                     () -> assertThat(response.id()).isEqualTo(expected.getId()),
+                    () -> assertThat(response.event().name()).isEqualTo(expectedEventName),
                     () -> assertThat(response.truck().name()).isEqualTo(expectedTruckName),
                     () -> assertThat(actualOrderLineIds).containsAll(expectedOrderLineIds)
             );
@@ -224,12 +247,12 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
-            final Long fakeId = 0L;
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
 
             // when & then
             assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderInfo.getId(), fakeId));
+                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderToOtherTruck.getId(), owner.getId()));
         }
 
         @DisplayName("해당하는 주문 정보가 존재하지 않으면 예외가 발생한다.")
@@ -294,6 +317,20 @@ class OrderServiceTest extends ServiceTestBase {
                     () -> assertThat(response.page()).isEqualTo(new PageResponse(size, 1, page, false))
             );
         }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.findOrdersByOwnerIdAndStatus(
+                            ownerNotOwningTruck.getId(), OrderStatus.CREATED.name(), 0, 1
+                    ))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
+        }
     }
 
     @DisplayName("주문 접수")
@@ -309,6 +346,19 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo createdOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("소유하지 않은 푸드트럭의 주문을 접수하면 예외가 발생한다.")
@@ -339,6 +389,19 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), owner.getId()));
         }
 
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo cookingOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKING);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
+        }
+
         @DisplayName("소유하지 않은 푸드트럭의 주문을 조리 완료 처리하면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfOrder() {
@@ -365,6 +428,19 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.complete(cookedOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo cookedOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKED);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.complete(cookedOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")
@@ -395,6 +471,20 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.cancel(inProgressOrder.getId(), owner.getId()));
+        }
+
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo inProgressOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.cancel(inProgressOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")

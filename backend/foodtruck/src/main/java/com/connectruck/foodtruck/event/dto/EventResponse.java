@@ -6,7 +6,6 @@ public record EventResponse(
         Long id,
         String name,
         String location
-
 ) {
 
     public static EventResponse of(final Event event) {

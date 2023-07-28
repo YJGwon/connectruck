@@ -14,12 +14,14 @@ import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Schedule {
 
     @Id

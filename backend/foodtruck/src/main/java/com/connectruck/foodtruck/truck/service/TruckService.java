@@ -35,16 +35,6 @@ public class TruckService {
         return TruckResponse.of(found);
     }
 
-    public Long findEventIdById(final Long id) {
-        final Truck found = getOneById(id);
-        return found.getEventId();
-    }
-
-    public Long findOwnerIdById(Long id) {
-        final Truck found = getOneById(id);
-        return found.getOwnerId();
-    }
-
     private Truck getOneById(final Long id) {
         return truckRepository.findById(id)
                 .orElseThrow(() -> NotFoundException.of("푸드트럭", "truckId", id));

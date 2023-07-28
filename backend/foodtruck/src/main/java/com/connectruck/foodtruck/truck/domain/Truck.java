@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.EqualsAndHashCode.Include;
@@ -19,6 +20,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Truck {
+
+    @Transient
+    public static final Truck NULL = Truck.ofNew(null, "존재하지 않는 푸드트럭", null, null, null);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +42,5 @@ public class Truck {
                               final String thumbnail,
                               final Long ownerId) {
         return new Truck(null, eventId, name, carNumber, thumbnail, ownerId);
-    }
-
-    public static Truck ofNewWithOutThumbnailAndOwner(final Long eventId, final String name, final String carNumber) {
-        return new Truck(null, eventId, name, carNumber, null, null);
     }
 }

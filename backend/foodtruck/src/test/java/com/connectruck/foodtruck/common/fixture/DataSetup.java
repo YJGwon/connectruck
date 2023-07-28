@@ -18,6 +18,8 @@ import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.AccountRepository;
 import com.connectruck.foodtruck.user.domain.Role;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Component;
@@ -50,6 +52,16 @@ public class DataSetup {
 
     public Event saveEvent(final Event event) {
         return testEventRepository.save(event);
+    }
+
+    public void setEventOpen(final Event event) {
+        final Schedule schedule = Schedule.ofNew(
+                LocalDate.now(),
+                LocalTime.MIN,
+                LocalTime.of(23, 59),
+                event.getId()
+        );
+        saveSchedule(schedule);
     }
 
     public Schedule saveSchedule(final Schedule schedule) {

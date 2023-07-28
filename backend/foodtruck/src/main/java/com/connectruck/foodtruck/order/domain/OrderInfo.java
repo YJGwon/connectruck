@@ -97,6 +97,10 @@ public class OrderInfo {
         status = CANCELED;
     }
 
+    public boolean isTruckId(final Long truckId) {
+        return this.truckId.equals(truckId);
+    }
+
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {
         if (orderLines == null || orderLines.isEmpty()) {
             throw new ClientException("주문 메뉴 내역을 변경할 수 없습니다.", "주문 메뉴 내역을 빈 값으로 변경할 수 없습니다.");

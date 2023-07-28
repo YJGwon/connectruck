@@ -1,9 +1,10 @@
 package com.connectruck.foodtruck.notification.service;
 
+import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.notification.domain.SseEmitterRepository;
 import com.connectruck.foodtruck.notification.domain.SseEvent;
 import com.connectruck.foodtruck.notification.domain.SseEventRepository;
-import com.connectruck.foodtruck.truck.service.TruckService;
+import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -26,11 +27,12 @@ public class NotificationService {
 
     private final SseEmitterRepository sseEmitterRepository;
     private final SseEventRepository sseEventRepository;
-
-    private final TruckService truckService;
+    private final TruckRepository truckRepository;
 
     public SseEmitter subscribeOrders(final Long ownerId, final String lastEventId) {
-        final Long truckId = truckService.findByOwnerId(ownerId).id();
+        final Long truckId = truckRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> NotFoundException.of("소유한 푸드트럭", "ownerId", ownerId))
+                .getId();
 
         final SseEmitter sseEmitter = new SseEmitter(SUBSCRIBE_TIME_OUT);
         sseEmitter.onTimeout(sseEmitter::complete);
