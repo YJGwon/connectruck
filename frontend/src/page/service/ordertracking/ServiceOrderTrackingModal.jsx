@@ -52,6 +52,16 @@ const OrderDetailModal = ({orderDetail, onClose}) => {
                     <Accordion>
                         <AccordionSummary
                             expandIcon={<ExpandMore />}>
+                            <h3>행사 정보</h3>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography>이름: {orderDetail?.event.name}</Typography>
+                            <Typography>위치: {orderDetail?.event.location}</Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMore />}>
                             <h3>주문 상세</h3>
                         </AccordionSummary>
                         <AccordionDetails>
