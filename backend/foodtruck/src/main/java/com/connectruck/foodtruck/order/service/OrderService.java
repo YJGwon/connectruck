@@ -5,8 +5,8 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.event.service.EventService;
-import com.connectruck.foodtruck.menu.dto.MenuResponse;
-import com.connectruck.foodtruck.menu.service.MenuService;
+import com.connectruck.foodtruck.menu.domain.Menu;
+import com.connectruck.foodtruck.menu.domain.MenuRepository;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -40,17 +40,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderInfoRepository orderInfoRepository;
+    private final MenuRepository menuRepository;
+
     private final OrderMessagePublisher orderMessagePublisher;
 
-    private final MenuService menuService;
     private final TruckService truckService;
     private final EventService eventService;
-
-    private static void checkTruckHasMenu(final OrderInfo orderInfo, final MenuResponse menuResponse) {
-        if (!orderInfo.getTruckId().equals(menuResponse.truckId())) {
-            throw OrderCreationException.ofOtherTruck();
-        }
-    }
 
     @Transactional
     public Long create(final OrderRequest request) {
@@ -125,20 +120,13 @@ public class OrderService {
         order.cancel();
     }
 
-    private void checkEventOpened(final Long truckId) {
-        final Long eventId = truckService.findEventIdById(truckId);
-        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
-            throw OrderCreationException.ofClosed();
-        }
-    }
-
     private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderLineRequest orderLineRequest) {
         final Long menuId = orderLineRequest.menuId();
-        final MenuResponse menuResponse = menuService.findById(menuId);
-        checkTruckHasMenu(orderInfo, menuResponse);
+        final Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> NotFoundException.of("메뉴", "menuId", menuId));
+        checkTruckHasMenu(orderInfo, menu);
 
-        return OrderLine.ofNew(menuResponse.id(), menuResponse.name(), menuResponse.price(),
-                orderLineRequest.quantity(), orderInfo);
+        return OrderLine.ofNew(menu.getId(), menu.getName(), menu.getPrice(), orderLineRequest.quantity(), orderInfo);
     }
 
     private void publishOrderCreatedMessage(Long truckId, Long id) {
@@ -146,6 +134,19 @@ public class OrderService {
             orderMessagePublisher.publishCreatedMessage(new OrderCreatedMessage(truckId, id));
         } catch (Exception e) {
             log.error("failed to send order created message", e);
+        }
+    }
+
+    private void checkEventOpened(final Long truckId) {
+        final Long eventId = truckService.findEventIdById(truckId);
+        if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
+            throw OrderCreationException.ofClosed();
+        }
+    }
+
+    private void checkTruckHasMenu(final OrderInfo orderInfo, final Menu menu) {
+        if (!menu.isTruckId(orderInfo.getTruckId())) {
+            throw OrderCreationException.ofOtherTruck();
         }
     }
 

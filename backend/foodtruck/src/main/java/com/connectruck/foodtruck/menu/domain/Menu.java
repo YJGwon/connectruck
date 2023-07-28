@@ -34,4 +34,8 @@ public class Menu {
     public static Menu ofNew(final String name, final BigDecimal price, final Long truckId) {
         return new Menu(null, name, price, truckId);
     }
+
+    public boolean isTruckId(final Long truckId) {
+        return this.truckId.equals(truckId);
+    }
 }

@@ -104,6 +104,24 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("운영 시간");
         }
 
+
+        @DisplayName("존재하지 않는 메뉴를 주문하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenMenuNotFound() {
+            // given
+            final Long fakeMenuId = 0L;
+
+            // when & then
+            final OrderRequest request = new OrderRequest(
+                    savedTruck.getId(),
+                    "01000000000",
+                    List.of(new OrderLineRequest(fakeMenuId, 2))
+            );
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("메뉴");
+        }
+
         @DisplayName("해당 푸드트럭의 메뉴가 아닌 메뉴를 주문하면 예외가 발생한다.")
         @Test
         void throwsException_whenMenuOfOtherTruck() {
