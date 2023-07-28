@@ -104,6 +104,22 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("운영 시간");
         }
 
+        @DisplayName("존재하지 않는 푸드트럭에 주문하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenTruckNotFound() {
+            // given
+            final Long fakeTruckId = 0L;
+
+            // when & then
+            final OrderRequest request = new OrderRequest(
+                    fakeTruckId,
+                    "01000000000",
+                    List.of(new OrderLineRequest(savedMenu.getId(), 2))
+            );
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("푸드트럭");
+        }
 
         @DisplayName("존재하지 않는 메뉴를 주문하면 예외가 발생한다.")
         @Test
@@ -242,12 +258,12 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
-            final Long fakeId = 0L;
+            final Truck otherTruck = dataSetup.saveTruck(event);
+            final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
 
             // when & then
             assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderInfo.getId(), fakeId));
+                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderToOtherTruck.getId(), owner.getId()));
         }
 
         @DisplayName("해당하는 주문 정보가 존재하지 않으면 예외가 발생한다.")
@@ -312,6 +328,20 @@ class OrderServiceTest extends ServiceTestBase {
                     () -> assertThat(response.page()).isEqualTo(new PageResponse(size, 1, page, false))
             );
         }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.findOrdersByOwnerIdAndStatus(
+                            ownerNotOwningTruck.getId(), OrderStatus.CREATED.name(), 0, 1
+                    ))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
+        }
     }
 
     @DisplayName("주문 접수")
@@ -327,6 +357,19 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo createdOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.acceptOrder(createdOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("소유하지 않은 푸드트럭의 주문을 접수하면 예외가 발생한다.")
@@ -357,6 +400,20 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), owner.getId()));
         }
 
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo cookingOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKING);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
+        }
+
         @DisplayName("소유하지 않은 푸드트럭의 주문을 조리 완료 처리하면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfOrder() {
@@ -383,6 +440,19 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.complete(cookedOrder.getId(), owner.getId()));
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo cookedOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, OrderStatus.COOKED);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.complete(cookedOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")
@@ -413,6 +483,20 @@ class OrderServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> orderService.cancel(inProgressOrder.getId(), owner.getId()));
+        }
+
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final OrderInfo inProgressOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> orderService.cancel(inProgressOrder.getId(), ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("소유하지 않은 푸드트럭의 주문을 픽업 완료 처리하면 예외가 발생한다.")

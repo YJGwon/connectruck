@@ -1,13 +1,13 @@
 package com.connectruck.foodtruck.order.dto;
 
 import com.connectruck.foodtruck.order.domain.OrderInfo;
-import com.connectruck.foodtruck.truck.dto.TruckResponse;
+import com.connectruck.foodtruck.truck.domain.Truck;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record OrderDetailResponse(
         Long id,
-        TruckResponse truck,
+        OrderedTruckResponse truck,
         String phone,
         String status,
         LocalDateTime createdAt,
@@ -15,7 +15,7 @@ public record OrderDetailResponse(
         List<OrderLineResponse> menus
 ) {
 
-    public static OrderDetailResponse of(final TruckResponse truck, final OrderInfo orderInfo) {
+    public static OrderDetailResponse of(final OrderInfo orderInfo, final Truck orderedTruck) {
         final List<OrderLineResponse> menus = orderInfo.getOrderLines()
                 .stream()
                 .map(OrderLineResponse::of)
@@ -23,7 +23,7 @@ public record OrderDetailResponse(
 
         return new OrderDetailResponse(
                 orderInfo.getId(),
-                truck,
+                OrderedTruckResponse.of(orderedTruck),
                 orderInfo.getPhone(),
                 orderInfo.getStatus().toKorean(),
                 orderInfo.getCreatedAt(),

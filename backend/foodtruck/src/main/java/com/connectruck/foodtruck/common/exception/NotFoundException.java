@@ -3,7 +3,7 @@ package com.connectruck.foodtruck.common.exception;
 public class NotFoundException extends CustomException {
 
     private static final String TITLE_FORMAT = "존재하지 않는 %s입니다.";
-    private static final String DETAIL_FORMAT = "해당하는 %s이(가) 존재하지 않습니다. 입력값(%s): %s";
+    private static final String DETAIL_FORMAT = "%s이(가) 존재하지 않습니다. 입력값(%s): %s";
 
     private NotFoundException(final String title, final String detail) {
         super(title, detail);

@@ -21,8 +21,8 @@ import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
 import com.connectruck.foodtruck.order.infra.OrderMessagePublisher;
-import com.connectruck.foodtruck.truck.dto.TruckResponse;
-import com.connectruck.foodtruck.truck.service.TruckService;
+import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +41,10 @@ public class OrderService {
 
     private final OrderInfoRepository orderInfoRepository;
     private final MenuRepository menuRepository;
+    private final TruckRepository truckRepository;
 
     private final OrderMessagePublisher orderMessagePublisher;
 
-    private final TruckService truckService;
     private final EventService eventService;
 
     @Transactional
@@ -69,9 +69,10 @@ public class OrderService {
     public OrderDetailResponse findByIdAndOrdererInfo(final Long id, final OrdererInfoRequest request) {
         final OrderInfo found = orderInfoRepository.findByIdAndPhone(id, request.phone())
                 .orElseThrow(() -> new ClientException("주문 정보를 조회할 수 없습니다.", "잘못된 주문 정보 입니다."));
-        final TruckResponse truck = truckService.findById(found.getTruckId());
+        final Truck orderedTruck = truckRepository.findById(found.getTruckId())
+                .orElse(Truck.NULL);
 
-        return OrderDetailResponse.of(truck, found);
+        return OrderDetailResponse.of(found, orderedTruck);
     }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {
@@ -82,7 +83,7 @@ public class OrderService {
 
     public OrdersResponse findOrdersByOwnerIdAndStatus(final Long ownerId, final String rawStatus,
                                                        final int page, final int size) {
-        final Long truckId = truckService.findByOwnerId(ownerId).id();
+        final Long truckId = getTruckIdByOwnerId(ownerId);
 
         final Sort latest = Sort.by(DESC, "createdAt");
         final PageRequest pageRequest = PageRequest.of(page, size, latest);
@@ -138,7 +139,10 @@ public class OrderService {
     }
 
     private void checkEventOpened(final Long truckId) {
-        final Long eventId = truckService.findEventIdById(truckId);
+        final Long eventId = truckRepository.findById(truckId)
+                .orElseThrow(() -> NotFoundException.of("푸드트럭", "truckId", truckId))
+                .getEventId();
+
         if (eventService.isEventClosedAt(eventId, LocalDateTime.now())) {
             throw OrderCreationException.ofClosed();
         }
@@ -151,7 +155,9 @@ public class OrderService {
     }
 
     private void checkOwnerOfOrder(final OrderInfo order, final Long ownerId) {
-        if (!ownerId.equals(truckService.findOwnerIdById(order.getTruckId()))) {
+        final Long truckId = getTruckIdByOwnerId(ownerId);
+
+        if (!order.isTruckId(truckId)) {
             throw new NotOwnerOfOrderException();
         }
     }
@@ -167,5 +173,11 @@ public class OrderService {
             return orderInfoRepository.findByTruckId(truckId, pageRequest);
         }
         return orderInfoRepository.findByTruckIdAndStatus(truckId, status, pageRequest);
+    }
+
+    private Long getTruckIdByOwnerId(Long ownerId) {
+        return truckRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> NotFoundException.of("소유한 푸드트럭", "ownerId", ownerId))
+                .getId();
     }
 }
