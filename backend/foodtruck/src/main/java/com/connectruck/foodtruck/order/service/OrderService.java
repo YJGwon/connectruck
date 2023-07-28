@@ -4,6 +4,8 @@ import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
+import com.connectruck.foodtruck.event.domain.Event;
+import com.connectruck.foodtruck.event.domain.EventRepository;
 import com.connectruck.foodtruck.event.domain.Schedule;
 import com.connectruck.foodtruck.event.domain.ScheduleRepository;
 import com.connectruck.foodtruck.menu.domain.Menu;
@@ -44,6 +46,7 @@ public class OrderService {
     private final OrderInfoRepository orderInfoRepository;
     private final MenuRepository menuRepository;
     private final TruckRepository truckRepository;
+    private final EventRepository eventRepository;
     private final ScheduleRepository scheduleRepository;
 
     private final OrderMessagePublisher orderMessagePublisher;
@@ -72,8 +75,10 @@ public class OrderService {
                 .orElseThrow(() -> new ClientException("주문 정보를 조회할 수 없습니다.", "잘못된 주문 정보 입니다."));
         final Truck orderedTruck = truckRepository.findById(found.getTruckId())
                 .orElse(Truck.NULL);
+        final Event orderedEvent = eventRepository.findById(orderedTruck.getEventId())
+                .orElse(Event.NULL);
 
-        return OrderDetailResponse.of(found, orderedTruck);
+        return OrderDetailResponse.of(found, orderedTruck, orderedEvent);
     }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {

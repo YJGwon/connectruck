@@ -160,6 +160,7 @@ class OrderServiceTest extends ServiceTestBase {
         void success() {
             // given
             final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final String expectedEventName = event.getName();
             final String expectedTruckName = savedTruck.getName();
             final List<Long> expectedOrderLineIds = expected.getOrderLines()
                     .stream()
@@ -178,6 +179,7 @@ class OrderServiceTest extends ServiceTestBase {
 
             assertAll(
                     () -> assertThat(response.id()).isEqualTo(expected.getId()),
+                    () -> assertThat(response.event().name()).isEqualTo(expectedEventName),
                     () -> assertThat(response.truck().name()).isEqualTo(expectedTruckName),
                     () -> assertThat(actualOrderLineIds).containsAll(expectedOrderLineIds)
             );

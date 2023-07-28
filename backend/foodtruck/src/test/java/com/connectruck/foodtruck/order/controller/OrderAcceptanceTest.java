@@ -64,6 +64,7 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
     void findByIdAndOrdererInfo() {
         // given
         final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+        final String expectedEventName = event.getName();
         final String expectedTruckName = savedTruck.getName();
         final String[] expectedMenuNames = expected.getOrderLines()
                 .stream()
@@ -78,6 +79,7 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
         // then
         response.statusCode(OK.value())
                 .body("id", equalTo(expected.getId().intValue()))
+                .body("event.name", equalTo(expectedEventName))
                 .body("truck.name", equalTo(expectedTruckName))
                 .body("phone", equalTo(expected.getPhone()))
                 .body("menus", hasSize(expectedMenuNames.length))
