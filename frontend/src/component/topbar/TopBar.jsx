@@ -1,30 +1,58 @@
-import React from 'react';
-import {AppBar, Toolbar, Typography, Link} from '@mui/material';
+import React, {useState} from 'react';
+import {
+    AppBar,
+    Toolbar,
+    Link,
+    Typography,
+    IconButton,
+    Drawer,
+    Box,
+    List
+} from '@mui/material';
+import {Menu} from '@mui/icons-material';
 
-import './TopBar.css';
+export default function TobBar({title, root, icon, buttons}) {
 
-export default function TopBar({title, root, buttons}) {
+    const [openMenu, setOpenMenu] = useState(false);
 
+    const toggleMenu = (open) => (event) => {
+        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+            return;
+        }
+
+        setOpenMenu(open);
+    };
+  
     return (
-        <AppBar position="static" className="topbar">
+        <AppBar position="static">
             <Toolbar>
-                <Typography variant="h6" component="div" className="topbar__title">
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     <Link href={root} color="inherit" underline="none">
                         {title}
                     </Link>
                 </Typography>
-                <nav>
-                    {buttons &&
-                        buttons.map((button, index) => (
-                            <Link
-                                key={index}
-                                href={button.link}
-                                color="inherit" underline="none" className="topbar__link">
-                                {button.name}
-                            </Link>
-                        ))
-                    }
-                </nav>            
+                <div>
+                    {buttons && 
+                    <IconButton
+                        size="large"
+                        edge="end"
+                        color="inherit"
+                        onClick={toggleMenu(true)}>
+                        {icon ? icon : <Menu/>}
+                    </IconButton>}
+                    <Drawer
+                        anchor="right"
+                        open={openMenu}
+                        onClose={toggleMenu(false)}>
+                        <Box
+                            sx={{ width: 250 }}
+                            onKeyDown={toggleMenu(false)}>
+                            <List>
+                                {buttons}
+                            </List>
+                        </Box>
+                    </Drawer>
+                </div>
             </Toolbar>
         </AppBar>
     );
