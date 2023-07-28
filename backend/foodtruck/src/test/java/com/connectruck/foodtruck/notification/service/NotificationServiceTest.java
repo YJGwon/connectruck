@@ -1,8 +1,10 @@
 package com.connectruck.foodtruck.notification.service;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
@@ -34,6 +36,18 @@ class NotificationServiceTest extends ServiceTestBase {
             // when & then
             assertThatNoException()
                     .isThrownBy(() -> notificationService.subscribeOrders(owner.getId(), ""));
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> notificationService.subscribeOrders(ownerNotOwningTruck.getId(), ""))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
         @DisplayName("구독할 때, 마지막으로 수신한 이벤트 이후에 이벤트가 더 있었다면 마저 수신한다.")

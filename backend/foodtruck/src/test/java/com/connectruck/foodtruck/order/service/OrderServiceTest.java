@@ -389,7 +389,6 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.finishCooking(cookingOrder.getId(), owner.getId()));
         }
 
-
         @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
