@@ -7,5 +7,5 @@ public interface SseEventRepository {
 
     void save(SseEvent sseEvent);
 
-    List<SseEvent> findByTypeAndTargetIdAndTimestampGraterThan(String groupType, Long groupId, long timestamp);
+    List<SseEvent> findByGroupAndTimestampGraterThan(SseEventGroup group, long timestamp);
 }

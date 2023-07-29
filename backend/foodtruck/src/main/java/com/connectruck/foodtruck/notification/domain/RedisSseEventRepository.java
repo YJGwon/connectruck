@@ -18,17 +18,19 @@ public class RedisSseEventRepository implements SseEventRepository {
 
     @Override
     public void save(final SseEvent sseEvent) {
-        final String key;
-        key = String.format(KEY_FORMAT, sseEvent.getGroupType(), sseEvent.getGroupId());
+        final String key = generateKey(sseEvent.getGroup());
         sseEventZSetOperations.add(key, sseEvent, sseEvent.getTimestamp());
     }
 
     @Override
-    public List<SseEvent> findByTypeAndTargetIdAndTimestampGraterThan(final String groupType, Long groupId,
-                                                                      final long timestamp) {
-        final String key = String.format(KEY_FORMAT, groupType, groupId);
+    public List<SseEvent> findByGroupAndTimestampGraterThan(final SseEventGroup group, final long timestamp) {
+        final String key = generateKey(group);
         return sseEventZSetOperations.rangeByScore(key, timestamp + 1, Long.MAX_VALUE)
                 .stream()
                 .toList();
+    }
+
+    private String generateKey(SseEventGroup group) {
+        return String.format(KEY_FORMAT, group.getType(), group.getId());
     }
 }
