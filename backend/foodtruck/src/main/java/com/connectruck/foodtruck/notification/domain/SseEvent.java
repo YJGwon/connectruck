@@ -11,15 +11,26 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class SseEvent {
 
-    private Long groupId;
+    private static final String EVENT_ID_DELIMITER = "_";
+
+    private SseEventGroup group;
     private String name;
     private String data;
     private long timestamp = System.currentTimeMillis();
 
-    public SseEvent(final Long groupId, final String name, final String data) {
-        this.groupId = groupId;
+    public SseEvent(final SseEventGroup group, final String name, final String data) {
+        this.group = group;
         this.name = name;
         this.data = data;
         this.timestamp = System.currentTimeMillis();
+    }
+
+    public static Long getTimestampFrom(final String eventId) {
+        final String rawTimestamp = eventId.substring(eventId.indexOf(EVENT_ID_DELIMITER) + 1);
+        return Long.parseLong(rawTimestamp);
+    }
+
+    public String generateEventId() {
+        return group.getId() + EVENT_ID_DELIMITER + timestamp;
     }
 }

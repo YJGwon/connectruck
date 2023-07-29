@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.connectruck.foodtruck.notification.config.RedisSseEventTemplateConfig;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,27 +23,27 @@ class RedisSseEventRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        final Set<String> keys = sseEventTemplate.keys("*");
-        sseEventTemplate.delete(keys);
+//        final Set<String> keys = sseEventTemplate.keys("*");
+//        sseEventTemplate.delete(keys);
     }
 
     @DisplayName("특정 group에서 timestamp 값이 더 큰 SSE 기록을 조회한다.")
     @Test
     void findByGroupIdAndTimestampGraterThan() throws InterruptedException {
         // given
-        final Long groupId = 0L;
+        final SseEventGroup group = new SseEventGroup(SseEventGroupType.OWNER_ORDER, 0L);
 
-        sseEventRepository.save(new SseEvent(groupId, "event", "something1"));
-        sseEventRepository.save(new SseEvent(groupId, "event", "something2"));
+        sseEventRepository.save(new SseEvent(group, "event", "something1"));
+        sseEventRepository.save(new SseEvent(group, "event", "something2"));
 
         final long timestamp = System.currentTimeMillis();
         Thread.sleep(1);
 
-        final SseEvent expected = new SseEvent(groupId, "event", "something3");
+        final SseEvent expected = new SseEvent(group, "event", "something3");
         sseEventRepository.save(expected);
 
         // when
-        final List<SseEvent> found = sseEventRepository.findByGroupIdAndTimestampGraterThan(groupId, timestamp);
+        final List<SseEvent> found = sseEventRepository.findByGroupAndTimestampGraterThan(group, timestamp);
 
         // then
         assertThat(found).containsExactly(expected);

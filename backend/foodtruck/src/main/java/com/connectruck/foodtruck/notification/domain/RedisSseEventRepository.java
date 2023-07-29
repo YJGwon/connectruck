@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RedisSseEventRepository implements SseEventRepository {
 
+    private static final String KEY_FORMAT = "sse:%s:%d";
+
     private final ZSetOperations<String, SseEvent> sseEventZSetOperations;
 
     RedisSseEventRepository(final RedisTemplate<String, SseEvent> sseEventTemplate) {
@@ -16,13 +18,19 @@ public class RedisSseEventRepository implements SseEventRepository {
 
     @Override
     public void save(final SseEvent sseEvent) {
-        sseEventZSetOperations.add(sseEvent.getGroupId().toString(), sseEvent, sseEvent.getTimestamp());
+        final String key = generateKey(sseEvent.getGroup());
+        sseEventZSetOperations.add(key, sseEvent, sseEvent.getTimestamp());
     }
 
     @Override
-    public List<SseEvent> findByGroupIdAndTimestampGraterThan(final Long groupId, final long timestamp) {
-        return sseEventZSetOperations.rangeByScore(groupId.toString(), timestamp + 1, Long.MAX_VALUE)
+    public List<SseEvent> findByGroupAndTimestampGraterThan(final SseEventGroup group, final long timestamp) {
+        final String key = generateKey(group);
+        return sseEventZSetOperations.rangeByScore(key, timestamp + 1, Long.MAX_VALUE)
                 .stream()
                 .toList();
+    }
+
+    private String generateKey(SseEventGroup group) {
+        return String.format(KEY_FORMAT, group.getType().name().toLowerCase(), group.getId());
     }
 }
