@@ -32,19 +32,21 @@ class RedisSseEventRepositoryTest {
     @Test
     void findByGroupIdAndTimestampGraterThan() throws InterruptedException {
         // given
+        final String groupType = "some-group";
         final Long groupId = 0L;
 
-        sseEventRepository.save(new SseEvent(groupId, "event", "something1"));
-        sseEventRepository.save(new SseEvent(groupId, "event", "something2"));
+        sseEventRepository.save(new SseEvent(groupType, groupId, "event", "something1"));
+        sseEventRepository.save(new SseEvent(groupType, groupId, "event", "something2"));
 
         final long timestamp = System.currentTimeMillis();
         Thread.sleep(1);
 
-        final SseEvent expected = new SseEvent(groupId, "event", "something3");
+        final SseEvent expected = new SseEvent(groupType, groupId, "event", "something3");
         sseEventRepository.save(expected);
 
         // when
-        final List<SseEvent> found = sseEventRepository.findByGroupIdAndTimestampGraterThan(groupId, timestamp);
+        final List<SseEvent> found = sseEventRepository.findByTypeAndTargetIdAndTimestampGraterThan(groupType, groupId,
+                timestamp);
 
         // then
         assertThat(found).containsExactly(expected);

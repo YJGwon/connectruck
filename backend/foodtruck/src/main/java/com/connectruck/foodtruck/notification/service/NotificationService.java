@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 @Slf4j
 public class NotificationService {
 
+    private static final String SSE_GROUP_TYPE_OWNER_ORDER = "owner-order";
     private static final Long SUBSCRIBE_TIME_OUT = 7L * 60L * 1000L;
     private static final String SSE_EVENT_ID_DELIMITER = "_";
 
@@ -51,6 +52,7 @@ public class NotificationService {
 
     public void notifyOrderCreated(final Long truckId, final Long orderId) {
         final SseEvent sseEvent = new SseEvent(
+                SSE_GROUP_TYPE_OWNER_ORDER,
                 truckId,
                 "order created",
                 orderId.toString()
@@ -68,6 +70,7 @@ public class NotificationService {
 
     private void sendInitialEvent(final Long truckId, final SseEmitter sseEmitter) {
         final SseEvent sseEvent = new SseEvent(
+                SSE_GROUP_TYPE_OWNER_ORDER,
                 truckId,
                 "connect",
                 "connected on orders for " + truckId
@@ -84,7 +87,8 @@ public class NotificationService {
         final long truckId = Long.parseLong(stringTokenizer.nextToken());
         final long timestamp = Long.parseLong(stringTokenizer.nextToken());
 
-        final List<SseEvent> lickedEvents = sseEventRepository.findByGroupIdAndTimestampGraterThan(truckId, timestamp);
+        final List<SseEvent> lickedEvents = sseEventRepository
+                .findByTypeAndTargetIdAndTimestampGraterThan(SSE_GROUP_TYPE_OWNER_ORDER, truckId, timestamp);
         for (SseEvent lickedEvent : lickedEvents) {
             send(sseEmitter, lickedEvent);
         }
