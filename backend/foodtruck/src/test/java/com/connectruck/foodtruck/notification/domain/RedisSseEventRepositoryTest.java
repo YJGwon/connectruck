@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.connectruck.foodtruck.notification.config.RedisSseEventTemplateConfig;
 import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,15 +23,15 @@ class RedisSseEventRepositoryTest {
 
     @AfterEach
     void tearDown() {
-        final Set<String> keys = sseEventTemplate.keys("*");
-        sseEventTemplate.delete(keys);
+//        final Set<String> keys = sseEventTemplate.keys("*");
+//        sseEventTemplate.delete(keys);
     }
 
     @DisplayName("특정 group에서 timestamp 값이 더 큰 SSE 기록을 조회한다.")
     @Test
     void findByGroupIdAndTimestampGraterThan() throws InterruptedException {
         // given
-        final SseEventGroup group = new SseEventGroup("some-group", 0L);
+        final SseEventGroup group = new SseEventGroup(SseEventGroupType.OWNER_ORDER, 0L);
 
         sseEventRepository.save(new SseEvent(group, "event", "something1"));
         sseEventRepository.save(new SseEvent(group, "event", "something2"));

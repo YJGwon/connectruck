@@ -31,6 +31,6 @@ public class RedisSseEventRepository implements SseEventRepository {
     }
 
     private String generateKey(SseEventGroup group) {
-        return String.format(KEY_FORMAT, group.getType(), group.getId());
+        return String.format(KEY_FORMAT, group.getType().name().toLowerCase(), group.getId());
     }
 }

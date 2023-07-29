@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class SseEventGroup {
 
-    private String type;
+    private SseEventGroupType type;
     private Long id;
 }

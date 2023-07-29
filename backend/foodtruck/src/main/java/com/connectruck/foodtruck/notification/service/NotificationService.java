@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.notification.service;
 
+import static com.connectruck.foodtruck.notification.domain.SseEventGroupType.OWNER_ORDER;
+
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.notification.domain.SseEmitterRepository;
 import com.connectruck.foodtruck.notification.domain.SseEvent;
@@ -22,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 @Slf4j
 public class NotificationService {
 
-    private static final String SSE_GROUP_TYPE_OWNER_ORDER = "owner-order";
     private static final Long SUBSCRIBE_TIME_OUT = 7L * 60L * 1000L;
 
     private final SseEmitterRepository sseEmitterRepository;
@@ -42,7 +43,7 @@ public class NotificationService {
         });
         log.info("SSE connection started - {}", truckId);
 
-        final SseEventGroup group = new SseEventGroup(SSE_GROUP_TYPE_OWNER_ORDER, truckId);
+        final SseEventGroup group = new SseEventGroup(OWNER_ORDER, truckId);
         sendInitialEvent(group, sseEmitter);
         sendLickedEvents(lastEventId, group, sseEmitter);
 
@@ -51,7 +52,7 @@ public class NotificationService {
     }
 
     public void notifyOrderCreated(final Long truckId, final Long orderId) {
-        final SseEventGroup group = new SseEventGroup(SSE_GROUP_TYPE_OWNER_ORDER, truckId);
+        final SseEventGroup group = new SseEventGroup(OWNER_ORDER, truckId);
         final SseEvent sseEvent = new SseEvent(group, "order created", orderId.toString());
         sseEventRepository.save(sseEvent);
 
