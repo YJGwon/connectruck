@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Typography, List, ListItem, ListItemText, Button} from '@mui/material';
+import {Typography, List, ListItem, ListItemText, Button, Stack} from '@mui/material';
 
 import {CartContext} from '../../../context/CartContext';
 import {fetchData} from '../../../function/CustomFetch';
@@ -29,13 +29,17 @@ export default function ServiceMenuList({truckId}) {
                 {
                     menus.map((menu, index) => (
                         <ListItem key={index}>
-                            <ListItemText primary={menu.name} secondary={`${menu.price}원`}/>
-                            <Button 
-                                variant="contained" 
-                                color="primary"
-                                onClick={() => addToCart(menu, truckId)}>
-                                담기
-                            </Button>
+                            <ListItemText primary={menu.name} secondary={menu.description}/>
+                            <Stack direction="row" spacing={2}>
+                                <Typography>{`${menu.price}원`}</Typography>
+                                <Button 
+                                    variant="contained" 
+                                    color="primary"
+                                    disabled={menu.soldOut}
+                                    onClick={() => addToCart(menu, truckId)}>
+                                    {menu.soldOut? '품절' : '담기'}
+                                </Button>
+                            </Stack>
                         </ListItem>
                     ))
                 }
