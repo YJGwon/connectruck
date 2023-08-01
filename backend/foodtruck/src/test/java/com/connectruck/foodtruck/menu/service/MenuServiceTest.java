@@ -7,10 +7,10 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.menu.domain.Menu;
-import com.connectruck.foodtruck.menu.dto.MenuResponse;
 import com.connectruck.foodtruck.menu.dto.MenusResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
+import com.connectruck.foodtruck.user.domain.Account;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,38 +21,15 @@ class MenuServiceTest extends ServiceTestBase {
     @Autowired
     private MenuService menuService;
 
-    @DisplayName("메뉴 조회")
-    @Nested
-    class findById {
+    private Event savedEvent;
+    private Account owner;
+    private Truck savedTruck;
 
-        @DisplayName("id로 메뉴를 조회한다.")
-        @Test
-        void success() {
-            // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
-
-            final Truck savedTruck = dataSetup.saveTruck(event);
-            final Menu expected = dataSetup.saveMenu(savedTruck);
-
-            // when
-            final MenuResponse response = menuService.findById(expected.getId());
-
-            // then
-            assertThat(response.name()).isEqualTo(expected.getName());
-        }
-
-        @DisplayName("해당하는 메뉴가 존재하지 않으면 예외가 발생한다.")
-        @Test
-        void throwsException_whenMenuNotFound() {
-            // given
-            final Long fakeId = 0L;
-
-            // when & then
-            assertThatExceptionOfType(NotFoundException.class)
-                    .isThrownBy(() -> menuService.findById(fakeId))
-                    .withMessageContaining("존재하지 않습니다");
-        }
+    @BeforeEach
+    void setUp() {
+        savedEvent = dataSetup.saveEvent(밤도깨비_야시장.create());
+        owner = dataSetup.saveOwnerAccount();
+        savedTruck = dataSetup.saveTruck(savedEvent, owner.getId());
     }
 
     @DisplayName("푸드트럭 메뉴 목록 조회")
@@ -63,10 +40,6 @@ class MenuServiceTest extends ServiceTestBase {
         @Test
         void success() {
             // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
-
-            final Truck savedTruck = dataSetup.saveTruck(event);
             dataSetup.saveMenu(savedTruck);
             dataSetup.saveMenu(savedTruck);
 
@@ -75,6 +48,37 @@ class MenuServiceTest extends ServiceTestBase {
 
             // then
             assertThat(response.menus()).hasSize(2);
+        }
+    }
+
+    @DisplayName("사장님 소유 푸드트럭 메뉴 목록 조회")
+    @Nested
+    class findByOwnerId {
+
+        @DisplayName("사장님 id로 소유한 푸드트럭의 메뉴 목록을 조회한다.")
+        @Test
+        void success() {
+            // given
+            dataSetup.saveMenu(savedTruck);
+            dataSetup.saveMenu(savedTruck);
+
+            // when
+            final MenusResponse response = menuService.findByOwnerId(owner.getId());
+
+            // then
+            assertThat(response.menus()).hasSize(2);
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> menuService.findByOwnerId(ownerNotOwningTruck.getId()))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
     }
 }

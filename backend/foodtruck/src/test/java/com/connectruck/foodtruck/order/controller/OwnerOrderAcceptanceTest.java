@@ -11,7 +11,6 @@ import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
-import com.connectruck.foodtruck.order.domain.OrderLine;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
@@ -112,28 +111,6 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
                     .body("page.size", equalTo(20))
                     .body("page.currentPage", equalTo(0));
         }
-    }
-
-    @DisplayName("소유 푸드트럭의 주문 상세정보를 주문 id로 조회한다.")
-    @Test
-    void findOrderById() {
-        // given
-        final OrderInfo expected = dataSetup.saveOrderInfo(owningTruck, savedMenu);
-        final String[] expectedMenuNames = expected.getOrderLines()
-                .stream()
-                .map(OrderLine::getMenuName)
-                .toArray(String[]::new);
-
-        // when
-        final String uri = BASE_URI + "/" + expected.getId();
-        final ValidatableResponse response = getWithToken(uri, token);
-
-        // then
-        response.statusCode(OK.value())
-                .body("id", equalTo(expected.getId().intValue()))
-                .body("phone", equalTo(expected.getPhone()))
-                .body("menus", hasSize(expectedMenuNames.length))
-                .body("menus.name", contains(expectedMenuNames));
     }
 
     @DisplayName("접수 대기중인 주문을 접수한다.")
