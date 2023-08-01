@@ -131,6 +131,7 @@ public class OrderService {
         final Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> NotFoundException.of("메뉴", "menuId", menuId));
         checkTruckHasMenu(orderInfo, menu);
+        checkMenuAvailable(menu);
 
         return OrderLine.ofNew(menu.getId(), menu.getName(), menu.getPrice(), orderLineRequest.quantity(), orderInfo);
     }
@@ -152,13 +153,19 @@ public class OrderService {
         final Optional<Schedule> scheduleToday =
                 scheduleRepository.findByEventIdAndEventDate(eventId, now.toLocalDate());
         if (scheduleToday.isEmpty() || scheduleToday.get().isClosedAt(now.toLocalTime())) {
-            throw OrderCreationException.ofClosed();
+            throw new OrderCreationException("푸드트럭 운영 시간이 아닐 때에는 주문할 수 없습니다.");
         }
     }
 
     private void checkTruckHasMenu(final OrderInfo orderInfo, final Menu menu) {
         if (!menu.isTruckId(orderInfo.getTruckId())) {
-            throw OrderCreationException.ofOtherTruck();
+            throw new OrderCreationException("다른 푸드트럭의 메뉴는 주문할 수 없습니다.");
+        }
+    }
+
+    private void checkMenuAvailable(final Menu menu) {
+        if (menu.isSoldOut()) {
+            throw new OrderCreationException("메뉴가 품절되어 주문할 수 없습니다.");
         }
     }
 
