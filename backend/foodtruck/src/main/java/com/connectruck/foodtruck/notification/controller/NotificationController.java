@@ -26,7 +26,6 @@ public class NotificationController {
     @GetMapping("/orders/my")
     public ResponseEntity<SseEmitter> subscribeOrders(@AuthenticationPrincipal final Long ownerId,
                                                       @RequestParam(required = false, defaultValue = "") final String lastEventId) {
-
         final SseEmitter sseEmitter = notificationService.subscribeOrders(ownerId, lastEventId);
         return ResponseEntity.ok()
                 .header("X-Accel-Buffering", "no")

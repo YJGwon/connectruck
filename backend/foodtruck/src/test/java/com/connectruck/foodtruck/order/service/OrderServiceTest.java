@@ -23,7 +23,6 @@ import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
-import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
@@ -251,8 +250,9 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
 
             // when & then
-            assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderToOtherTruck.getId(), owner.getId()));
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.findByIdAndOwnerId(orderToOtherTruck.getId(), owner.getId()))
+                    .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
 
         @DisplayName("해당하는 주문 정보가 존재하지 않으면 예외가 발생한다.")
@@ -369,8 +369,9 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
 
             // when & then
-            assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.acceptOrder(orderToOtherTruck.getId(), owner.getId()));
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.acceptOrder(orderToOtherTruck.getId(), owner.getId()))
+                    .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
     }
 
@@ -410,8 +411,9 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKING);
 
             // when & then
-            assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.finishCooking(orderToOtherTruck.getId(), owner.getId()));
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.finishCooking(orderToOtherTruck.getId(), owner.getId()))
+                    .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
     }
 
@@ -451,8 +453,9 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKED);
 
             // when & then
-            assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.complete(orderToOtherTruck.getId(), owner.getId()));
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.complete(orderToOtherTruck.getId(), owner.getId()))
+                    .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
     }
 
@@ -495,8 +498,9 @@ class OrderServiceTest extends ServiceTestBase {
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.CREATED);
 
             // when & then
-            assertThatExceptionOfType(NotOwnerOfOrderException.class)
-                    .isThrownBy(() -> orderService.cancel(orderToOtherTruck.getId(), owner.getId()));
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> orderService.cancel(orderToOtherTruck.getId(), owner.getId()))
+                    .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
     }
 }

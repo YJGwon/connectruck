@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.menu.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import com.connectruck.foodtruck.common.validation.Validator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,6 +22,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Menu {
 
+    private static final int MAX_DESCRIPTION_LENGTH = 50;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "menu_id")
@@ -29,10 +32,22 @@ public class Menu {
 
     private String name;
     private BigDecimal price;
+    private boolean soldOut;
+    private String description;
+
     private Long truckId;
 
     public static Menu ofNew(final String name, final BigDecimal price, final Long truckId) {
-        return new Menu(null, name, price, truckId);
+        return new Menu(null, name, price, false, null, truckId);
+    }
+
+    public void changeDescription(final String description) {
+        Validator.validateMaxLength(description, MAX_DESCRIPTION_LENGTH);
+        this.description = description;
+    }
+
+    public void changeSoldOut(final boolean soldOut) {
+        this.soldOut = soldOut;
     }
 
     public boolean isTruckId(final Long truckId) {

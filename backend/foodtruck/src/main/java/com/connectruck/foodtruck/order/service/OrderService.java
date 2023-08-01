@@ -20,7 +20,6 @@ import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
-import com.connectruck.foodtruck.order.exception.NotOwnerOfOrderException;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
 import com.connectruck.foodtruck.order.infra.OrderMessagePublisher;
@@ -167,7 +166,7 @@ public class OrderService {
         final Long truckId = getTruckIdByOwnerId(ownerId);
 
         if (!order.isTruckId(truckId)) {
-            throw new NotOwnerOfOrderException();
+            throw new ClientException("소유하지 않은 푸드트럭의 주문입니다.", "소유하지 않은 푸드트럭의 주문을 처리할 수 없습니다.");
         }
     }
 

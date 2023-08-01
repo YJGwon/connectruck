@@ -3,11 +3,14 @@ package com.connectruck.foodtruck.menu.controller;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
+import com.connectruck.foodtruck.menu.dto.MenuDescriptionRequest;
+import com.connectruck.foodtruck.menu.dto.MenuSoldOutRequest;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.Role;
@@ -36,7 +39,7 @@ public class OwnerMenuAcceptanceTest extends AcceptanceTestBase {
         owningTruck = dataSetup.saveTruck(event, owner.getId());
     }
 
-    @DisplayName("소유 푸드트럭의 메뉴 목록 조회")
+    @DisplayName("소유 푸드트럭의 메뉴 목록을 조회한다.")
     @Test
     void findMyMenus() {
         // given
@@ -50,5 +53,35 @@ public class OwnerMenuAcceptanceTest extends AcceptanceTestBase {
                 .body("menus", hasSize(1))
                 .body("menus.id", contains(expected.getId().intValue()))
                 .body("menus.name", contains(expected.getName()));
+    }
+
+    @DisplayName("소유 푸드트럭의 메뉴 설명을 변경한다.")
+    @Test
+    void updateDescription() {
+        // given
+        final Menu savedMenu = dataSetup.saveMenu(owningTruck);
+
+        // when
+        final String uri = BASE_URI + String.format("/%d/description", savedMenu.getId());
+        final MenuDescriptionRequest request = new MenuDescriptionRequest("some description");
+        final ValidatableResponse response = putWithToken(uri, token, request);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
+    }
+
+    @DisplayName("소유 푸드트럭의 품절 상태를 변경한다.")
+    @Test
+    void updateSoldOut() {
+        // given
+        final Menu savedMenu = dataSetup.saveMenu(owningTruck);
+
+        // when
+        final String uri = BASE_URI + String.format("/%d/sold-out", savedMenu.getId());
+        final MenuSoldOutRequest request = new MenuSoldOutRequest(true);
+        final ValidatableResponse response = putWithToken(uri, token, request);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
     }
 }
