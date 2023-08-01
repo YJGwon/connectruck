@@ -1,2 +1,2 @@
-ALTER TABLE menu ADD sold_out BOOLEAN NOT NULL DEFAULT true;
+ALTER TABLE menu ADD sold_out BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE menu ADD description VARCHAR(50);
