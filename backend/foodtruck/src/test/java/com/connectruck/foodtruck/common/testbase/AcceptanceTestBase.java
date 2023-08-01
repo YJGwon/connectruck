@@ -64,6 +64,17 @@ public abstract class AcceptanceTestBase {
                 .then().log().all();
     }
 
+    protected ValidatableResponse putWithToken(final String uri, final String token, final Record body) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .body(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().put(uri)
+                .then().log().all();
+    }
+
     protected String loginAndGetToken(final String username, final String password) {
         final SignInRequest request = new SignInRequest(username, password);
         return post("/api/auth/signin", request)

@@ -51,8 +51,8 @@ public class OwnerOrderController {
     @Operation(summary = "주문 접수 처리")
     @ApiResponse(responseCode = "400", description = "접수 대기중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
     @PostMapping("/{orderId}/accept")
-    public ResponseEntity<Void> acceptOrder(@AuthenticationPrincipal final Long ownerId,
-                                            @PathVariable final Long orderId) {
+    public ResponseEntity<Void> acceptOrder(@PathVariable final Long orderId,
+                                            @AuthenticationPrincipal final Long ownerId) {
         orderService.acceptOrder(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
@@ -60,8 +60,8 @@ public class OwnerOrderController {
     @Operation(summary = "주문 조리 완료 처리")
     @ApiResponse(responseCode = "400", description = "조리중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
     @PostMapping("/{orderId}/finish-cooking")
-    public ResponseEntity<Void> finishCooking(@AuthenticationPrincipal final Long ownerId,
-                                              @PathVariable final Long orderId) {
+    public ResponseEntity<Void> finishCooking(@PathVariable final Long orderId,
+                                              @AuthenticationPrincipal final Long ownerId) {
         orderService.finishCooking(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
@@ -69,8 +69,8 @@ public class OwnerOrderController {
     @Operation(summary = "주문 픽업 완료 처리")
     @ApiResponse(responseCode = "400", description = "조리 완료된 주문이 아님, 소유한 푸드트럭의 주문이 아님")
     @PostMapping("/{orderId}/complete")
-    public ResponseEntity<Void> complete(@AuthenticationPrincipal final Long ownerId,
-                                         @PathVariable final Long orderId) {
+    public ResponseEntity<Void> complete(@PathVariable final Long orderId,
+                                         @AuthenticationPrincipal final Long ownerId) {
         orderService.complete(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
@@ -78,8 +78,8 @@ public class OwnerOrderController {
     @Operation(summary = "주문 취소")
     @ApiResponse(responseCode = "400", description = "진행 중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
     @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Void> cancel(@AuthenticationPrincipal final Long ownerId,
-                                       @PathVariable final Long orderId) {
+    public ResponseEntity<Void> cancel(@PathVariable final Long orderId,
+                                       @AuthenticationPrincipal final Long ownerId) {
         orderService.cancel(orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
@@ -87,8 +87,8 @@ public class OwnerOrderController {
     @Operation(summary = "주문 상세 정보 조회")
     @ApiResponse(responseCode = "400", description = "소유한 푸드트럭의 주문이 아님")
     @GetMapping("/{orderId}")
-    public OrderResponse findById(@AuthenticationPrincipal final Long ownerId,
-                                  @PathVariable final Long orderId) {
+    public OrderResponse findById(@PathVariable final Long orderId,
+                                  @AuthenticationPrincipal final Long ownerId) {
         return orderService.findByIdAndOwnerId(orderId, ownerId);
     }
 }
