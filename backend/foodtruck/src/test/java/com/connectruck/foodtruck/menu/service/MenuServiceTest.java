@@ -3,10 +3,14 @@ package com.connectruck.foodtruck.menu.service;
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import com.connectruck.foodtruck.common.exception.ClientException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
+import com.connectruck.foodtruck.menu.domain.Menu;
+import com.connectruck.foodtruck.menu.dto.MenuDescriptionRequest;
 import com.connectruck.foodtruck.menu.dto.MenusResponse;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
@@ -79,6 +83,66 @@ class MenuServiceTest extends ServiceTestBase {
             assertThatExceptionOfType(NotFoundException.class)
                     .isThrownBy(() -> menuService.findByOwnerId(ownerNotOwningTruck.getId()))
                     .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
+        }
+    }
+
+    @DisplayName("소유 푸드트럭 메뉴 설명 수정")
+    @Nested
+    class updateDetail {
+
+        @DisplayName("소유한 푸드트럭 메뉴의 설명을 수정한다.")
+        @Test
+        void success() {
+            // given
+            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
+
+            // when & then
+            final MenuDescriptionRequest request = new MenuDescriptionRequest("some description");
+            assertThatNoException()
+                    .isThrownBy(() -> menuService.updateDescription(request, savedMenu.getId(), owner.getId()));
+        }
+
+        @DisplayName("해당하는 메뉴가 없으면 예외가 발생한다.")
+        @Test
+        void throwException_ifMenuNotFound() {
+            // given
+            final Long fakeId = 0L;
+
+            // when & then
+            final MenuDescriptionRequest request = new MenuDescriptionRequest("some description");
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> menuService.updateDescription(request, fakeId, owner.getId()))
+                    .withMessageContainingAll("메뉴", "존재하지 않습니다.");
+        }
+
+        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNoOwningTruck() {
+            // given
+            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
+            final Account ownerNotOwningTruck = dataSetup.saveOwnerAccount();
+
+            // when & then
+            final MenuDescriptionRequest request = new MenuDescriptionRequest("some description");
+            assertThatExceptionOfType(NotFoundException.class)
+                    .isThrownBy(() -> menuService.updateDescription(
+                            request, savedMenu.getId(), ownerNotOwningTruck.getId()
+                    ))
+                    .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
+        }
+
+        @DisplayName("소유한 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
+        @Test
+        void throwsException_whenNotOwnerOfMenu() {
+            // given
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
+            final Menu menuOfOtherTruck = dataSetup.saveMenu(otherTruck);
+
+            // when & then
+            final MenuDescriptionRequest request = new MenuDescriptionRequest("some description");
+            assertThatExceptionOfType(ClientException.class)
+                    .isThrownBy(() -> menuService.updateDescription(request, menuOfOtherTruck.getId(), owner.getId()))
+                    .withMessageContaining("소유하지 않은 푸드트럭의 메뉴");
         }
     }
 }

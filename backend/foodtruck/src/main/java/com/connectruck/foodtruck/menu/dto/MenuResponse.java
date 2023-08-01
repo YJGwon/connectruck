@@ -9,7 +9,7 @@ public record MenuResponse(
         String name,
         BigDecimal price,
         boolean soldOut,
-        String detail,
+        String description,
         @JsonIgnore Long truckId
 ) {
 
@@ -19,7 +19,7 @@ public record MenuResponse(
                 menu.getName(),
                 menu.getPrice(),
                 menu.isSoldOut(),
-                menu.getDetail(),
+                menu.getDescription(),
                 menu.getTruckId()
         );
     }
