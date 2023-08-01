@@ -29,10 +29,13 @@ public class Menu {
 
     private String name;
     private BigDecimal price;
+    private boolean soldOut;
+    private String detail;
+
     private Long truckId;
 
     public static Menu ofNew(final String name, final BigDecimal price, final Long truckId) {
-        return new Menu(null, name, price, truckId);
+        return new Menu(null, name, price, false, null, truckId);
     }
 
     public boolean isTruckId(final Long truckId) {
