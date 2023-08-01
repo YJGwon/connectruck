@@ -41,16 +41,16 @@ class OrderServiceTest extends ServiceTestBase {
     @Autowired
     private OrderService orderService;
 
-    private Event event;
+    private Event savedEvent;
     private Account owner;
     private Truck savedTruck;
     private Menu savedMenu;
 
     @BeforeEach
     void setUp() {
-        event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        savedEvent = dataSetup.saveEvent(밤도깨비_야시장.create());
         owner = dataSetup.saveOwnerAccount();
-        savedTruck = dataSetup.saveTruck(event, owner.getId());
+        savedTruck = dataSetup.saveTruck(savedEvent, owner.getId());
         savedMenu = dataSetup.saveMenu(savedTruck);
     }
 
@@ -60,7 +60,7 @@ class OrderServiceTest extends ServiceTestBase {
 
         @BeforeEach
         void setUp() {
-            dataSetup.setEventOpen(event);
+            dataSetup.setEventOpen(savedEvent);
         }
 
         @DisplayName("주문을 생성한다.")
@@ -135,7 +135,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenMenuOfOtherTruck() {
             // given
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final Menu menuOfOtherTruck = dataSetup.saveMenu(otherTruck);
 
             // when & then
@@ -160,7 +160,7 @@ class OrderServiceTest extends ServiceTestBase {
         void success() {
             // given
             final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
-            final String expectedEventName = event.getName();
+            final String expectedEventName = savedEvent.getName();
             final String expectedTruckName = savedTruck.getName();
             final List<Long> expectedOrderLineIds = expected.getOrderLines()
                     .stream()
@@ -247,7 +247,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
 
             // when & then
@@ -300,7 +300,7 @@ class OrderServiceTest extends ServiceTestBase {
             dataSetup.saveOrderInfo(savedTruck, savedMenu);
 
             // 소유하지 않은 푸드트럭의 주문 1건 존재
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final Menu menuOfOtherTruck = dataSetup.saveMenu(otherTruck);
             dataSetup.saveOrderInfo(otherTruck, menuOfOtherTruck);
 
@@ -365,7 +365,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu);
 
             // when & then
@@ -406,7 +406,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKING);
 
             // when & then
@@ -447,7 +447,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.COOKED);
 
             // when & then
@@ -491,7 +491,7 @@ class OrderServiceTest extends ServiceTestBase {
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
-            final Truck otherTruck = dataSetup.saveTruck(event);
+            final Truck otherTruck = dataSetup.saveTruck(savedEvent);
             final OrderInfo orderToOtherTruck = dataSetup.saveOrderInfo(otherTruck, savedMenu, OrderStatus.CREATED);
 
             // when & then
