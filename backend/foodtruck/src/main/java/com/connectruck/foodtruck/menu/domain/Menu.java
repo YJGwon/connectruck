@@ -46,6 +46,10 @@ public class Menu {
         this.description = description;
     }
 
+    public void changeSoldOut(final boolean soldOut) {
+        this.soldOut = soldOut;
+    }
+
     public boolean isTruckId(final Long truckId) {
         return this.truckId.equals(truckId);
     }

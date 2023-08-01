@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
 import com.connectruck.foodtruck.menu.dto.MenuDescriptionRequest;
+import com.connectruck.foodtruck.menu.dto.MenuSoldOutRequest;
 import com.connectruck.foodtruck.menu.dto.MenusResponse;
 import com.connectruck.foodtruck.menu.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,5 +41,14 @@ public class OwnerMenuController {
                                   @PathVariable final Long menuId,
                                   @AuthenticationPrincipal final Long ownerId) {
         menuService.updateDescription(request, menuId, ownerId);
+    }
+
+    @Operation(summary = "소유한 푸드트럭 품절 상태 수정")
+    @PutMapping("/{menuId}/sold-out")
+    @ResponseStatus(NO_CONTENT)
+    public void updateSoldOut(@RequestBody @Valid final MenuSoldOutRequest request,
+                              @PathVariable final Long menuId,
+                              @AuthenticationPrincipal final Long ownerId) {
+        menuService.updateSoldOut(request, menuId, ownerId);
     }
 }

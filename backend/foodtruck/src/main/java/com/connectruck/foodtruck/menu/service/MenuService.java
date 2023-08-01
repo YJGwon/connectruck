@@ -5,6 +5,7 @@ import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.menu.domain.MenuRepository;
 import com.connectruck.foodtruck.menu.dto.MenuDescriptionRequest;
+import com.connectruck.foodtruck.menu.dto.MenuSoldOutRequest;
 import com.connectruck.foodtruck.menu.dto.MenusResponse;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.util.List;
@@ -38,6 +39,16 @@ public class MenuService {
         checkOwnerOfMenu(ownerId, menu);
 
         menu.changeDescription(request.description());
+    }
+
+    @Transactional
+    public void updateSoldOut(final MenuSoldOutRequest request, final Long menuId, final Long ownerId) {
+        final Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> NotFoundException.of("메뉴", "menuId", menuId));
+
+        checkOwnerOfMenu(ownerId, menu);
+
+        menu.changeSoldOut(request.soldOut());
     }
 
     private void checkOwnerOfMenu(final Long ownerId, final Menu menu) {
