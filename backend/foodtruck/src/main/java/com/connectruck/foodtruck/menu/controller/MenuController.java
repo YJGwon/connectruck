@@ -18,7 +18,7 @@ public class MenuController {
 
     @Operation(summary = "푸드트럭 메뉴 조회")
     @GetMapping
-    public MenusResponse findAll(@PathVariable final long truckId) {
+    public MenusResponse findByTruckId(@PathVariable final long truckId) {
         return menuService.findByTruckId(truckId);
     }
 }
