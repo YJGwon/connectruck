@@ -148,6 +148,24 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.create(request))
                     .withMessageContaining("다른 푸드트럭");
         }
+
+        @DisplayName("품절된 메뉴를 주문하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenMenuSoldOut() {
+            // given
+            final Menu soldOutMenu = dataSetup.saveSoldOutMenu(savedTruck);
+
+            // when & then
+            final OrderRequest request = new OrderRequest(
+                    savedTruck.getId(),
+                    "01000000000",
+                    List.of(new OrderLineRequest(savedMenu.getId(), 2),
+                            new OrderLineRequest(soldOutMenu.getId(), 1))
+            );
+            assertThatExceptionOfType(OrderCreationException.class)
+                    .isThrownBy(() -> orderService.create(request))
+                    .withMessageContaining("품절");
+        }
     }
 
     @DisplayName("주문자 주문 상세 정보 조회")

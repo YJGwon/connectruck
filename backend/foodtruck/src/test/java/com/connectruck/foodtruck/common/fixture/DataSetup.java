@@ -81,6 +81,12 @@ public class DataSetup {
         return testMenuRepository.save(Menu.ofNew("핫도그", BigDecimal.valueOf(8000), truck.getId()));
     }
 
+    public Menu saveSoldOutMenu(final Truck truck) {
+        final Menu menu = saveMenu(truck);
+        menu.changeSoldOut(true);
+        return menu;
+    }
+
     public OrderInfo saveOrderInfo(final Truck truck, final Menu menu) {
         final OrderInfo orderInfo = OrderInfo.ofNew(truck.getId(), "01000000000");
         final OrderLine orderLine = OrderLine.ofNew(
