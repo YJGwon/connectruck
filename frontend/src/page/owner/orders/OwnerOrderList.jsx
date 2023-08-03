@@ -35,18 +35,15 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
     const orderStatus = [
         {
             value: 'CREATED',
-            button: '조리 시작',
-            action: 'accept'
+            button: '조리 시작'
         }, 
         {
             value: 'COOKING',
-            button: '조리 완료',
-            action: 'finish-cooking'
+            button: '조리 완료'
         }, 
         {
             value: 'COOKED',
-            button: '픽업 완료',
-            action: 'complete'
+            button: '픽업 완료'
         }, 
         {
             value: 'COMPLETE'
@@ -122,13 +119,16 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
         setPage(value); 
     };
 
-    const processOrder = async (action) => {
-        const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/${orderDetail.id}/${action}`;
+    const changeStatus = async (status) => {
+        const url = `${process.env.REACT_APP_API_URL}/api/owner/orders/${orderDetail.id}/status`;
+        const data = {status};
         const requestInfo = {
-            method: 'POST',
+            method: 'PUT',
             headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         };
         const onSuccess = () => {
             alert('처리되었습니다.');
@@ -192,10 +192,10 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
                             {
                                 selectedStatus !== 3 && selectedStatus !== 4 &&
                                 <Stack spacing={2} direction="row" sx={{ p: 2, justifyContent: 'center' }}>
-                                        <Button variant="contained" onClick={() => processOrder(orderStatus[selectedStatus].action)}>
+                                        <Button variant="contained" onClick={() => changeStatus(orderStatus[selectedStatus + 1].value)}>
                                             {orderStatus[selectedStatus].button}
                                         </Button>
-                                        <Button variant="contained" onClick={() => processOrder('cancel')} color="error">
+                                        <Button variant="contained" onClick={() => changeStatus('CANCELED')} color="error">
                                             주문 취소
                                         </Button>
                                 </Stack>

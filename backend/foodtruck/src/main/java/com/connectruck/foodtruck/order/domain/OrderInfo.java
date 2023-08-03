@@ -1,9 +1,5 @@
 package com.connectruck.foodtruck.order.domain;
 
-import static com.connectruck.foodtruck.order.domain.OrderStatus.CANCELED;
-import static com.connectruck.foodtruck.order.domain.OrderStatus.COMPLETE;
-import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKED;
-import static com.connectruck.foodtruck.order.domain.OrderStatus.COOKING;
 import static com.connectruck.foodtruck.order.domain.OrderStatus.CREATED;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -69,32 +65,11 @@ public class OrderInfo {
         this.orderLines = List.copyOf(orderLines);
     }
 
-    public void accept() {
-        if (status != CREATED) {
-            throw IllegalOrderStatusException.ofNotChangeable(status, COOKING);
+    public void changeStatus(final OrderStatus status) {
+        if (!this.status.canBe(status)) {
+            throw IllegalOrderStatusException.ofNotChangeable(this.status, status);
         }
-        status = COOKING;
-    }
-
-    public void finishCooking() {
-        if (status != COOKING) {
-            throw IllegalOrderStatusException.ofNotChangeable(status, COOKED);
-        }
-        status = COOKED;
-    }
-
-    public void complete() {
-        if (status != COOKED) {
-            throw IllegalOrderStatusException.ofNotChangeable(status, COMPLETE);
-        }
-        status = COMPLETE;
-    }
-
-    public void cancel() {
-        if (!status.isInProgress()) {
-            throw IllegalOrderStatusException.ofNotChangeable(status, CANCELED);
-        }
-        status = CANCELED;
+        this.status = status;
     }
 
     public boolean isTruckId(final Long truckId) {

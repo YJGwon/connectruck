@@ -12,6 +12,7 @@ import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
+import com.connectruck.foodtruck.order.dto.OrderStatusRequest;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import com.connectruck.foodtruck.user.domain.Role;
@@ -20,8 +21,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
 
@@ -113,59 +112,16 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         }
     }
 
-    @DisplayName("접수 대기중인 주문을 접수한다.")
+    @DisplayName("주문 상태를 변경한다.")
     @Test
-    void acceptOrder() {
+    void changeStatus() {
         // given
-        final OrderInfo createdOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu);
+        final OrderInfo orderInfo = dataSetup.saveOrderInfo(owningTruck, savedMenu);
 
         // when
-        final String uri = BASE_URI + String.format("/%d/accept", createdOrder.getId());
-        ValidatableResponse response = postWithToken(uri, token);
-
-        // then
-        response.statusCode(NO_CONTENT.value());
-    }
-
-    @DisplayName("조리 중인 주문을 조리 완료 처리한다.")
-    @Test
-    void finishCooking() {
-        // given
-        final OrderInfo cookingOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu, OrderStatus.COOKING);
-
-        // when
-        final String uri = BASE_URI + String.format("/%d/finish-cooking", cookingOrder.getId());
-        ValidatableResponse response = postWithToken(uri, token);
-
-        // then
-        response.statusCode(NO_CONTENT.value());
-    }
-
-    @DisplayName("조리 완료된 주문을 픽업 완료 처리한다.")
-    @Test
-    void complete() {
-        // given
-        final OrderInfo cookedOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu, OrderStatus.COOKED);
-
-        // when
-        final String uri = BASE_URI + String.format("/%d/complete", cookedOrder.getId());
-        ValidatableResponse response = postWithToken(uri, token);
-
-        // then
-        response.statusCode(NO_CONTENT.value());
-    }
-
-    @DisplayName("진행중인 주문을 취소 처리한다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"CREATED", "COOKING", "COOKED"})
-    void cancel(final String inProgressStatus) {
-        // given
-        final OrderInfo inProgressOrder = dataSetup.saveOrderInfo(owningTruck, savedMenu,
-                OrderStatus.valueOf(inProgressStatus));
-
-        // when
-        final String uri = BASE_URI + String.format("/%d/cancel", inProgressOrder.getId());
-        ValidatableResponse response = postWithToken(uri, token);
+        final String uri = BASE_URI + String.format("/%d/status", orderInfo.getId());
+        final OrderStatusRequest request = new OrderStatusRequest(OrderStatus.COOKING);
+        final ValidatableResponse response = putWithToken(uri, token, request);
 
         // then
         response.statusCode(NO_CONTENT.value());
