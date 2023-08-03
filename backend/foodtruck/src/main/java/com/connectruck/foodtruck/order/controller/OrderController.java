@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.order.controller;
 
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 import com.connectruck.foodtruck.order.dto.OrderDetailResponse;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,5 +43,12 @@ public class OrderController {
     public OrderDetailResponse findByIdAndOrdererInfo(@PathVariable final Long orderId,
                                                       @RequestBody @Valid final OrdererInfoRequest request) {
         return orderService.findByIdAndOrdererInfo(orderId, request);
+    }
+
+    @Operation(summary = "주문 취소")
+    @PostMapping("/{orderId}/cancel")
+    @ResponseStatus(NO_CONTENT)
+    public void cancel(@PathVariable final Long orderId,
+                       @RequestBody @Valid final OrdererInfoRequest request) {
     }
 }
