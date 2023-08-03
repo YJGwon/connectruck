@@ -50,5 +50,6 @@ public class OrderController {
     @ResponseStatus(NO_CONTENT)
     public void cancel(@PathVariable final Long orderId,
                        @RequestBody @Valid final OrdererInfoRequest request) {
+        orderService.cancel(orderId, request);
     }
 }
