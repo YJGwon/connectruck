@@ -47,7 +47,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    private boolean isPreflight(HttpServletRequest request) {
+    private boolean isPreflight(final HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.OPTIONS.toString());
     }
 

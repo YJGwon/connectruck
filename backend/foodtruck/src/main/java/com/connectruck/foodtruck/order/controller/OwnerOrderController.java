@@ -5,13 +5,13 @@ import static com.connectruck.foodtruck.user.domain.Role.OWNER;
 
 import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
-import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
 import com.connectruck.foodtruck.order.dto.OrderStatusRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,39 +51,13 @@ public class OwnerOrderController {
         return orderService.findOrdersByOwnerIdAndStatus(ownerId, status, page, size);
     }
 
-    @Operation(summary = "주문 접수 처리")
-    @ApiResponse(responseCode = "400", description = "접수 대기중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @PostMapping("/{orderId}/accept")
-    public ResponseEntity<Void> acceptOrder(@PathVariable final Long orderId,
-                                            @AuthenticationPrincipal final Long ownerId) {
-        orderService.changeStatus(new OrderStatusRequest(OrderStatus.COOKING), orderId, ownerId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "주문 조리 완료 처리")
-    @ApiResponse(responseCode = "400", description = "조리중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @PostMapping("/{orderId}/finish-cooking")
-    public ResponseEntity<Void> finishCooking(@PathVariable final Long orderId,
-                                              @AuthenticationPrincipal final Long ownerId) {
-        orderService.changeStatus(new OrderStatusRequest(OrderStatus.COOKED), orderId, ownerId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "주문 픽업 완료 처리")
-    @ApiResponse(responseCode = "400", description = "조리 완료된 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @PostMapping("/{orderId}/complete")
-    public ResponseEntity<Void> complete(@PathVariable final Long orderId,
-                                         @AuthenticationPrincipal final Long ownerId) {
-        orderService.changeStatus(new OrderStatusRequest(OrderStatus.COMPLETE), orderId, ownerId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "주문 취소")
-    @ApiResponse(responseCode = "400", description = "진행 중인 주문이 아님, 소유한 푸드트럭의 주문이 아님")
-    @PostMapping("/{orderId}/cancel")
-    public ResponseEntity<Void> cancel(@PathVariable final Long orderId,
-                                       @AuthenticationPrincipal final Long ownerId) {
-        orderService.changeStatus(new OrderStatusRequest(OrderStatus.CANCELED), orderId, ownerId);
+    @Operation(summary = "주문 상태 변경")
+    @ApiResponse(responseCode = "400", description = "변경 가능한 주문 상태가 아님, 소유한 푸드트럭의 주문이 아님")
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<Void> changeStatus(@RequestBody @Valid final OrderStatusRequest request,
+                                             @PathVariable final Long orderId,
+                                             @AuthenticationPrincipal final Long ownerId) {
+        orderService.changeStatus(request, orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 
