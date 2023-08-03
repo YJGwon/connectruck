@@ -10,7 +10,10 @@ import {
     Stack,
     Accordion,
     AccordionSummary,
-    AccordionDetails
+    AccordionDetails,
+    Dialog,
+    DialogTitle,
+    DialogActions
 } from '@mui/material';
 import {ExpandMore} from '@mui/icons-material';
 
@@ -30,7 +33,37 @@ const style = {
     p: 4
 };
 
+const OrderCancelDialog = ({isOpen, onClose}) => {
+    return (
+        <Dialog
+            open={isOpen}
+            onClose={() => onClose(false)}>
+            <DialogTitle id="alert-dialog-title">
+                정말 주문을 취소하시겠습니까?
+            </DialogTitle>
+            <DialogActions>
+                <Button onClick={() => onClose(true)}>네, 취소할게요.</Button>
+                <Button onClick={() => onClose(false)} autoFocus="autoFocus">돌아갈래요.</Button>
+            </DialogActions>
+        </Dialog>
+    );
+} 
+
 const OrderDetailModal = ({orderDetail, onClose}) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const handleCancel = () => {
+        setIsDialogOpen(true);
+    }
+
+    const handleDialogClose = (isConfirmed) => {
+        setIsDialogOpen(false);
+        if (isConfirmed) {
+            alert('취소되었습니다.');
+            onClose();
+        }
+    }
+
     return (
         <Modal
             open={orderDetail !== null}
@@ -72,11 +105,15 @@ const OrderDetailModal = ({orderDetail, onClose}) => {
                         spacing={2}
                         direction="column"
                         sx={{
+                            margin: 'auto',
+                            width: '200px',
                             p: 2,
                             justifyContent: 'center'
                         }}>
                         <Button variant="outlined" onClick={onClose}>닫기</Button>
+                        {orderDetail && orderDetail.status === '접수 대기' && <Button color='error' size='small' onClick={handleCancel}>주문 취소</Button>}
                     </Stack>
+                    <OrderCancelDialog isOpen={isDialogOpen} onClose={handleDialogClose}/>
                 </Box>
             </Fade>
         </Modal>
@@ -143,7 +180,7 @@ export const ServiceOrderTrackingModal = ({open, onClose}) => {
                     className="modalConfirmButton">
                     조회하기
                 </Button>
-                <OrderDetailModal orderDetail={orderDetail} onClose={handleModalClose}/>
+                <OrderDetailModal orderDetail={orderDetail} onClose={handleModalClose} />
             </Box>
         </Modal>
 
