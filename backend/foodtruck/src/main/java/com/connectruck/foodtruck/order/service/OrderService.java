@@ -18,6 +18,7 @@ import com.connectruck.foodtruck.order.dto.OrderDetailResponse;
 import com.connectruck.foodtruck.order.dto.OrderLineRequest;
 import com.connectruck.foodtruck.order.dto.OrderRequest;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
+import com.connectruck.foodtruck.order.dto.OrderStatusRequest;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
@@ -99,31 +100,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void acceptOrder(final Long id, final Long ownerId) {
+    public void changeStatus(final OrderStatusRequest request, final Long id, final Long ownerId) {
         final OrderInfo order = getOneById(id);
         checkOwnerOfOrder(order, ownerId);
-        order.accept();
-    }
-
-    @Transactional
-    public void finishCooking(final Long id, final Long ownerId) {
-        final OrderInfo order = getOneById(id);
-        checkOwnerOfOrder(order, ownerId);
-        order.finishCooking();
-    }
-
-    @Transactional
-    public void complete(final Long id, final Long ownerId) {
-        final OrderInfo order = getOneById(id);
-        checkOwnerOfOrder(order, ownerId);
-        order.complete();
-    }
-
-    @Transactional
-    public void cancel(Long id, Long ownerId) {
-        final OrderInfo order = getOneById(id);
-        checkOwnerOfOrder(order, ownerId);
-        order.cancel();
+        order.changeStatus(request.status());
     }
 
     private OrderLine createOrderLineOf(final OrderInfo orderInfo, final OrderLineRequest orderLineRequest) {

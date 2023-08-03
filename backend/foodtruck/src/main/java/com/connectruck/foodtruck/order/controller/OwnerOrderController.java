@@ -5,7 +5,9 @@ import static com.connectruck.foodtruck.user.domain.Role.OWNER;
 
 import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
+import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.order.dto.OrderResponse;
+import com.connectruck.foodtruck.order.dto.OrderStatusRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +55,7 @@ public class OwnerOrderController {
     @PostMapping("/{orderId}/accept")
     public ResponseEntity<Void> acceptOrder(@PathVariable final Long orderId,
                                             @AuthenticationPrincipal final Long ownerId) {
-        orderService.acceptOrder(orderId, ownerId);
+        orderService.changeStatus(new OrderStatusRequest(OrderStatus.COOKING), orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 
@@ -62,7 +64,7 @@ public class OwnerOrderController {
     @PostMapping("/{orderId}/finish-cooking")
     public ResponseEntity<Void> finishCooking(@PathVariable final Long orderId,
                                               @AuthenticationPrincipal final Long ownerId) {
-        orderService.finishCooking(orderId, ownerId);
+        orderService.changeStatus(new OrderStatusRequest(OrderStatus.COOKED), orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 
@@ -71,7 +73,7 @@ public class OwnerOrderController {
     @PostMapping("/{orderId}/complete")
     public ResponseEntity<Void> complete(@PathVariable final Long orderId,
                                          @AuthenticationPrincipal final Long ownerId) {
-        orderService.complete(orderId, ownerId);
+        orderService.changeStatus(new OrderStatusRequest(OrderStatus.COMPLETE), orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 
@@ -80,7 +82,7 @@ public class OwnerOrderController {
     @PostMapping("/{orderId}/cancel")
     public ResponseEntity<Void> cancel(@PathVariable final Long orderId,
                                        @AuthenticationPrincipal final Long ownerId) {
-        orderService.cancel(orderId, ownerId);
+        orderService.changeStatus(new OrderStatusRequest(OrderStatus.CANCELED), orderId, ownerId);
         return ResponseEntity.noContent().build();
     }
 

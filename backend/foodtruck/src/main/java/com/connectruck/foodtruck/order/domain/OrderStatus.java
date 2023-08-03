@@ -22,4 +22,14 @@ public enum OrderStatus {
     public boolean isInProgress() {
         return this != COMPLETE && this != CANCELED;
     }
+
+    public boolean canBe(final OrderStatus status) {
+        return switch (status) {
+            case COOKING -> this == CREATED;
+            case COOKED -> this == COOKING;
+            case COMPLETE -> this == COOKED;
+            case CANCELED -> this.isInProgress();
+            default -> false;
+        };
+    }
 }
