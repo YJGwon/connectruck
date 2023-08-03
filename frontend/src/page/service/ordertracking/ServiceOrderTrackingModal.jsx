@@ -10,14 +10,11 @@ import {
     Stack,
     Accordion,
     AccordionSummary,
-    AccordionDetails,
-    Dialog,
-    DialogTitle,
-    DialogActions
+    AccordionDetails
 } from '@mui/material';
 import {ExpandMore} from '@mui/icons-material';
 
-import {fetchData} from '../../../function/CustomFetch';
+import {fetchApi, fetchData} from '../../../function/CustomFetch';
 
 import {OrderDetailTable} from '../../../component/table/OrderDetailTable';
 
@@ -33,35 +30,63 @@ const style = {
     p: 4
 };
 
-const OrderCancelDialog = ({isOpen, onClose}) => {
+const OrderCancelModal = ({isOpen, onClose, onCancel}) => {
+    const [phone, setPhone] = useState(null);
+
     return (
-        <Dialog
-            open={isOpen}
-            onClose={() => onClose(false)}>
-            <DialogTitle id="alert-dialog-title">
-                정말 주문을 취소하시겠습니까?
-            </DialogTitle>
-            <DialogActions>
-                <Button onClick={() => onClose(true)}>네, 취소할게요.</Button>
-                <Button onClick={() => onClose(false)} autoFocus="autoFocus">돌아갈래요.</Button>
-            </DialogActions>
-        </Dialog>
+        <Modal open={isOpen} onClose={onClose}>
+            <Box className="modalContainer">
+                <Typography variant="h5" component="h2" className="modalTitle">
+                    취소하려면 휴대폰 번호를 한번 더 입력해주세요.
+                </Typography>
+                <TextField
+                    label="휴대폰 번호"
+                    variant="outlined"
+                    fullWidth={true}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="modalTextInput"/>
+
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => onCancel(phone)}
+                    disabled={!phone}
+                    className="modalConfirmButton">
+                    취소하기
+                </Button>
+            </Box>
+        </Modal>
     );
 } 
 
 const OrderDetailModal = ({orderDetail, onClose}) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const handleCancel = () => {
+    const handleModalOpen = () => {
         setIsDialogOpen(true);
     }
 
-    const handleDialogClose = (isConfirmed) => {
+    const handleModalClose = (isConfirmed) => {
         setIsDialogOpen(false);
-        if (isConfirmed) {
-            alert('취소되었습니다.');
+    }
+
+    const handleCancel = (phone) => {
+        const url = `${process.env.REACT_APP_API_URL}/api/orders/${orderDetail.id}/cancel`;
+        const data = {phone};
+        const requestInfo = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        const onSuccess = () => {
+            alert('주문이 취소되었습니다.');
+            handleModalClose();
             onClose();
-        }
+        };
+        fetchApi({url, requestInfo}, onSuccess);
     }
 
     return (
@@ -111,9 +136,9 @@ const OrderDetailModal = ({orderDetail, onClose}) => {
                             justifyContent: 'center'
                         }}>
                         <Button variant="outlined" onClick={onClose}>닫기</Button>
-                        {orderDetail && orderDetail.status === '접수 대기' && <Button color='error' size='small' onClick={handleCancel}>주문 취소</Button>}
+                        {orderDetail && orderDetail.status === '접수 대기' && <Button color='error' size='small' onClick={handleModalOpen}>주문 취소</Button>}
                     </Stack>
-                    <OrderCancelDialog isOpen={isDialogOpen} onClose={handleDialogClose}/>
+                    <OrderCancelModal isOpen={isDialogOpen} onClose={handleModalClose} onCancel={handleCancel}/>
                 </Box>
             </Fade>
         </Modal>
