@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import {Routes, Route} from 'react-router-dom';
+import {Routes, Route, Navigate} from 'react-router-dom';
 import {EventSourcePolyfill} from 'event-source-polyfill';
 
 import {UserContext} from '../../../context/UserContext';
@@ -14,6 +14,7 @@ import AuthRouter from '../../../router/AuthRouter';
 import LoginForm from '../../../component/loginform/LoginForm';
 import SignupForm from '../../../component/signupform/SignupForm';
 import {OwnerOrderAccept} from '../orders/OwnerOrderAccept';
+import {OwnerMenuList} from '../menus/OwnerMenuList';
 
 import './OwnerMain.css';
 
@@ -92,7 +93,8 @@ export default function OwnerMain() {
                 link={`${root}/accept`} 
                 name='주문 접수' 
                 badgeContent={newOrders.length}/>
-            <SimpleSideBarButton index={1} link={`/logout`} name='로그아웃'/>
+            <SimpleSideBarButton index={1} link={`${root}/menus`} name='메뉴 관리'/>
+            <SimpleSideBarButton index={2} link={`/logout`} name='로그아웃'/>
         </React.Fragment>
     );
 
@@ -103,8 +105,9 @@ export default function OwnerMain() {
                 <div className='content'>
                     <Routes>
                         <Route element={<AuthRouter shouldLogin={true} root={root} />}>
-                            <Route exact='exact' path='/' element="사장님 페이지"/>
+                            <Route exact='exact' path='/' element={'Connectruck 사장님 관리 페이지'}/>
                             <Route path='/accept' element={<OwnerOrderAccept newOrders={newOrders} handleOnOrderClick={removeFromNewOrders}/>}/>
+                            <Route path='/menus' element={<OwnerMenuList/>}/>
                         </Route>
                         <Route element={<AuthRouter shouldLogin={false} root={root} />}>
                             <Route path='/signin' element={<LoginForm root={root}/>}/>

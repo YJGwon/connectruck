@@ -72,10 +72,6 @@ export const OwnerOrderList = ({selectedStatus, newOrders, handleOnOrderClick}) 
         }
     }, [newOrders]);
 
-    const calculateSubtotal = () => {
-        return orderDetail.menus.reduce((total, menu) => total + menu.price * menu.quantity, 0);
-    };
-
     const handleOnRowClick = (order) => {
         handleOnOrderClick(order.id);
         openModal(order);
