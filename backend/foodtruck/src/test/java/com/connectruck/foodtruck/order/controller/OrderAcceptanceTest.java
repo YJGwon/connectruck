@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.http.HttpHeaders.LOCATION;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.connectruck.foodtruck.common.testbase.AcceptanceTestBase;
@@ -58,7 +59,6 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
                 .header(LOCATION, startsWith(BASE_URI));
     }
 
-
     @DisplayName("주문 상세정보를 주문 id와 주문자 정보로 조회한다.")
     @Test
     void findByIdAndOrdererInfo() {
@@ -84,5 +84,20 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
                 .body("phone", equalTo(expected.getPhone()))
                 .body("menus", hasSize(expectedMenuNames.length))
                 .body("menus.name", contains(expectedMenuNames));
+    }
+
+    @DisplayName("접수되지 않은 주문을 취소한다.")
+    @Test
+    void cancel() {
+        // given
+        final OrderInfo order = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+
+        // when
+        final OrdererInfoRequest request = new OrdererInfoRequest(order.getPhone());
+        final String uri = BASE_URI + String.format("/%d/cancel", order.getId());
+        final ValidatableResponse response = post(uri, request);
+
+        // then
+        response.statusCode(NO_CONTENT.value());
     }
 }

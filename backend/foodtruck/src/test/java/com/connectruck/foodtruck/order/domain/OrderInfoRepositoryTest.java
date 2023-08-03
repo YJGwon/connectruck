@@ -54,15 +54,15 @@ class OrderInfoRepositoryTest extends RepositoryTestBase {
         );
     }
 
-    @DisplayName("특정 주문 정보를 id와 휴대폰 번호로 조회한다.")
+    @DisplayName("특정 주문 정보를 id로 조회하고 exclusive lock을 획득한다.")
     @Test
-    void findByIdAndPhone() {
+    void findForUpdateById() {
         // given
         final OrderInfo expected = dataSetup.saveOrderInfo(savedTruck, savedMenu);
         final List<OrderLine> expectedOrderLines = expected.getOrderLines();
 
         // when
-        final Optional<OrderInfo> found = orderInfoRepository.findByIdAndPhone(expected.getId(), expected.getPhone());
+        final Optional<OrderInfo> found = orderInfoRepository.findForUpdateById(expected.getId());
 
         // then
         final OrderInfo actual = found.get();
