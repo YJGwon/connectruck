@@ -22,6 +22,7 @@ import com.connectruck.foodtruck.order.dto.OrderStatusRequest;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
+import com.connectruck.foodtruck.order.exception.WrongOrderInfoException;
 import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
 import com.connectruck.foodtruck.order.infra.OrderMessagePublisher;
 import com.connectruck.foodtruck.truck.domain.Truck;
@@ -71,18 +72,37 @@ public class OrderService {
     }
 
     public OrderDetailResponse findByIdAndOrdererInfo(final Long id, final OrdererInfoRequest request) {
-        final OrderInfo found = orderInfoRepository.findByIdAndPhone(id, request.phone())
-                .orElseThrow(() -> new ClientException("주문 정보를 조회할 수 없습니다.", "잘못된 주문 정보 입니다."));
-        final Truck orderedTruck = truckRepository.findById(found.getTruckId())
+        final Optional<OrderInfo> found = orderInfoRepository.findById(id);
+        if (found.isEmpty() || !found.get().isPhone(request.phone())) {
+            throw new WrongOrderInfoException();
+        }
+
+        final OrderInfo order = found.get();
+        final Truck orderedTruck = truckRepository.findById(order.getTruckId())
                 .orElse(Truck.NULL);
         final Event orderedEvent = eventRepository.findById(orderedTruck.getEventId())
                 .orElse(Event.NULL);
 
-        return OrderDetailResponse.of(found, orderedTruck, orderedEvent);
+        return OrderDetailResponse.of(order, orderedTruck, orderedEvent);
+    }
+
+    @Transactional
+    public void cancel(final Long id, final OrdererInfoRequest request) {
+        final Optional<OrderInfo> found = orderInfoRepository.findForUpdateById(id);
+        if (found.isEmpty() || !found.get().isPhone(request.phone())) {
+            throw new WrongOrderInfoException();
+        }
+
+        final OrderInfo order = found.get();
+        if (order.isAccepted()) {
+            throw new ClientException("주문을 취소할 수 없습니다.", "접수된 주문은 취소할 수 없습니다.");
+        }
+        order.changeStatus(OrderStatus.CANCELED);
     }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {
-        final OrderInfo found = getOneById(id);
+        final OrderInfo found = orderInfoRepository.findById(id)
+                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
         checkOwnerOfOrder(found, ownerId);
         return OrderResponse.of(found);
     }
@@ -101,7 +121,8 @@ public class OrderService {
 
     @Transactional
     public void changeStatus(final OrderStatusRequest request, final Long id, final Long ownerId) {
-        final OrderInfo order = getOneById(id);
+        final OrderInfo order = orderInfoRepository.findForUpdateById(id)
+                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
         checkOwnerOfOrder(order, ownerId);
         order.changeStatus(request.status());
     }
@@ -155,11 +176,6 @@ public class OrderService {
         if (!order.isTruckId(truckId)) {
             throw new ClientException("소유하지 않은 푸드트럭의 주문입니다.", "소유하지 않은 푸드트럭의 주문을 처리할 수 없습니다.");
         }
-    }
-
-    private OrderInfo getOneById(final Long id) {
-        return orderInfoRepository.findById(id)
-                .orElseThrow(() -> NotFoundException.of("주문 정보", "orderId", id));
     }
 
     private Page<OrderInfo> getOrdersByTruckIdAndStatus(final OrderStatus status, final Long truckId,

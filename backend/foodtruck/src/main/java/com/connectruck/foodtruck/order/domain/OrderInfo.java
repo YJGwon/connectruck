@@ -72,8 +72,16 @@ public class OrderInfo {
         this.status = status;
     }
 
+    public boolean isAccepted() {
+        return status != CREATED;
+    }
+
     public boolean isTruckId(final Long truckId) {
         return this.truckId.equals(truckId);
+    }
+
+    public boolean isPhone(final String phone) {
+        return this.phone.equals(phone);
     }
 
     private void checkOrderLinesNotEmpty(final List<OrderLine> orderLines) {

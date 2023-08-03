@@ -86,7 +86,7 @@ public class OrderAcceptanceTest extends AcceptanceTestBase {
                 .body("menus.name", contains(expectedMenuNames));
     }
 
-    @DisplayName("주문을 취소한다.")
+    @DisplayName("접수되지 않은 주문을 취소한다.")
     @Test
     void cancel() {
         // given

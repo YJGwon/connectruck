@@ -26,6 +26,7 @@ import com.connectruck.foodtruck.order.dto.OrderStatusRequest;
 import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
+import com.connectruck.foodtruck.order.exception.WrongOrderInfoException;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import java.util.List;
@@ -211,9 +212,8 @@ class OrderServiceTest extends ServiceTestBase {
 
             // when & then
             final OrdererInfoRequest request = new OrdererInfoRequest(orderInfo.getPhone());
-            assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> orderService.findByIdAndOrdererInfo(fakeId, request))
-                    .withMessageContaining("잘못된 주문 정보");
+            assertThatExceptionOfType(WrongOrderInfoException.class)
+                    .isThrownBy(() -> orderService.findByIdAndOrdererInfo(fakeId, request));
         }
 
         @DisplayName("휴대폰 번호가 옳지 않으면 예외가 발생한다.")
@@ -225,9 +225,64 @@ class OrderServiceTest extends ServiceTestBase {
 
             // when & then
             final OrdererInfoRequest request = new OrdererInfoRequest(fakePhone);
+            assertThatExceptionOfType(WrongOrderInfoException.class)
+                    .isThrownBy(() -> orderService.findByIdAndOrdererInfo(orderInfo.getId(), request));
+        }
+    }
+
+    @DisplayName("주문자 주문 취소")
+    @Nested
+    class cancel {
+
+        @DisplayName("주문을 취소한다.")
+        @Test
+        void success() {
+            // given
+            final OrderInfo order = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+
+            // when
+            final OrdererInfoRequest request = new OrdererInfoRequest(order.getPhone());
+            assertThatNoException()
+                    .isThrownBy(() -> orderService.cancel(order.getId(), request));
+        }
+
+        @DisplayName("이미 접수된 주문을 취소하면 예외가 발생한다.")
+        @Test
+        void throwsException_whenOrderAccepted() {
+            // given
+            final OrderInfo acceptedOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu, COOKING);
+
+            // when & then
+            final OrdererInfoRequest request = new OrdererInfoRequest(acceptedOrder.getPhone());
             assertThatExceptionOfType(ClientException.class)
-                    .isThrownBy(() -> orderService.findByIdAndOrdererInfo(orderInfo.getId(), request))
-                    .withMessageContaining("잘못된 주문 정보");
+                    .isThrownBy(() -> orderService.cancel(acceptedOrder.getId(), request))
+                    .withMessageContaining("접수된 주문");
+        }
+
+        @DisplayName("id가 옳지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenWrongId() {
+            // given
+            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final Long fakeId = 0L;
+
+            // when & then
+            final OrdererInfoRequest request = new OrdererInfoRequest(orderInfo.getPhone());
+            assertThatExceptionOfType(WrongOrderInfoException.class)
+                    .isThrownBy(() -> orderService.cancel(fakeId, request));
+        }
+
+        @DisplayName("휴대폰 번호가 옳지 않으면 예외가 발생한다.")
+        @Test
+        void throwsException_whenWrongPhone() {
+            // given
+            final OrderInfo orderInfo = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final String fakePhone = "01099999999";
+
+            // when & then
+            final OrdererInfoRequest request = new OrdererInfoRequest(fakePhone);
+            assertThatExceptionOfType(WrongOrderInfoException.class)
+                    .isThrownBy(() -> orderService.cancel(orderInfo.getId(), request));
         }
     }
 
