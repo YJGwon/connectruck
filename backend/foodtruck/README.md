@@ -25,21 +25,34 @@
 
 ### 사용자
 
+[사용해보기](https://dev.connectruck.site/events/1)
+
 - 행사에 등록된 푸드트럭 목록 및 메뉴 조회
 - 메뉴 주문/취소
 - 주문 처리 상태 조회
 
 ### 사장님
 
+[사용해보기](https://dev.connectruck.site/owner) - 아이디 testowner, 비밀번호 test1234!
+
 - 회원가입/로그인
 - 처리 상태별 주문 목록 조회
 - 주문 처리 상태 변경
 - 메뉴 관리(품절 처리)
-- 새 주문 실시간 push 알림
+- 새 주문 실시간 업데이트
 
 ## System Architecture
 
-![image](https://github.com/YJGwon/wanted-pre-onboarding-backend/assets/89305335/e9c01533-ee11-44ae-b74b-6be951efe348)
+![connectruck-architecture](https://github.com/YJGwon/wanted-pre-onboarding-backend/assets/89305335/e9c01533-ee11-44ae-b74b-6be951efe348)
+
+## ERD
+
+![connectruck-erd](https://github.com/YJGwon/programmers-solved/assets/89305335/7a2dba7b-1c59-4dd1-9d11-b96c66b1508c)
+[DB Schema description](https://forky-freeky-forky.notion.site/DB-Schema-31ab88d5bd534cdd8dcd14e866e99a76?pvs=4)
+
+## API 명세
+
+[Swagger UI Api Definition](https://dev.connectruck.site/swagger-ui/index.html)
 
 ---
 
@@ -54,6 +67,7 @@
 ### 사장님
 
 - 회원 정보 수정
+- 모바일 주문 push 알림 (FCM)
 
 ### 행사 담당자
 
