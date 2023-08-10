@@ -2,8 +2,10 @@ package com.connectruck.foodtruck.notification.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.connectruck.foodtruck.common.support.PrefixedStringRedisSerializer;
 import com.connectruck.foodtruck.notification.config.RedisSseEventTemplateConfig;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @DataRedisTest
-@Import({RedisSseEventTemplateConfig.class, RedisSseEventRepository.class})
+@Import({RedisSseEventTemplateConfig.class, RedisSseEventRepository.class, PrefixedStringRedisSerializer.class})
 class RedisSseEventRepositoryTest {
 
     @Autowired
@@ -23,8 +25,8 @@ class RedisSseEventRepositoryTest {
 
     @AfterEach
     void tearDown() {
-//        final Set<String> keys = sseEventTemplate.keys("*");
-//        sseEventTemplate.delete(keys);
+        final Set<String> keys = sseEventTemplate.keys("*");
+        sseEventTemplate.delete(keys);
     }
 
     @DisplayName("특정 group에서 timestamp 값이 더 큰 SSE 기록을 조회한다.")
