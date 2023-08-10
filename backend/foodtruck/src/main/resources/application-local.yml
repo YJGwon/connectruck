@@ -46,3 +46,5 @@ connectruck:
     expire-length: 3600000
   redis:
     key-prefix: local
+    channel:
+      order-created: local-order-created

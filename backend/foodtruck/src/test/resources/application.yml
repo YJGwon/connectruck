@@ -49,3 +49,5 @@ connectruck:
     expire-length: 3600000
   redis:
     key-prefix: test
+    channel:
+      order-created: test-order-created
