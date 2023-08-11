@@ -1,0 +1,67 @@
+name: Deploy react app on push
+on:
+  push:
+    branches:
+      - 'dev'
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: ${{ vars.FRONTEND_PATH }}/package-lock.json
+
+      - name: Check Node v
+        run: node -v
+
+      - name: Set env variables
+        working-directory: ${{ vars.FRONTEND_PATH }}
+        run: |
+          echo "REACT_APP_API_URL=${{ secrets.API_BASE_URL_PROD }}" >> .env
+
+      - name: Install modules
+        working-directory: ${{ vars.FRONTEND_PATH }}
+        run: npm install
+
+      - name: Build project
+        working-directory: ${{ vars.FRONTEND_PATH }}
+        run: CI=false npm run build
+
+      - name: Copy appspec
+        run: cp ${{ vars.FRONTEND_PATH }}/appspec-prod.yml ${{ vars.FRONTEND_PATH }}/build/appspec.yml
+
+      - name: Make zip file
+        working-directory: ${{ vars.FRONTEND_PATH }}
+        run: zip -r ${{ vars.FRONTEND_ZIP_FILE }} build/*
+
+      - name: Deliver to AWS S3
+        working-directory: ${{ vars.FRONTEND_PATH }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp \
+          --region ap-northeast-2 \
+          --acl private \
+          ${{ vars.FRONTEND_ZIP_FILE }} s3://${{ secrets.AWS_S3_BUCKET }}/
+
+      - name: Deploy with AWS CodeDeploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws deploy create-deployment \
+          --application-name ${{ secrets.AWS_CODEDEPLOY_APP }} \
+          --deployment-group-name connectruck-fe \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},bundleType=zip,key=${{ vars.FRONTEND_ZIP_FILE }} \
+          --region ap-northeast-2

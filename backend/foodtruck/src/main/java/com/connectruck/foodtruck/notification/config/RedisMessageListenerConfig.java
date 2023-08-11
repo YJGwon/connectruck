@@ -28,10 +28,11 @@ public class RedisMessageListenerConfig {
 
     @Bean
     RedisMessageListenerContainer redisMessageListenerContainer(final RedisConnectionFactory connectionFactory,
-                                                                final MessageListenerAdapter listener) {
+                                                                final MessageListenerAdapter listener,
+                                                                final ChannelTopic orderCreatedChannelTopic) {
         final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(listener, ChannelTopic.of("order-created"));
+        container.addMessageListener(listener, orderCreatedChannelTopic);
         return container;
     }
 }
