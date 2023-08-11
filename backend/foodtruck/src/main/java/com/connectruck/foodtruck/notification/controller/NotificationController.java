@@ -6,6 +6,7 @@ import com.connectruck.foodtruck.auth.annotation.AuthenticationPrincipal;
 import com.connectruck.foodtruck.auth.annotation.Authorization;
 import com.connectruck.foodtruck.notification.service.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Tag(name = "notification", description = "알림 관련 API")
 @RestController
 @RequestMapping("/api/notification")
 @RequiredArgsConstructor
