@@ -37,7 +37,7 @@ export default function SignupForm({root, role}) {
                 alert('사용 가능한 아이디입니다.');
             } else {
                 setIsUsernameAvailable(false);
-                alert('사용 중인 아이디입니다.');
+                alert('이미 사용 중인 아이디입니다.');
             }
         };
         fetchData({url, requestInfo}, onSuccess);
@@ -64,7 +64,7 @@ export default function SignupForm({root, role}) {
                 alert('사용 가능한 번호입니다.');
             } else {
                 setIsPhoneAvailable(false);
-                alert('사용 중인 번호입니다.');
+                alert('이미 사용 중인 번호입니다.');
             }
         };
         fetchData({ url, requestInfo }, onSuccess);
