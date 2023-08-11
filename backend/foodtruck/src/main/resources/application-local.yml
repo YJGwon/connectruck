@@ -1,0 +1,50 @@
+spring:
+  # h2 in-memory db
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  # database source
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test;MODE=MySQL
+    username: sa
+    password:
+  # flyway
+  flyway:
+    locations: [ classpath:db/migration, classpath:db/data ] # initialize default data
+  # redis
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+# log config
+logging:
+  level:
+    # enable hibernate sql parameter log
+    org.hibernate:
+      SQL: DEBUG
+      orm.jdbc.bind: TRACE
+    com.foodtruck: INFO
+  # file appender
+  file:
+    name: ./logs/connectruck.log
+  # logback rolling policy
+  logback:
+    rollingpolicy:
+      clean-history-on-start: true
+      file-name-pattern: ./logs/rolling/connectruck-%d{yyyy-MM-dd}-%i.gz
+      total-size-cap: 10MB
+
+connectruck:
+  # CORS
+  cors:
+    allowed-origin: http://localhost:3000
+  jwt:
+    secret-key: 5337df8a0f59f504759223895b36107115bf73650610850f6a389f79cc710b9fdd4f813857727add1ad6ce2f93d5166386082551d45d43f1a530c02bd568c289
+    expire-length: 3600000
+  redis:
+    key-prefix: local
+    channel:
+      order-created: local-order-created

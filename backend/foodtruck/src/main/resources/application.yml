@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    active: local
+  # jpa
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false # OSIV off
+
+# log config
+logging:
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] %green([%thread]) [traceId=%X{traceId}] %highlight(%-5level) [%C.%M:%line] - %msg%n"
+    file: "[%d{yyyy-MM-dd HH:mm:ss}:%-4relative] [%thread] [traceId=%X{traceId}] %-5level [%C.%M:%line] - %msg%n"
+
+# disable swagger default url
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+  cache.disabled: true

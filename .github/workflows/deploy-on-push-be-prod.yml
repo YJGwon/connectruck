@@ -1,0 +1,67 @@
+name: Deploy spring boot app on push
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'backend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+          submodules: true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'oracle'
+          java-version: 17
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ${{ vars.BACKEND_PATH }}/gradlew
+
+      - name: Build with Gradle
+        working-directory: ${{ vars.BACKEND_PATH }}
+        run : ./gradlew build -x test
+
+      - name: Make Directory for deliver
+        run: mkdir -p code-deploy
+
+      - name: Copy Jar
+        run: cp ${{ vars.BACKEND_PATH }}/build/libs/*.jar code-deploy/
+
+      - name: Copy appspec
+        run: cp ${{ vars.BACKEND_PATH }}/appspec.yml code-deploy/
+
+      - name: Copy scripts
+        run: cp ${{ vars.BACKEND_PATH }}/scripts/deploy-prod.sh code-deploy/deploy.sh
+
+      - name: Make zip file
+        run: zip -r -j ${{ vars.BACKEND_ZIP_FILE }} code-deploy/*
+
+      - name: Deliver to AWS S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws s3 cp \
+          --region ap-northeast-2 \
+          --acl private \
+          ${{ vars.BACKEND_ZIP_FILE }} s3://${{ secrets.AWS_S3_BUCKET }}/
+
+      - name: Deploy with AWS CodeDeploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws deploy create-deployment \
+          --application-name ${{ secrets.AWS_CODEDEPLOY_APP }} \
+          --deployment-group-name connectruck \
+          --file-exists-behavior OVERWRITE \
+          --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},bundleType=zip,key=${{ vars.BACKEND_ZIP_FILE }} \
+          --region ap-northeast-2

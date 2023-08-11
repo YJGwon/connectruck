@@ -1,0 +1,1 @@
+ALTER TABLE order_info ADD status VARCHAR(20) NOT NULL;

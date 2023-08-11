@@ -1,0 +1,27 @@
+.truck-listing {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .truck-thumbnail {
+    width: 80px;
+    height: 80px;
+    margin-right: 16px;
+  }
+  
+  .truck-info {
+    flex: 1;
+  }
+  
+  .truck-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .truck-location, .truck-hours {
+    margin-bottom: 5px;
+  }
+  
+  
