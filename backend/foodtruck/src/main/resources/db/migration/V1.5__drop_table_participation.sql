@@ -17,9 +17,9 @@ UPDATE order_info o
     SET o.truck_id = (SELECT p.truck_id FROM participation p WHERE o.participation_id = p.participation_id);
 
 -- drop participation
---ALTER TABLE menu DROP FOREIGN KEY menu_ibfk_1;
+ALTER TABLE menu DROP FOREIGN KEY menu_ibfk_1;
 ALTER TABLE menu DROP participation_id;
---ALTER TABLE order_info DROP FOREIGN KEY order_info_ibfk_1;
+ALTER TABLE order_info DROP FOREIGN KEY order_info_ibfk_1;
 ALTER TABLE order_info DROP participation_id;
 
 DROP TABLE participation;
