@@ -1,4 +1,9 @@
 package com.connectruck.foodtruck.auth.dto;
 
-public record TokenResponse(String accessToken) {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public record TokenResponse(
+        @Schema(description = "Jwt 토큰", example = "some.jwt.token")
+        String accessToken
+) {
 }
