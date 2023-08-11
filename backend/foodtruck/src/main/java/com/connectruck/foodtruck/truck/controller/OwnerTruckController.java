@@ -7,11 +7,13 @@ import com.connectruck.foodtruck.auth.annotation.Authorization;
 import com.connectruck.foodtruck.truck.dto.TruckResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "owner truck", description = "푸드트럭 관련 사장님 API")
 @RestController
 @Authorization(OWNER)
 @RequestMapping("/api/owner/trucks")

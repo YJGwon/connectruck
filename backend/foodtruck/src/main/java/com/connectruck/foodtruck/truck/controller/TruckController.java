@@ -6,6 +6,7 @@ import com.connectruck.foodtruck.truck.dto.TruckResponse;
 import com.connectruck.foodtruck.truck.dto.TrucksResponse;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "truck", description = "푸드트럭 관련 API")
 @RestController
 @RequestMapping("/api/trucks")
 @RequiredArgsConstructor
