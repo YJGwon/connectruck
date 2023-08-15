@@ -1,6 +1,6 @@
 package com.connectruck.foodtruck.notification.config;
 
-import com.connectruck.foodtruck.notification.service.OrderCreatedMessageSubscriber;
+import com.connectruck.foodtruck.notification.infra.OrderMessageListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 public class RedisMessageListenerConfig {
 
     @Bean
-    MessageListenerAdapter messageListenerAdapter(final OrderCreatedMessageSubscriber listener) {
+    MessageListenerAdapter messageListenerAdapter(final OrderMessageListener listener) {
         return new MessageListenerAdapter(listener);
     }
 

@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.service;
+package com.connectruck.foodtruck.notification.infra;
 
 import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,24 +7,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
 @Slf4j
-public class OrderCreatedMessageSubscriber implements MessageListener {
+public class OrderMessageListener implements MessageListener {
 
-    private final NotificationService notificationService;
     private final ObjectMapper objectMapper;
+    private final OrderMessageHandler orderMessageHandler;
 
     @Override
     public void onMessage(final Message message, final byte[] pattern) {
         try {
-            final OrderMessage orderMessage = objectMapper.readValue(
-                    message.getBody(), OrderMessage.class
-            );
+            final OrderMessage orderMessage = objectMapper.readValue(message.getBody(), OrderMessage.class);
 
-            notificationService.notifyOrderCreated(orderMessage.truckId(), orderMessage.orderId());
+            orderMessageHandler.handle(orderMessage);
         } catch (IOException e) {
             log.error("failed to read order created message", e);
         }

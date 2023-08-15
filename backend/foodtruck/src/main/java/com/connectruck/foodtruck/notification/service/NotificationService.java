@@ -14,12 +14,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
@@ -35,19 +33,13 @@ public class NotificationService {
                 .orElseThrow(() -> NotFoundException.of("소유한 푸드트럭", "ownerId", ownerId))
                 .getId();
 
-        final SseEmitter sseEmitter = new SseEmitter(SUBSCRIBE_TIME_OUT);
-        sseEmitter.onTimeout(sseEmitter::complete);
-        sseEmitter.onCompletion(() -> {
-            log.info("SSE connection complete - {}", truckId);
-            sseEmitterRepository.deleteById(truckId);
-        });
-        log.info("SSE connection started - {}", truckId);
-
+        final SseEmitter sseEmitter = createSseEmitter(truckId);
         final SseEventGroup group = new SseEventGroup(OWNER_ORDER, truckId);
         sendInitialEvent(group, sseEmitter);
         sendLickedEvents(lastEventId, group, sseEmitter);
 
         sseEmitterRepository.save(truckId, sseEmitter);
+        log.info("SSE connection started - {}", truckId);
         return sseEmitter;
     }
 
@@ -63,6 +55,16 @@ public class NotificationService {
 
         final SseEmitter sseEmitter = found.get();
         send(sseEmitter, sseEvent);
+    }
+
+    private SseEmitter createSseEmitter(final Long truckId) {
+        final SseEmitter sseEmitter = new SseEmitter(SUBSCRIBE_TIME_OUT);
+        sseEmitter.onTimeout(sseEmitter::complete);
+        sseEmitter.onCompletion(() -> {
+            log.info("SSE connection complete - {}", truckId);
+            sseEmitterRepository.deleteById(truckId);
+        });
+        return sseEmitter;
     }
 
     private void sendInitialEvent(final SseEventGroup group, final SseEmitter sseEmitter) {

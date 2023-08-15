@@ -30,7 +30,7 @@ public class RedisSseEventRepository implements SseEventRepository {
                 .toList();
     }
 
-    private String generateKey(SseEventGroup group) {
+    private String generateKey(final SseEventGroup group) {
         return String.format(KEY_FORMAT, group.getType().name().toLowerCase(), group.getId());
     }
 }
