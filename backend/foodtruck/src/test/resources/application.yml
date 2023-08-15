@@ -50,4 +50,4 @@ connectruck:
   redis:
     key-prefix: test
     channel:
-      order-created: test-order-created
+      order: test-order

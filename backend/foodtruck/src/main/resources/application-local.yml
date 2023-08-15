@@ -47,4 +47,4 @@ connectruck:
   redis:
     key-prefix: local
     channel:
-      order-created: local-order-created
+      order: local-order

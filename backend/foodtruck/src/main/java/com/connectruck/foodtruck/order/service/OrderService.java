@@ -23,8 +23,8 @@ import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.order.exception.WrongOrderInfoException;
-import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
-import com.connectruck.foodtruck.order.infra.OrderMessagePublisher;
+import com.connectruck.foodtruck.order.message.OrderMessage;
+import com.connectruck.foodtruck.order.message.OrderMessagePublisher;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.time.LocalDateTime;
@@ -67,7 +67,7 @@ public class OrderService {
         orderInfoRepository.save(orderInfo);
         final Long id = orderInfo.getId();
 
-        publishOrderCreatedMessage(truckId, id);
+        publishOrderMessage(orderInfo);
         return id;
     }
 
@@ -93,11 +93,12 @@ public class OrderService {
             throw new WrongOrderInfoException();
         }
 
-        final OrderInfo order = found.get();
-        if (order.isAccepted()) {
+        final OrderInfo orderInfo = found.get();
+        if (orderInfo.isAccepted()) {
             throw new ClientException("주문을 취소할 수 없습니다.", "접수된 주문은 취소할 수 없습니다.");
         }
-        order.changeStatus(OrderStatus.CANCELED);
+        orderInfo.changeStatus(OrderStatus.CANCELED);
+        publishOrderMessage(orderInfo);
     }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {
@@ -137,9 +138,9 @@ public class OrderService {
         return OrderLine.ofNew(menu.getId(), menu.getName(), menu.getPrice(), orderLineRequest.quantity(), orderInfo);
     }
 
-    private void publishOrderCreatedMessage(Long truckId, Long id) {
+    private void publishOrderMessage(final OrderInfo orderInfo) {
         try {
-            orderMessagePublisher.publishCreatedMessage(new OrderCreatedMessage(truckId, id));
+            orderMessagePublisher.publish(OrderMessage.of(orderInfo));
         } catch (Exception e) {
             log.error("failed to send order created message", e);
         }

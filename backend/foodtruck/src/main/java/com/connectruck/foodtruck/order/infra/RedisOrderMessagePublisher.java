@@ -1,5 +1,7 @@
 package com.connectruck.foodtruck.order.infra;
 
+import com.connectruck.foodtruck.order.message.OrderMessage;
+import com.connectruck.foodtruck.order.message.OrderMessagePublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -7,13 +9,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class RedisOrderMessagePublisher implements OrderMessagePublisher {
+class RedisOrderMessagePublisher implements OrderMessagePublisher {
 
-    private final RedisTemplate<String, OrderCreatedMessage> orderCreatedMessageTemplate;
-    private final ChannelTopic orderCreatedChannelTopic;
+    private final RedisTemplate<String, OrderMessage> orderMessageTemplate;
+    private final ChannelTopic orderChannelTopic;
 
     @Override
-    public void publishCreatedMessage(final OrderCreatedMessage message) {
-        orderCreatedMessageTemplate.convertAndSend(orderCreatedChannelTopic.getTopic(), message);
+    public void publish(final OrderMessage message) {
+        orderMessageTemplate.convertAndSend(orderChannelTopic.getTopic(), message);
     }
 }
