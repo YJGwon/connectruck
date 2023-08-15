@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 class RedisOrderMessagePublisher implements OrderMessagePublisher {
 
     private final RedisTemplate<String, OrderCreatedMessage> orderCreatedMessageTemplate;
-    private final ChannelTopic orderCreatedChannelTopic;
+    private final ChannelTopic orderChannelTopic;
 
     @Override
     public void publishCreatedMessage(final OrderCreatedMessage message) {
-        orderCreatedMessageTemplate.convertAndSend(orderCreatedChannelTopic.getTopic(), message);
+        orderCreatedMessageTemplate.convertAndSend(orderChannelTopic.getTopic(), message);
     }
 }

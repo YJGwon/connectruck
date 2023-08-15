@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.common.config;
+package com.connectruck.foodtruck.order.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +9,8 @@ import org.springframework.data.redis.listener.ChannelTopic;
 public class RedisChannelConfig {
 
     @Bean
-    ChannelTopic orderCreatedChannelTopic(
-            @Value("${connectruck.redis.channel.order-created}") final String orderCreatedChannelName) {
-        return ChannelTopic.of(orderCreatedChannelName);
+    ChannelTopic orderChannelTopic(
+            @Value("${connectruck.redis.channel.order}") final String orderChannelName) {
+        return ChannelTopic.of(orderChannelName);
     }
 }
