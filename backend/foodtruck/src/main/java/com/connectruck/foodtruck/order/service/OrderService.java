@@ -93,11 +93,12 @@ public class OrderService {
             throw new WrongOrderInfoException();
         }
 
-        final OrderInfo order = found.get();
-        if (order.isAccepted()) {
+        final OrderInfo orderInfo = found.get();
+        if (orderInfo.isAccepted()) {
             throw new ClientException("주문을 취소할 수 없습니다.", "접수된 주문은 취소할 수 없습니다.");
         }
-        order.changeStatus(OrderStatus.CANCELED);
+        orderInfo.changeStatus(OrderStatus.CANCELED);
+        publishOrderMessage(orderInfo);
     }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {

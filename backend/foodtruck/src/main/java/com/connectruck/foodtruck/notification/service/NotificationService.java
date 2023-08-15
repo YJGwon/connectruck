@@ -7,6 +7,7 @@ import com.connectruck.foodtruck.notification.domain.SseEmitterRepository;
 import com.connectruck.foodtruck.notification.domain.SseEvent;
 import com.connectruck.foodtruck.notification.domain.SseEventGroup;
 import com.connectruck.foodtruck.notification.domain.SseEventRepository;
+import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.io.IOException;
 import java.util.List;
@@ -43,12 +44,11 @@ public class NotificationService {
         return sseEmitter;
     }
 
-    public void notifyOrderCreated(final Long truckId, final Long orderId) {
-        final SseEventGroup group = new SseEventGroup(OWNER_ORDER, truckId);
-        final SseEvent sseEvent = new SseEvent(group, "order created", orderId.toString());
+    public void notifyOrderToOwner(final OrderMessage orderMessage) {
+        final SseEvent sseEvent = createOrderEvent(orderMessage);
         sseEventRepository.save(sseEvent);
 
-        final Optional<SseEmitter> found = sseEmitterRepository.findById(truckId);
+        final Optional<SseEmitter> found = sseEmitterRepository.findById(orderMessage.truckId());
         if (found.isEmpty()) {
             return;
         }
@@ -86,6 +86,13 @@ public class NotificationService {
         for (SseEvent lickedEvent : lickedEvents) {
             send(sseEmitter, lickedEvent);
         }
+    }
+
+    private SseEvent createOrderEvent(final OrderMessage orderMessage) {
+        final SseEventGroup group = new SseEventGroup(OWNER_ORDER, orderMessage.truckId());
+        final String name = "order " + orderMessage.status().name().toLowerCase();
+        final String data = Long.toString(orderMessage.orderId());
+        return new SseEvent(group, name, data);
     }
 
     private void send(final SseEmitter sseEmitter, final SseEvent sseEvent) {

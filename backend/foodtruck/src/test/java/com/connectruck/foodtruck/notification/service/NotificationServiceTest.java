@@ -9,6 +9,7 @@ import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
+import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import org.junit.jupiter.api.DisplayName;
@@ -65,11 +66,11 @@ class NotificationServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("주문 생성 알림.")
+    @DisplayName("주문 알림")
     @Nested
     class notifyOrderCreated {
 
-        @DisplayName("해당 푸드트럭의 주문 알림 구독자에게 주문 생성 알림을 발송한다.")
+        @DisplayName("해당 푸드트럭의 주문 알림 구독자에게 주문 알림을 발송한다.")
         @Test
         void success() {
             // given
@@ -80,11 +81,12 @@ class NotificationServiceTest extends ServiceTestBase {
 
             final Menu savedMenu = dataSetup.saveMenu(savedTruck);
             final OrderInfo createdOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
+            final OrderMessage orderMessage = OrderMessage.of(createdOrder);
 
             // when & then
             assertThatNoException()
                     .isThrownBy(() ->
-                            notificationService.notifyOrderCreated(createdOrder.getTruckId(), createdOrder.getId())
+                            notificationService.notifyOrderToOwner(orderMessage)
                     );
         }
     }
