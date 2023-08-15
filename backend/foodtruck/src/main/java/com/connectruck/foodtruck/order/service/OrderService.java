@@ -23,7 +23,7 @@ import com.connectruck.foodtruck.order.dto.OrdererInfoRequest;
 import com.connectruck.foodtruck.order.dto.OrdersResponse;
 import com.connectruck.foodtruck.order.exception.OrderCreationException;
 import com.connectruck.foodtruck.order.exception.WrongOrderInfoException;
-import com.connectruck.foodtruck.order.message.OrderCreatedMessage;
+import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.order.message.OrderMessagePublisher;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
@@ -67,7 +67,7 @@ public class OrderService {
         orderInfoRepository.save(orderInfo);
         final Long id = orderInfo.getId();
 
-        publishOrderCreatedMessage(truckId, id);
+        publishOrderCreatedMessage(id, truckId);
         return id;
     }
 
@@ -137,9 +137,9 @@ public class OrderService {
         return OrderLine.ofNew(menu.getId(), menu.getName(), menu.getPrice(), orderLineRequest.quantity(), orderInfo);
     }
 
-    private void publishOrderCreatedMessage(Long truckId, Long id) {
+    private void publishOrderCreatedMessage(Long id, Long truckId) {
         try {
-            orderMessagePublisher.publishCreatedMessage(new OrderCreatedMessage(truckId, id));
+            orderMessagePublisher.publishCreatedMessage(new OrderMessage(id, OrderStatus.CREATED, truckId));
         } catch (Exception e) {
             log.error("failed to send order created message", e);
         }

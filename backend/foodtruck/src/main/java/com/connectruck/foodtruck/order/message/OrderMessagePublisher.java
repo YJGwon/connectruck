@@ -2,5 +2,5 @@ package com.connectruck.foodtruck.order.message;
 
 public interface OrderMessagePublisher {
 
-    void publishCreatedMessage(OrderCreatedMessage message);
+    void publishCreatedMessage(OrderMessage message);
 }

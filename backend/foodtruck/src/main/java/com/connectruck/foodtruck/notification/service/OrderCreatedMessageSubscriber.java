@@ -1,6 +1,6 @@
 package com.connectruck.foodtruck.notification.service;
 
-import com.connectruck.foodtruck.order.message.OrderCreatedMessage;
+import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +20,11 @@ public class OrderCreatedMessageSubscriber implements MessageListener {
     @Override
     public void onMessage(final Message message, final byte[] pattern) {
         try {
-            final OrderCreatedMessage orderCreatedMessage = objectMapper.readValue(
-                    message.getBody(), OrderCreatedMessage.class
+            final OrderMessage orderMessage = objectMapper.readValue(
+                    message.getBody(), OrderMessage.class
             );
 
-            notificationService.notifyOrderCreated(orderCreatedMessage.truckId(), orderCreatedMessage.orderId());
+            notificationService.notifyOrderCreated(orderMessage.truckId(), orderMessage.orderId());
         } catch (IOException e) {
             log.error("failed to read order created message", e);
         }
