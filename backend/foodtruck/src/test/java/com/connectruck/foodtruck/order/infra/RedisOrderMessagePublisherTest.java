@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.order.infra;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import com.connectruck.foodtruck.order.message.OrderCreatedMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

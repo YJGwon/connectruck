@@ -1,7 +1,7 @@
 package com.connectruck.foodtruck.order.config;
 
 import com.connectruck.foodtruck.common.support.PrefixedStringRedisSerializer;
-import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
+import com.connectruck.foodtruck.order.message.OrderCreatedMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

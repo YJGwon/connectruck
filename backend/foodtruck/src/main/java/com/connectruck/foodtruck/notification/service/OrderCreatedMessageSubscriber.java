@@ -1,6 +1,6 @@
 package com.connectruck.foodtruck.notification.service;
 
-import com.connectruck.foodtruck.order.infra.OrderCreatedMessage;
+import com.connectruck.foodtruck.order.message.OrderCreatedMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;

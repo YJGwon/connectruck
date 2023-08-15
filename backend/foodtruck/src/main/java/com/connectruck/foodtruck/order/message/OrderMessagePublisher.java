@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.order.infra;
+package com.connectruck.foodtruck.order.message;
 
 public interface OrderMessagePublisher {
 
