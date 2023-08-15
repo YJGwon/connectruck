@@ -67,7 +67,7 @@ public class OrderService {
         orderInfoRepository.save(orderInfo);
         final Long id = orderInfo.getId();
 
-        publishOrderCreatedMessage(id, truckId);
+        publishOrderMessage(orderInfo);
         return id;
     }
 
@@ -137,9 +137,9 @@ public class OrderService {
         return OrderLine.ofNew(menu.getId(), menu.getName(), menu.getPrice(), orderLineRequest.quantity(), orderInfo);
     }
 
-    private void publishOrderCreatedMessage(Long id, Long truckId) {
+    private void publishOrderMessage(final OrderInfo orderInfo) {
         try {
-            orderMessagePublisher.publishCreatedMessage(new OrderMessage(id, OrderStatus.CREATED, truckId));
+            orderMessagePublisher.publish(OrderMessage.of(orderInfo));
         } catch (Exception e) {
             log.error("failed to send order created message", e);
         }

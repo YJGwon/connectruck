@@ -14,13 +14,12 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 public class RedisMessageTemplateConfig {
 
     @Bean
-    RedisTemplate<String, OrderMessage> orderCreatedMessageTemplate(
-            final RedisConnectionFactory redisConnectionFactory,
-            final PrefixedStringRedisSerializer prefixedStringRedisSerializer) {
-        final RedisTemplate<String, OrderMessage> orderCreatedMessageTemplate = new RedisTemplate<>();
-        orderCreatedMessageTemplate.setConnectionFactory(redisConnectionFactory);
-        orderCreatedMessageTemplate.setKeySerializer(prefixedStringRedisSerializer);
-        orderCreatedMessageTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(OrderMessage.class));
-        return orderCreatedMessageTemplate;
+    RedisTemplate<String, OrderMessage> orderMessageTemplate(final RedisConnectionFactory redisConnectionFactory,
+                                                             final PrefixedStringRedisSerializer prefixedStringRedisSerializer) {
+        final RedisTemplate<String, OrderMessage> orderMessageTemplate = new RedisTemplate<>();
+        orderMessageTemplate.setConnectionFactory(redisConnectionFactory);
+        orderMessageTemplate.setKeySerializer(prefixedStringRedisSerializer);
+        orderMessageTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(OrderMessage.class));
+        return orderMessageTemplate;
     }
 }
