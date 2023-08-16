@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
-import {UserContext} from './context/UserContext';
 import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+
+import {UserContext} from './context/UserContext';
 
 import Index from './page/index/Index';
 import ServiceMain from './page/service/main/ServiceMain';
