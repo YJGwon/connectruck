@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.domain;
+package com.connectruck.foodtruck.notification.domain.sse;
 
 import java.util.Optional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;

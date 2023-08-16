@@ -6,7 +6,7 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: create
-    #      ddl-auto: validate
+#      ddl-auto: validate
     open-in-view: false # OSIV off
   # h2 in-memory db
   datasource:

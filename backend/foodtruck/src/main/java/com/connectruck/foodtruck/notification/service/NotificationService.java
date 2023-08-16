@@ -1,12 +1,12 @@
 package com.connectruck.foodtruck.notification.service;
 
-import static com.connectruck.foodtruck.notification.domain.SseEventGroupType.OWNER_ORDER;
+import static com.connectruck.foodtruck.notification.domain.sse.SseEventGroupType.OWNER_ORDER;
 
 import com.connectruck.foodtruck.common.exception.NotFoundException;
-import com.connectruck.foodtruck.notification.domain.SseEmitterRepository;
-import com.connectruck.foodtruck.notification.domain.SseEvent;
-import com.connectruck.foodtruck.notification.domain.SseEventGroup;
-import com.connectruck.foodtruck.notification.domain.SseEventRepository;
+import com.connectruck.foodtruck.notification.domain.sse.SseEmitterRepository;
+import com.connectruck.foodtruck.notification.domain.sse.SseEvent;
+import com.connectruck.foodtruck.notification.domain.sse.SseEventGroup;
+import com.connectruck.foodtruck.notification.domain.sse.SseEventRepository;
 import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.io.IOException;
