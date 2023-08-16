@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class PushSubscriber {
+public class PushSubscription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "push_subscriber_id")
+    @Column(name = "push_subscription_id")
     @Include
     private Long id;
 
@@ -30,7 +30,7 @@ public class PushSubscriber {
     private boolean active;
     private Long truckId;
 
-    public static PushSubscriber ofNew(final String token, final Long truckId) {
-        return new PushSubscriber(null, token, true, truckId);
+    public static PushSubscription ofNew(final String token, final Long truckId) {
+        return new PushSubscription(null, token, true, truckId);
     }
 }

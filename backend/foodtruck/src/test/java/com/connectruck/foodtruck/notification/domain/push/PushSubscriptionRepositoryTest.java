@@ -10,10 +10,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class PushSubscriberRepositoryTest extends RepositoryTestBase {
+class PushSubscriptionRepositoryTest extends RepositoryTestBase {
 
     @Autowired
-    private PushSubscriberRepository pushSubscriberRepository;
+    private PushSubscriptionRepository pushSubscriptionRepository;
 
     @DisplayName("푸시 알림 구독 정보를 저장한다.")
     @Test
@@ -21,10 +21,10 @@ class PushSubscriberRepositoryTest extends RepositoryTestBase {
         // given
         final Event savedEvent = dataSetup.saveEvent(EventFixture.밤도깨비_야시장.create());
         final Truck savedTruck = dataSetup.saveTruck(savedEvent);
-        final PushSubscriber pushSubscriber = PushSubscriber.ofNew("fake.token", savedTruck.getId());
+        final PushSubscription pushSubscription = PushSubscription.ofNew("fake.token", savedTruck.getId());
 
         // when
-        final PushSubscriber saved = pushSubscriberRepository.save(pushSubscriber);
+        final PushSubscription saved = pushSubscriptionRepository.save(pushSubscription);
 
         // then
         assertThat(saved.getId()).isNotNull();
