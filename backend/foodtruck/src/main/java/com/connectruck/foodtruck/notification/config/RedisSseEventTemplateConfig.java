@@ -1,7 +1,7 @@
 package com.connectruck.foodtruck.notification.config;
 
 import com.connectruck.foodtruck.common.support.PrefixedStringRedisSerializer;
-import com.connectruck.foodtruck.notification.domain.SseEvent;
+import com.connectruck.foodtruck.notification.domain.sse.SseEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

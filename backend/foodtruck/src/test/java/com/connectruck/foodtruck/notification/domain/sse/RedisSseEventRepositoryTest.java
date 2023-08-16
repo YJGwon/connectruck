@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.domain;
+package com.connectruck.foodtruck.notification.domain.sse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
