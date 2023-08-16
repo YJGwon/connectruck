@@ -27,10 +27,9 @@ public class PushSubscription {
     private Long id;
 
     private String token;
-    private boolean active;
     private Long truckId;
 
     public static PushSubscription ofNew(final String token, final Long truckId) {
-        return new PushSubscription(null, token, true, truckId);
+        return new PushSubscription(null, token, truckId);
     }
 }
