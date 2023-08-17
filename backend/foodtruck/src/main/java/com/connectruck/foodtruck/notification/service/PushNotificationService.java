@@ -19,11 +19,15 @@ public class PushNotificationService {
 
     @Transactional
     public void subscribeOrders(final PushSubscribeRequest request, final Long ownerId) {
+        final String token = request.token();
         final Long truckId = truckRepository.findByOwnerId(ownerId)
                 .orElseThrow(() -> NotFoundException.of("소유한 푸드트럭", "ownerId", ownerId))
                 .getId();
 
-        final PushSubscription pushSubscription = PushSubscription.ofNew(request.token(), truckId);
+        if (pushSubscriptionRepository.existsByTokenAndTruckId(token, truckId)) {
+            return;
+        }
+        final PushSubscription pushSubscription = PushSubscription.ofNew(token, truckId);
         pushSubscriptionRepository.save(pushSubscription);
     }
 }

@@ -25,7 +25,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
 
         @DisplayName("소유한 푸드트럭의 주문 알림을 구독한다.")
         @Test
-        void withOutLastEventId() {
+        void success() {
             // given
             final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
             final Account owner = dataSetup.saveOwnerAccount();
@@ -33,6 +33,22 @@ class PushNotificationServiceTest extends ServiceTestBase {
 
             // when & then
             final PushSubscribeRequest request = new PushSubscribeRequest("fake.token");
+            assertThatNoException()
+                    .isThrownBy(() -> pushNotificationService.subscribeOrders(request, owner.getId()));
+        }
+
+        @DisplayName("소유 푸드트럭에 대해 이미 구독된 기기이면 새 구독 정보를 생성하지 않는다.")
+        @Test
+        void success_whenAlreadySubscribed() {
+            // given
+            final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
+            final Account owner = dataSetup.saveOwnerAccount();
+            dataSetup.saveTruck(event, owner.getId());
+
+            final PushSubscribeRequest request = new PushSubscribeRequest("fake.token");
+            pushNotificationService.subscribeOrders(request, owner.getId());
+
+            // when & then
             assertThatNoException()
                     .isThrownBy(() -> pushNotificationService.subscribeOrders(request, owner.getId()));
         }
