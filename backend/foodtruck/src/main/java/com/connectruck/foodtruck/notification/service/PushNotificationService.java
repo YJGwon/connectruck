@@ -1,10 +1,15 @@
 package com.connectruck.foodtruck.notification.service;
 
 import com.connectruck.foodtruck.common.exception.NotFoundException;
+import com.connectruck.foodtruck.notification.domain.push.PushNotification;
+import com.connectruck.foodtruck.notification.domain.push.PushResult;
+import com.connectruck.foodtruck.notification.domain.push.PushSender;
 import com.connectruck.foodtruck.notification.domain.push.PushSubscription;
 import com.connectruck.foodtruck.notification.domain.push.PushSubscriptionRepository;
 import com.connectruck.foodtruck.notification.dto.PushSubscribeRequest;
+import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PushNotificationService {
+
+    private final PushSender pushSender;
 
     private final PushSubscriptionRepository pushSubscriptionRepository;
     private final TruckRepository truckRepository;
@@ -29,5 +36,21 @@ public class PushNotificationService {
         }
         final PushSubscription pushSubscription = PushSubscription.ofNew(token, truckId);
         pushSubscriptionRepository.save(pushSubscription);
+    }
+
+    @Transactional
+    public void notifyOrderToOwner(final OrderMessage orderMessage) {
+        final List<PushSubscription> subscriptions = pushSubscriptionRepository.findByTruckId(orderMessage.truckId());
+        if (subscriptions.isEmpty()) {
+            return;
+        }
+
+        final PushNotification pushNotification = PushNotification.ofOrder(
+                orderMessage.orderId(), orderMessage.status()
+        );
+        final PushResult result = pushSender.send(pushNotification, subscriptions);
+        for (String failedToken : result.failedTokens()) {
+            pushSubscriptionRepository.deleteByTokenAndTruckId(failedToken, orderMessage.truckId());
+        }
     }
 }
