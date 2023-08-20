@@ -22,8 +22,10 @@ public class FirebaseMessagingConfig {
                     .setCredentials(GoogleCredentials.fromStream(firebaseAccountResource.getInputStream()))
                     .build();
 
-            FirebaseApp.initializeApp(options);
-            log.info("Firebase app initialized");
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp.initializeApp(options);
+                log.info("Firebase app initialized");
+            }
             return FirebaseMessaging.getInstance();
         } catch (IOException e) {
             throw new RuntimeException("FirebaseApp을 초기화할 수 없습니다.", e);
