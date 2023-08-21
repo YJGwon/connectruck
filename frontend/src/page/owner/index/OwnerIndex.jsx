@@ -1,9 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Routes, Route} from 'react-router-dom';
-import {EventSourcePolyfill} from 'event-source-polyfill';
 
 import {UserContext} from '../../../context/UserContext';
-import {sendNotification} from '../../../function/BrowserNotification';
 
 import TopBar from '../../../component/topbar/TopBar';
 import BadgedMenuIcon from '../../../component/topbar/button/BadgedMenuIcon';
@@ -22,7 +20,7 @@ import './OwnerIndex.css';
 export default function OwnerIndex() {
     const [newOrders, setNewOrders] = useState([]);
 
-    const {isLogin, accessToken} = useContext(UserContext);
+    const {isLogin} = useContext(UserContext);
     const root = "/owner";
     
     useEffect(() => {
@@ -36,42 +34,18 @@ export default function OwnerIndex() {
         localStorage.setItem('newOrders', JSON.stringify(newOrders));
     }, [newOrders]);
 
-    useEffect(() => {
-        if (isLogin) {
-            fetchOrderSse();
-        }
-    }, [isLogin]);
-
     const removeFromNewOrders = (orderId) => {
         const updatedNewOrders = newOrders.filter(newOrderId => newOrderId !== orderId);
         setNewOrders(updatedNewOrders);
     }
 
-    const fetchOrderSse = () => {
-        const url = `${process.env.REACT_APP_API_URL}/api/notification/orders/my`;
-        const eventSource = new EventSourcePolyfill(url, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`,
-            },
-            heartbeatTimeout: 5 * 60 * 1000,
-        });
-
-        eventSource.addEventListener("order created", (e) => {
-            const newOrderId = Number(e.data);
-            setNewOrders(prevNewOrders => [...prevNewOrders, newOrderId]);
-            sendNotification('새로운 주문 도착!');
-        });
-
-        eventSource.onerror = (e) => {
-            if (e.status === 401) {
-                alert('토큰이 만료되었습니다.');
-                window.location.href = '/logout';
-            }
-            if (e.error && !e.error.message.includes("No activity")) {
-                eventSource.close();
-            }
-        };
-    };
+    const onOrder = (order) => {
+        if (order.status === 'CREATED') {
+            setNewOrders(prevNewOrders => [...prevNewOrders, order.id]);
+        } else if (order.status === 'CANCELED') {
+            removeFromNewOrders(order.id);
+        }
+    }
 
     // topbar props
     const title = '사장님 서비스 🚚';
@@ -106,7 +80,7 @@ export default function OwnerIndex() {
                 <div className='content'>
                     <Routes>
                         <Route element={<AuthRouter shouldLogin={true} root={root} />}>
-                            <Route exact='exact' path='/' element={<OwnerMain/>}/>
+                            <Route exact='exact' path='/' element={<OwnerMain onOrder={onOrder}/>}/>
                             <Route path='/accept' element={<OwnerOrderAccept newOrders={newOrders} handleOnOrderClick={removeFromNewOrders}/>}/>
                             <Route path='/menus' element={<OwnerMenuList/>}/>
                         </Route>

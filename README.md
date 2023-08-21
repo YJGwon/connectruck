@@ -47,8 +47,7 @@
 
 ## ERD
 
-![connectruck-erd](https://github.com/YJGwon/programmers-solved/assets/89305335/7a2dba7b-1c59-4dd1-9d11-b96c66b1508c)
-[DB Schema description](https://forky-freeky-forky.notion.site/DB-Schema-31ab88d5bd534cdd8dcd14e866e99a76?pvs=4)
+![connectruck-erd](https://github.com/YJGwon/connectruck/assets/89305335/f8a05fa2-db78-4079-886e-9f82be3ff88d)
 
 ## API 명세
 
