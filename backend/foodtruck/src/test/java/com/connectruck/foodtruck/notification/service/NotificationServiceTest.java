@@ -7,9 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.menu.domain.Menu;
-import com.connectruck.foodtruck.order.domain.OrderInfo;
-import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import com.connectruck.foodtruck.user.domain.Account;
 import org.junit.jupiter.api.DisplayName;
@@ -63,31 +60,6 @@ class NotificationServiceTest extends ServiceTestBase {
             final String lastEventId = truck.getId() + "_" + System.currentTimeMillis();
             assertThatNoException()
                     .isThrownBy(() -> notificationService.subscribeOrders(owner.getId(), lastEventId));
-        }
-    }
-
-    @DisplayName("주문 알림")
-    @Nested
-    class notifyOrderCreated {
-
-        @DisplayName("해당 푸드트럭의 주문 알림 구독자에게 주문 알림을 발송한다.")
-        @Test
-        void success() {
-            // given
-            final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
-            final Account owner = dataSetup.saveOwnerAccount();
-            final Truck savedTruck = dataSetup.saveTruck(event, owner.getId());
-            notificationService.subscribeOrders(owner.getId(), "");
-
-            final Menu savedMenu = dataSetup.saveMenu(savedTruck);
-            final OrderInfo createdOrder = dataSetup.saveOrderInfo(savedTruck, savedMenu);
-            final OrderMessage orderMessage = OrderMessage.of(createdOrder);
-
-            // when & then
-            assertThatNoException()
-                    .isThrownBy(() ->
-                            notificationService.notifyOrderToOwner(orderMessage)
-                    );
         }
     }
 }

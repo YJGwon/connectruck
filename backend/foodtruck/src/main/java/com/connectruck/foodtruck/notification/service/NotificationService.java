@@ -44,19 +44,6 @@ public class NotificationService {
         return sseEmitter;
     }
 
-    public void notifyOrderToOwner(final OrderMessage orderMessage) {
-        final SseEvent sseEvent = createOrderEvent(orderMessage);
-        sseEventRepository.save(sseEvent);
-
-        final Optional<SseEmitter> found = sseEmitterRepository.findById(orderMessage.truckId());
-        if (found.isEmpty()) {
-            return;
-        }
-
-        final SseEmitter sseEmitter = found.get();
-        send(sseEmitter, sseEvent);
-    }
-
     private SseEmitter createSseEmitter(final Long truckId) {
         final SseEmitter sseEmitter = new SseEmitter(SUBSCRIBE_TIME_OUT);
         sseEmitter.onTimeout(sseEmitter::complete);
@@ -86,13 +73,6 @@ public class NotificationService {
         for (SseEvent lickedEvent : lickedEvents) {
             send(sseEmitter, lickedEvent);
         }
-    }
-
-    private SseEvent createOrderEvent(final OrderMessage orderMessage) {
-        final SseEventGroup group = new SseEventGroup(OWNER_ORDER, orderMessage.truckId());
-        final String name = "order " + orderMessage.status().name().toLowerCase();
-        final String data = Long.toString(orderMessage.orderId());
-        return new SseEvent(group, name, data);
     }
 
     private void send(final SseEmitter sseEmitter, final SseEvent sseEvent) {
