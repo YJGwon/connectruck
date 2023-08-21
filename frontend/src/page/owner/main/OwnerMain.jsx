@@ -8,7 +8,7 @@ import {fetchApi} from '../../../function/CustomFetch';
 
 import './OwnerMain.css';
 
-export const OwnerMain = () => {
+export const OwnerMain = ({onOrder}) => {
     const {accessToken} = useContext(UserContext);
 
     const firebaseConfig = {
@@ -23,7 +23,9 @@ export const OwnerMain = () => {
 
     const messaging = getMessaging();
     onMessage(messaging, (payload) => {
-        console.log('Message received. ', payload);
+        alert(payload.notification.title);
+        const order = {'id': payload.data.orderId, 'status': payload.data.status};
+        onOrder(order);
     });
 
     const enableFcm = () => {

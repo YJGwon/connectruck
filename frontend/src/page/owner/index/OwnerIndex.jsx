@@ -47,6 +47,15 @@ export default function OwnerIndex() {
         setNewOrders(updatedNewOrders);
     }
 
+    const onOrder = (order) => {
+        if (order.status === 'CREATED') {
+            setNewOrders(prevNewOrders => [...prevNewOrders, order.id]);
+        } else {
+            const updatedNewOrders = newOrders.filter(newOrderId => newOrderId !== order.id);
+            setNewOrders(updatedNewOrders);
+        }
+    }
+
     const fetchOrderSse = () => {
         const url = `${process.env.REACT_APP_API_URL}/api/notification/orders/my`;
         const eventSource = new EventSourcePolyfill(url, {
@@ -106,7 +115,7 @@ export default function OwnerIndex() {
                 <div className='content'>
                     <Routes>
                         <Route element={<AuthRouter shouldLogin={true} root={root} />}>
-                            <Route exact='exact' path='/' element={<OwnerMain/>}/>
+                            <Route exact='exact' path='/' element={<OwnerMain onOrder={onOrder}/>}/>
                             <Route path='/accept' element={<OwnerOrderAccept newOrders={newOrders} handleOnOrderClick={removeFromNewOrders}/>}/>
                             <Route path='/menus' element={<OwnerMenuList/>}/>
                         </Route>
