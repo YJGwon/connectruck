@@ -136,7 +136,8 @@ class PushNotificationServiceTest extends ServiceTestBase {
             pushNotificationService.notifyOrderToOwner(orderMessage);
 
             // then
-            verify(pushSubscriptionRepository).deleteByTokenAndTruckId(failedToken, truck.getId());
+            verify(pushSubscriptionRepository, Mockito.timeout(1000).times(1))
+                    .deleteByTokenAndTruckId(failedToken, truck.getId());
         }
     }
 }
