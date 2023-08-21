@@ -24,7 +24,7 @@ export const OwnerMain = ({onOrder}) => {
     const messaging = getMessaging();
     onMessage(messaging, (payload) => {
         alert(payload.notification.title);
-        const order = {'id': payload.data.orderId, 'status': payload.data.status};
+        const order = {'id': Number(payload.data.orderId), 'status': payload.data.status};
         onOrder(order);
     });
 
