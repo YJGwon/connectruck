@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OrderMessageHandlerImpl implements OrderMessageHandler {
 
-    private final NotificationService notificationService;
+    private final PushNotificationService pushNotificationService;
 
     @Override
     public void handle(final OrderMessage orderMessage) {
-        notificationService.notifyOrderToOwner(orderMessage);
+        pushNotificationService.notifyOrderToOwner(orderMessage);
     }
 }

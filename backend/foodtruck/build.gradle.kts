@@ -28,13 +28,13 @@ dependencies {
     // spring data jpa
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // spring data redis
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+    // firebase sdk
+    implementation("com.google.firebase:firebase-admin:9.2.0")
 
     // lombok
     compileOnly("org.projectlombok:lombok")
