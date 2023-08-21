@@ -27,6 +27,7 @@ jobs:
         working-directory: ${{ vars.FRONTEND_PATH }}
         run: |
           echo "REACT_APP_API_URL=${{ secrets.API_BASE_URL_PROD }}" >> .env
+          echo "REACT_APP_FIREBASE_VAPID_KEY=${{ secrets.FIREBASE_VAPID_KEY }}" >> .env
 
       - name: Install modules
         working-directory: ${{ vars.FRONTEND_PATH }}
