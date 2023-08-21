@@ -9,6 +9,8 @@ import com.connectruck.foodtruck.common.fixture.repository.TestTruckRepository;
 import com.connectruck.foodtruck.event.domain.Event;
 import com.connectruck.foodtruck.event.domain.Schedule;
 import com.connectruck.foodtruck.menu.domain.Menu;
+import com.connectruck.foodtruck.notification.domain.PushSubscription;
+import com.connectruck.foodtruck.notification.domain.PushSubscriptionRepository;
 import com.connectruck.foodtruck.order.domain.OrderInfo;
 import com.connectruck.foodtruck.order.domain.OrderInfoRepository;
 import com.connectruck.foodtruck.order.domain.OrderLine;
@@ -35,19 +37,22 @@ public class DataSetup {
     private final TestMenuRepository testMenuRepository;
     private final OrderInfoRepository orderInfoRepository;
     private final AccountRepository accountRepository;
+    private final PushSubscriptionRepository pushSubscriptionRepository;
 
     public DataSetup(final TestEventRepository testEventRepository,
                      final TestScheduleRepository testScheduleRepository,
                      final TestTruckRepository testTruckRepository,
                      final TestMenuRepository testMenuRepository,
                      final OrderInfoRepository orderInfoRepository,
-                     final AccountRepository accountRepository) {
+                     final AccountRepository accountRepository,
+                     final PushSubscriptionRepository pushSubscriptionRepository) {
         this.testEventRepository = testEventRepository;
         this.testScheduleRepository = testScheduleRepository;
         this.testTruckRepository = testTruckRepository;
         this.testMenuRepository = testMenuRepository;
         this.orderInfoRepository = orderInfoRepository;
         this.accountRepository = accountRepository;
+        this.pushSubscriptionRepository = pushSubscriptionRepository;
     }
 
     public Event saveEvent(final Event event) {
@@ -114,5 +119,10 @@ public class DataSetup {
 
     public Account saveAccount(final Account account) {
         return accountRepository.save(account);
+    }
+
+    public PushSubscription savePushSubscription(final String token, final Truck truck) {
+        final PushSubscription pushSubscription = PushSubscription.ofNew(token, truck.getId());
+        return pushSubscriptionRepository.save(pushSubscription);
     }
 }

@@ -8,7 +8,7 @@ import {ServiceOrderTrackingModal} from '../service/ordertracking/ServiceOrderTr
 export default function Index() {
     const [openModal, setOpenModal] = useState(false);
 
-    const title = 'Connectruck 🚚';
+    const title = "Connectruck 🚚";
     const root = "/";
 
     return (

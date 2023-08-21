@@ -1,5 +1,6 @@
 package com.connectruck.foodtruck.common.testbase;
 
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,7 +11,7 @@ import com.connectruck.foodtruck.auth.service.AuthService;
 import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.service.MenuService;
-import com.connectruck.foodtruck.notification.service.NotificationService;
+import com.connectruck.foodtruck.notification.service.PushNotificationService;
 import com.connectruck.foodtruck.order.service.OrderService;
 import com.connectruck.foodtruck.truck.service.TruckService;
 import com.connectruck.foodtruck.user.sevice.UserService;
@@ -48,7 +49,7 @@ public abstract class ControllerTestBase {
     protected AuthService authService;
 
     @MockBean
-    protected NotificationService notificationService;
+    protected PushNotificationService pushNotificationService;
 
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
@@ -63,10 +64,7 @@ public abstract class ControllerTestBase {
     }
 
     protected ResultActions performGetWithToken(final String uri) throws Exception {
-        doReturn("0")
-                .when(jwtTokenProvider)
-                .getSubject("fakeToken");
-
+        mockToken();
         return mockMvc.perform(get(uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer fakeToken")
                         .accept(MediaType.APPLICATION_JSON))
@@ -80,15 +78,27 @@ public abstract class ControllerTestBase {
                 .andDo(print());
     }
 
-    protected ResultActions performPutWithToken(final String uri, final Object request) throws Exception {
-        doReturn("0")
-                .when(jwtTokenProvider)
-                .getSubject("fakeToken");
+    protected ResultActions performPostWithToken(final String uri, final Object request) throws Exception {
+        mockToken();
+        return mockMvc.perform(post(uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer fakeToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+    }
 
+    protected ResultActions performPutWithToken(final String uri, final Object request) throws Exception {
+        mockToken();
         return mockMvc.perform(put(uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer fakeToken")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print());
+    }
+
+    private void mockToken() {
+        doReturn("0")
+                .when(jwtTokenProvider)
+                .getSubject(anyString());
     }
 }

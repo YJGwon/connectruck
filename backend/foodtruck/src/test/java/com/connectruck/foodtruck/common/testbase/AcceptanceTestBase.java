@@ -54,10 +54,11 @@ public abstract class AcceptanceTestBase {
                 .then().log().all();
     }
 
-    protected ValidatableResponse postWithToken(final String uri, final String token) {
+    protected ValidatableResponse postWithToken(final String uri, final Record body, final String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
+                .body(body)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().post(uri)

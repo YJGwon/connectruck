@@ -9,8 +9,8 @@
 <img src="https://img.shields.io/badge/Java-red?logo=openjdk">
 <img src="https://img.shields.io/badge/Spring Boot-6DB33F?logo=springboot&logoColor=white">
 <img src="https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white">
-<img src="https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white">
 <img src="https://img.shields.io/badge/Flyway-CC0200?logo=flyway&logoColor=white">
+<img src="https://img.shields.io/badge/Firebase Clound Messaging-FFCA28?logo=firebase&logoColor=black">
 <img src="https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black">
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black">
 <img src="https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black">
@@ -39,16 +39,15 @@
 - 처리 상태별 주문 목록 조회
 - 주문 처리 상태 변경
 - 메뉴 관리(품절 처리)
-- 새 주문 실시간 업데이트
+- 새 주문 push 알림
 
 ## System Architecture
 
-![connectruck-architecture](https://github.com/YJGwon/wanted-pre-onboarding-backend/assets/89305335/e9c01533-ee11-44ae-b74b-6be951efe348)
+![connectruck-architecture](https://github.com/YJGwon/connectruck/assets/89305335/4951218b-c545-4d56-baf2-9e12fce8c5c1)
 
 ## ERD
 
-![connectruck-erd](https://github.com/YJGwon/programmers-solved/assets/89305335/7a2dba7b-1c59-4dd1-9d11-b96c66b1508c)
-[DB Schema description](https://forky-freeky-forky.notion.site/DB-Schema-31ab88d5bd534cdd8dcd14e866e99a76?pvs=4)
+![connectruck-erd](https://github.com/YJGwon/connectruck/assets/89305335/f8a05fa2-db78-4079-886e-9f82be3ff88d)
 
 ## API 명세
 
@@ -67,7 +66,6 @@
 ### 사장님
 
 - 회원 정보 수정
-- 모바일 주문 push 알림 (FCM)
 - thumbnail 업로드
 
 ### 행사 담당자
