@@ -5,9 +5,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.connectruck.foodtruck.notification.domain.push.PushNotification;
-import com.connectruck.foodtruck.notification.domain.push.PushResult;
-import com.connectruck.foodtruck.notification.domain.push.PushSubscription;
+import com.connectruck.foodtruck.notification.domain.PushNotification;
+import com.connectruck.foodtruck.notification.domain.PushResult;
+import com.connectruck.foodtruck.notification.domain.PushSubscription;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;

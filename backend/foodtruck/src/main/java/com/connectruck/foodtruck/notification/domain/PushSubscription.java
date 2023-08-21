@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.domain.push;
+package com.connectruck.foodtruck.notification.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 

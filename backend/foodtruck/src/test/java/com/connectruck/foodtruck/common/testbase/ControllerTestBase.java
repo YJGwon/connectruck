@@ -11,7 +11,6 @@ import com.connectruck.foodtruck.auth.service.AuthService;
 import com.connectruck.foodtruck.auth.support.JwtTokenProvider;
 import com.connectruck.foodtruck.event.service.EventService;
 import com.connectruck.foodtruck.menu.service.MenuService;
-import com.connectruck.foodtruck.notification.service.NotificationService;
 import com.connectruck.foodtruck.notification.service.PushNotificationService;
 import com.connectruck.foodtruck.order.service.OrderService;
 import com.connectruck.foodtruck.truck.service.TruckService;
@@ -48,9 +47,6 @@ public abstract class ControllerTestBase {
 
     @MockBean
     protected AuthService authService;
-
-    @MockBean
-    protected NotificationService notificationService;
 
     @MockBean
     protected PushNotificationService pushNotificationService;

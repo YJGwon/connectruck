@@ -11,11 +11,11 @@ import static org.mockito.Mockito.verify;
 import com.connectruck.foodtruck.common.exception.NotFoundException;
 import com.connectruck.foodtruck.common.testbase.ServiceTestBase;
 import com.connectruck.foodtruck.event.domain.Event;
-import com.connectruck.foodtruck.notification.domain.push.PushNotification;
-import com.connectruck.foodtruck.notification.domain.push.PushResult;
-import com.connectruck.foodtruck.notification.domain.push.PushSender;
-import com.connectruck.foodtruck.notification.domain.push.PushSubscription;
-import com.connectruck.foodtruck.notification.domain.push.PushSubscriptionRepository;
+import com.connectruck.foodtruck.notification.domain.PushNotification;
+import com.connectruck.foodtruck.notification.domain.PushResult;
+import com.connectruck.foodtruck.notification.domain.PushSender;
+import com.connectruck.foodtruck.notification.domain.PushSubscription;
+import com.connectruck.foodtruck.notification.domain.PushSubscriptionRepository;
 import com.connectruck.foodtruck.notification.dto.PushSubscribeRequest;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.order.message.OrderMessage;
@@ -25,7 +25,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -128,7 +127,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
 
             // 알림 발송 요청 시 실패
             final String failedToken = "failed.token";
-            final PushSubscription pushSubscription = dataSetup.savePushSubscription(failedToken, truck);
+            dataSetup.savePushSubscription(failedToken, truck);
             Mockito.when(pushSender.send(any(), any()))
                     .thenReturn(new PushResult(1, List.of(failedToken)));
 

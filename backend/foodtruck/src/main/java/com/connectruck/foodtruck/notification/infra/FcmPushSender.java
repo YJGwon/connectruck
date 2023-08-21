@@ -1,9 +1,10 @@
 package com.connectruck.foodtruck.notification.infra;
 
-import com.connectruck.foodtruck.notification.domain.push.PushNotification;
-import com.connectruck.foodtruck.notification.domain.push.PushResult;
-import com.connectruck.foodtruck.notification.domain.push.PushSender;
-import com.connectruck.foodtruck.notification.domain.push.PushSubscription;
+import com.connectruck.foodtruck.notification.domain.PushNotification;
+import com.connectruck.foodtruck.notification.domain.PushResult;
+import com.connectruck.foodtruck.notification.domain.PushSender;
+import com.connectruck.foodtruck.notification.domain.PushSubscription;
+import com.connectruck.foodtruck.notification.exception.NotificationException;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -32,7 +33,7 @@ public class FcmPushSender implements PushSender {
             final BatchResponse batchResponse = firebaseMessaging.sendEachForMulticast(message);
             return getPushResult(batchResponse, tokens);
         } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
+            throw new NotificationException(e);
         }
     }
 

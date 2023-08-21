@@ -1,11 +1,11 @@
 package com.connectruck.foodtruck.notification.service;
 
 import com.connectruck.foodtruck.common.exception.NotFoundException;
-import com.connectruck.foodtruck.notification.domain.push.PushNotification;
-import com.connectruck.foodtruck.notification.domain.push.PushResult;
-import com.connectruck.foodtruck.notification.domain.push.PushSender;
-import com.connectruck.foodtruck.notification.domain.push.PushSubscription;
-import com.connectruck.foodtruck.notification.domain.push.PushSubscriptionRepository;
+import com.connectruck.foodtruck.notification.domain.PushNotification;
+import com.connectruck.foodtruck.notification.domain.PushResult;
+import com.connectruck.foodtruck.notification.domain.PushSender;
+import com.connectruck.foodtruck.notification.domain.PushSubscription;
+import com.connectruck.foodtruck.notification.domain.PushSubscriptionRepository;
 import com.connectruck.foodtruck.notification.dto.PushSubscribeRequest;
 import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;

@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.domain.push;
+package com.connectruck.foodtruck.notification.domain;
 
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import java.util.Map;

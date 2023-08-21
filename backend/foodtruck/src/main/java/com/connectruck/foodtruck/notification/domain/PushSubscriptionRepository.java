@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.domain.push;
+package com.connectruck.foodtruck.notification.domain;
 
 import java.util.List;
 import org.springframework.data.repository.Repository;
