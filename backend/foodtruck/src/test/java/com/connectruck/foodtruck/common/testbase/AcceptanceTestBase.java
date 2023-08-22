@@ -65,7 +65,7 @@ public abstract class AcceptanceTestBase {
                 .then().log().all();
     }
 
-    protected ValidatableResponse putWithToken(final String uri, final String token, final Record body) {
+    protected ValidatableResponse putWithToken(final String uri, final Record body, final String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
@@ -73,6 +73,17 @@ public abstract class AcceptanceTestBase {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().put(uri)
+                .then().log().all();
+    }
+
+    protected ValidatableResponse deleteWithToken(final String uri, final Record body, final String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .body(body)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
                 .then().log().all();
     }
 

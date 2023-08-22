@@ -88,7 +88,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("소유한 푸드트럭의 주문 알림 구독을 해제한다.")
+    @DisplayName("소유한 푸드트럭의 주문 알림 구독을 해지한다.")
     @Test
     void unsubscribeOrders() {
         // given
