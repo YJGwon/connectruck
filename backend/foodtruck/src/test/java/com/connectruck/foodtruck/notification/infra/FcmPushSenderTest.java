@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 class FcmPushSenderTest {
 
     private final FirebaseMessaging firebaseMessaging = mock(FirebaseMessaging.class);
-    private final FcmPushSender fcmPushSender = new FcmPushSender(firebaseMessaging);
+    private final FcmPushSender fcmPushSender = new FcmPushSender(firebaseMessaging, "http://fake.link");
 
     @DisplayName("FCM push를 전송한 후 전송 결과를 반환한다.")
     @Test
