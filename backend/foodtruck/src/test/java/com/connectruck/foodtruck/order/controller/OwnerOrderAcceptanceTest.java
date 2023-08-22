@@ -121,7 +121,7 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         // when
         final String uri = BASE_URI + String.format("/%d/status", orderInfo.getId());
         final OrderStatusRequest request = new OrderStatusRequest(OrderStatus.COOKING);
-        final ValidatableResponse response = putWithToken(uri, token, request);
+        final ValidatableResponse response = putWithToken(uri, request, token);
 
         // then
         response.statusCode(NO_CONTENT.value());

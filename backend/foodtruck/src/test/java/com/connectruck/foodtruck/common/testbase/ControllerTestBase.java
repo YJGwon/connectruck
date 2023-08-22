@@ -2,6 +2,7 @@ package com.connectruck.foodtruck.common.testbase;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -90,6 +91,15 @@ public abstract class ControllerTestBase {
     protected ResultActions performPutWithToken(final String uri, final Object request) throws Exception {
         mockToken();
         return mockMvc.perform(put(uri)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer fakeToken")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print());
+    }
+
+    protected ResultActions performDeleteWithToken(final String uri, final Object request) throws Exception {
+        mockToken();
+        return mockMvc.perform(delete(uri)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer fakeToken")
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))

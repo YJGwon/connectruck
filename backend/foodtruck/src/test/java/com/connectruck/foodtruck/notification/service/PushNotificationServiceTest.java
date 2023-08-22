@@ -17,6 +17,7 @@ import com.connectruck.foodtruck.notification.domain.PushSender;
 import com.connectruck.foodtruck.notification.domain.PushSubscription;
 import com.connectruck.foodtruck.notification.domain.PushSubscriptionRepository;
 import com.connectruck.foodtruck.notification.dto.PushSubscribeRequest;
+import com.connectruck.foodtruck.notification.dto.PushUnsubscribeRequest;
 import com.connectruck.foodtruck.order.domain.OrderStatus;
 import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.Truck;
@@ -85,6 +86,22 @@ class PushNotificationServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> pushNotificationService.subscribeOrders(request, ownerNotOwningTruck.getId()))
                     .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
+    }
+
+    @DisplayName("소유한 푸드트럭의 주문 알림 구독을 해지한다.")
+    @Test
+    void unsubscribeOrders() {
+        // given
+        // 구독 정보 저장
+        final Event event = dataSetup.saveEvent(밤도깨비_야시장.create());
+        final Account owner = dataSetup.saveOwnerAccount();
+        final Truck truck = dataSetup.saveTruck(event, owner.getId());
+        final PushSubscription pushSubscription = dataSetup.savePushSubscription("fake.token", truck);
+
+        // when & then
+        final PushUnsubscribeRequest request = new PushUnsubscribeRequest(pushSubscription.getToken());
+        assertThatNoException()
+                .isThrownBy(() -> pushNotificationService.unsubscribeOrders(request, owner.getId()));
     }
 
     @DisplayName("사장님 주문 알림 발송")

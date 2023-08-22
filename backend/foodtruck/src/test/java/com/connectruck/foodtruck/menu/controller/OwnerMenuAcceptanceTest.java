@@ -64,7 +64,7 @@ public class OwnerMenuAcceptanceTest extends AcceptanceTestBase {
         // when
         final String uri = BASE_URI + String.format("/%d/description", savedMenu.getId());
         final MenuDescriptionRequest request = new MenuDescriptionRequest("some description");
-        final ValidatableResponse response = putWithToken(uri, token, request);
+        final ValidatableResponse response = putWithToken(uri, request, token);
 
         // then
         response.statusCode(NO_CONTENT.value());
@@ -79,7 +79,7 @@ public class OwnerMenuAcceptanceTest extends AcceptanceTestBase {
         // when
         final String uri = BASE_URI + String.format("/%d/sold-out", savedMenu.getId());
         final MenuSoldOutRequest request = new MenuSoldOutRequest(true);
-        final ValidatableResponse response = putWithToken(uri, token, request);
+        final ValidatableResponse response = putWithToken(uri, request, token);
 
         // then
         response.statusCode(NO_CONTENT.value());
