@@ -7,6 +7,7 @@ import com.connectruck.foodtruck.notification.domain.PushSender;
 import com.connectruck.foodtruck.notification.domain.PushSubscription;
 import com.connectruck.foodtruck.notification.domain.PushSubscriptionRepository;
 import com.connectruck.foodtruck.notification.dto.PushSubscribeRequest;
+import com.connectruck.foodtruck.notification.dto.PushUnsubscribeRequest;
 import com.connectruck.foodtruck.order.message.OrderMessage;
 import com.connectruck.foodtruck.truck.domain.TruckRepository;
 import java.util.List;
@@ -37,6 +38,16 @@ public class PushNotificationService {
         }
         final PushSubscription pushSubscription = PushSubscription.ofNew(token, truckId);
         pushSubscriptionRepository.save(pushSubscription);
+    }
+
+    @Transactional
+    public void unsubscribeOrders(final PushUnsubscribeRequest request, final Long ownerId) {
+        final String token = request.token();
+        final Long truckId = truckRepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> NotFoundException.of("소유한 푸드트럭", "ownerId", ownerId))
+                .getId();
+
+        pushSubscriptionRepository.deleteByTokenAndTruckId(token, truckId);
     }
 
     @Async

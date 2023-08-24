@@ -29,29 +29,11 @@ export const OwnerMain = ({onOrder}) => {
     });
 
     const enableFcm = () => {
-        if (!("Notification" in window)) {
-            alert("주문 알림이 지원되지 않는 브라우저입니다.");
-            return;
-        }
+        getFcmToken(subscribeOrders);
+    }
 
-        Notification
-            .requestPermission()
-            .then((permission) => {
-                if (permission === "granted") {
-                    getToken(messaging, {vapidKey: `${process.env.REACT_APP_FIREBASE_VAPID_KEY}`}).then((currentToken) => {
-                        if (currentToken) {
-                            subscribeOrders(currentToken);
-                        } else {
-                            throw new Error("토큰을 가져올 수 없습니다.");
-                        }
-                    }).catch((err) => {
-                        alert("토큰을 가져올 수 없습니다.");
-                        console.log('An error occurred while retrieving token. ', err);
-                    });
-                } else {
-                    alert("모든 알림이 차단되었습니다.");
-                }
-            });
+    const disableFcm = () => {
+        getFcmToken(unsubscribeOrders);
     }
 
     const subscribeOrders = async (token) => {
@@ -71,10 +53,55 @@ export const OwnerMain = ({onOrder}) => {
         fetchApi({url, requestInfo}, onSuccess);
     };
 
+    const unsubscribeOrders = async (token) => {
+        const url = `${process.env.REACT_APP_API_URL}/api/notification/orders/my/subscription`;
+        const data = {token};
+        const requestInfo = {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        };
+        const onSuccess = () => {
+            alert("주문 알림이 해지되었습니다.");
+        };
+        fetchApi({url, requestInfo}, onSuccess);
+    };
+
+    const getFcmToken = (onToken) => {
+        if (!("Notification" in window)) {
+            alert("알림이 지원되지 않는 브라우저입니다.");
+            return;
+        }
+
+        Notification
+            .requestPermission()
+            .then((permission) => {
+                if (permission === "granted") {
+                    getToken(messaging, {vapidKey: `${process.env.REACT_APP_FIREBASE_VAPID_KEY}`}).then((currentToken) => {
+                        if (currentToken) {
+                            onToken(currentToken);
+                        } else {
+                            throw new Error("브라우저 토큰을 가져올 수 없습니다.");
+                        }
+                    }).catch((err) => {
+                        alert("브라우저 토큰을 가져올 수 없습니다.");
+                        console.log('An error occurred while retrieving token. ', err);
+                    });
+                } else {
+                    alert("브라우저 알림이 차단되었습니다.");
+                }
+            });
+    }
+
     return (
         <Container>
             <h4>주문 push 알림 활성화를 위해 사이트의 브라우저 알림 권한을 허용해주세요.</h4>
             <Button variant="contained" onClick={() => enableFcm()}>알림 권한 허용</Button>
+            <h4>브라우저 창을 닫아도 push 알림을 받을 수 있어요. 더이상 받고 싶지 않다면 push 알림을 해지하세요.</h4>
+            <Button variant="contained" onClick={() => disableFcm()}>push알림 해지</Button>
         </Container>
     );
 }
