@@ -31,7 +31,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@Slf4j
 public class OrderService {
 
     private final OrderInfoRepository orderInfoRepository;
@@ -67,7 +65,7 @@ public class OrderService {
         orderInfoRepository.save(orderInfo);
         final Long id = orderInfo.getId();
 
-        publishOrderMessage(orderInfo);
+        orderMessagePublisher.publish(OrderMessage.of(orderInfo));
         return id;
     }
 
@@ -98,7 +96,7 @@ public class OrderService {
             throw new ClientException("주문을 취소할 수 없습니다.", "접수된 주문은 취소할 수 없습니다.");
         }
         orderInfo.changeStatus(OrderStatus.CANCELED);
-        publishOrderMessage(orderInfo);
+        orderMessagePublisher.publish(OrderMessage.of(orderInfo));
     }
 
     public OrderResponse findByIdAndOwnerId(final Long id, final Long ownerId) {
@@ -136,14 +134,6 @@ public class OrderService {
         checkMenuAvailable(menu);
 
         return OrderLine.ofNew(menu.getId(), menu.getName(), menu.getPrice(), orderLineRequest.quantity(), orderInfo);
-    }
-
-    private void publishOrderMessage(final OrderInfo orderInfo) {
-        try {
-            orderMessagePublisher.publish(OrderMessage.of(orderInfo));
-        } catch (Exception e) {
-            log.error("failed to send order created message", e);
-        }
     }
 
     private void checkEventOpened(final Long truckId) {

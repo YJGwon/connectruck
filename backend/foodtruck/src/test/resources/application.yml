@@ -24,6 +24,16 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
+  # async thread pool
+  task:
+    execution:
+      pool:
+        core-size: 8
+        keep-alive: 60s # idle time before thread termination
+      shutdown:
+        await-termination: true
+      #        await-termination-period: 60s
+      thread-name-prefix: async-push-sender-
 
 logging:
   level:
