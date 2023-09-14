@@ -16,12 +16,11 @@ spring:
   task:
     execution:
       pool:
-        max-size: 10
-        queue-capacity: 40
-        keep-alive: 10s # idle time before termination
+        core-size: 8
+        keep-alive: 60s # idle time before thread termination
       shutdown:
         await-termination: true
-        await-termination-period: 30s
+        await-termination-period: 60s
       thread-name-prefix: async-push-sender-
 
 # log config
