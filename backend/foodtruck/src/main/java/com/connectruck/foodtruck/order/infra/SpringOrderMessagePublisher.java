@@ -16,7 +16,6 @@ public class SpringOrderMessagePublisher implements OrderMessagePublisher {
     @Async
     @Override
     public void publish(final OrderMessage message) {
-        final SpringOrderEvent event = new SpringOrderEvent(this, message);
-        applicationEventPublisher.publishEvent(event);
+        applicationEventPublisher.publishEvent(message);
     }
 }
