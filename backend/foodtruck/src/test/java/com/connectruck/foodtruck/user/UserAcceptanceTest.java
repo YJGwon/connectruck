@@ -36,13 +36,13 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
                 .header(LOCATION, BASE_URI + "/me");
     }
 
-    @DisplayName("사용 가능한 아이디인지 검사한다.")
+    @DisplayName("사용 가능한 아이디인지 검사")
     @Nested
     class checkUsername {
 
         private static final String URI = BASE_URI + "/check-username";
 
-        @DisplayName("사용 가능하면 true를 반환한다.")
+        @DisplayName("하여 사용 가능할 경우 true를 반환한다.")
         @Test
         void returnTrue_whenUsernameAvailable() {
             // given & when
@@ -54,7 +54,7 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
                     .body("isAvailable", equalTo(true));
         }
 
-        @DisplayName("사용 중인 아이디이면 false를 반환한다.")
+        @DisplayName("하여 사용 중인 아이디이면 false를 반환한다.")
         @Test
         void returnFalse_whenUsernameAlreadyExists() {
             // given
@@ -70,13 +70,13 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
         }
     }
 
-    @DisplayName("사용 가능한 휴대폰 번호인지 검사한다.")
+    @DisplayName("사용 가능한 휴대폰 번호인지 검사")
     @Nested
     class checkPhone {
 
         private static final String URI = BASE_URI + "/check-phone";
 
-        @DisplayName("사용 가능하면 true를 반환한다.")
+        @DisplayName("하여 사용 가능하면 true를 반환한다.")
         @Test
         void returnTrue_whenPhoneAvailable() {
             // given & when
@@ -88,7 +88,7 @@ public class UserAcceptanceTest extends AcceptanceTestBase {
                     .body("isAvailable", equalTo(true));
         }
 
-        @DisplayName("사용 중인 휴대폰 번호이면 false를 반환한다.")
+        @DisplayName("하여 사용 중인 휴대폰 번호이면 false를 반환한다.")
         @Test
         void returnFalse_whenPhoneAlreadyExists() {
             // given

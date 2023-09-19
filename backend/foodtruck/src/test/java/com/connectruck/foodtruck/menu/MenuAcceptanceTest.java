@@ -11,35 +11,29 @@ import com.connectruck.foodtruck.menu.domain.Menu;
 import com.connectruck.foodtruck.truck.domain.Truck;
 import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class MenuAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI_FORMAT = "/api/trucks/%d/menus";
 
-    @DisplayName("푸드트럭 메뉴 목록 조회")
-    @Nested
-    class findMenusOfTruck {
+    @DisplayName("푸드트럭 id로 메뉴 목록을 조회한다.")
+    @Test
+    void findMenusOfTruck() {
+        // given
+        final Event event = 밤도깨비_야시장.create();
+        dataSetup.saveEvent(event);
 
-        @DisplayName("푸드트럭의 id로 메뉴 목록을 조회한다.")
-        @Test
-        void byTruckId() {
-            // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
+        final Truck savedTruck = dataSetup.saveTruck(event);
+        final Menu expected = dataSetup.saveMenu(savedTruck);
 
-            final Truck savedTruck = dataSetup.saveTruck(event);
-            final Menu expected = dataSetup.saveMenu(savedTruck);
+        // when
+        final ValidatableResponse response = get(String.format(BASE_URI_FORMAT, savedTruck.getId()));
 
-            // when
-            final ValidatableResponse response = get(String.format(BASE_URI_FORMAT, savedTruck.getId()));
-
-            // then
-            response.statusCode(OK.value())
-                    .body("menus", hasSize(1))
-                    .body("menus.id", contains(expected.getId().intValue()))
-                    .body("menus.name", contains(expected.getName()));
-        }
+        // then
+        response.statusCode(OK.value())
+                .body("menus", hasSize(1))
+                .body("menus.id", contains(expected.getId().intValue()))
+                .body("menus.name", contains(expected.getName()));
     }
 }

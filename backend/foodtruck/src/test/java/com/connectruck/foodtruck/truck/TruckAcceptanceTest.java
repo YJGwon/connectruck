@@ -19,11 +19,28 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI = "/api/trucks";
 
-    @DisplayName("행사 참가 푸드트럭 목록 조회")
+    @DisplayName("특정 푸드트럭의 정보를 id로 조회한다.")
+    @Test
+    void findOneById() {
+        // given
+        final Event event = 밤도깨비_야시장.create();
+        dataSetup.saveEvent(event);
+        final Truck expected = dataSetup.saveTruck(event);
+
+        // when
+        final ValidatableResponse response = get(String.format(BASE_URI + "/%d", expected.getId()));
+
+        // then
+        response.statusCode(OK.value())
+                .body("id", equalTo(expected.getId().intValue()))
+                .body("name", equalTo(expected.getName()));
+    }
+
+    @DisplayName("행사 참가 푸드트럭 목록 페이지 조회")
     @Nested
     class findParticipatingTrucksByEvent {
 
-        @DisplayName("특정 페이지를 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void perPage() {
             // given
@@ -57,7 +74,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
                     .body("trucks.name", contains(expected.getName()));
         }
 
-        @DisplayName("사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")
+        @DisplayName("할 떄 사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")
         @Test
         void findFirst20_withNoPageAndSize() {
             // given
@@ -70,28 +87,6 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
             response.statusCode(OK.value())
                     .body("page.size", equalTo(20))
                     .body("page.currentPage", equalTo(0));
-        }
-    }
-
-    @DisplayName("푸드트럭 정보 조회")
-    @Nested
-    class findOneTruck {
-
-        @DisplayName("특정 푸드트럭의 정보를 id로 조회한다.")
-        @Test
-        void byId() {
-            // given
-            final Event event = 밤도깨비_야시장.create();
-            dataSetup.saveEvent(event);
-            final Truck expected = dataSetup.saveTruck(event);
-
-            // when
-            final ValidatableResponse response = get(String.format(BASE_URI + "/%d", expected.getId()));
-
-            // then
-            response.statusCode(OK.value())
-                    .body("id", equalTo(expected.getId().intValue()))
-                    .body("name", equalTo(expected.getName()));
         }
     }
 }

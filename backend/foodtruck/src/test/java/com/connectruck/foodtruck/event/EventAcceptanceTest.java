@@ -15,15 +15,15 @@ public class EventAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI = "/api/events";
 
-    @DisplayName("행사 정보 조회")
+    @DisplayName("id로 행사 정보 조회")
     @Nested
     class findOneEvent {
 
         private static final String URI_FORMAT = BASE_URI + "/%d";
 
-        @DisplayName("특정 행사의 정보를 id로 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
-        void byId() {
+        void success() {
             // given
             final Event expected = dataSetup.saveEvent(밤도깨비_야시장.create());
 
