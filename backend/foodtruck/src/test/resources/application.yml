@@ -1,6 +1,7 @@
 spring:
   # jpa
   jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
         format_sql: true
