@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.user.controller;
+package com.connectruck.foodtruck.user;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.http.HttpHeaders.LOCATION;
@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 public class UserAcceptanceTest extends AcceptanceTestBase {
 
     private static final String BASE_URI = "/api/users";
+
     private final String username = "test";
     private final String password = "test1234!";
     private final String phone = "01000000000";

@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.menu.controller;
+package com.connectruck.foodtruck.menu;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.hamcrest.Matchers.contains;

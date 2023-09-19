@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.notification.controller;
+package com.connectruck.foodtruck.notification;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.springframework.http.HttpStatus.NO_CONTENT;

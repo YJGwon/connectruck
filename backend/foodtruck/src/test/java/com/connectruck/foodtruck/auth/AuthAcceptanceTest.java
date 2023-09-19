@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.auth.controller;
+package com.connectruck.foodtruck.auth;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.http.HttpStatus.OK;
