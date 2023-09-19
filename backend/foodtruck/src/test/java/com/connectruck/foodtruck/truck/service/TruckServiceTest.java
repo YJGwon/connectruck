@@ -115,7 +115,7 @@ class TruckServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("할 떄, 해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenTruckNotFound() {
             // given

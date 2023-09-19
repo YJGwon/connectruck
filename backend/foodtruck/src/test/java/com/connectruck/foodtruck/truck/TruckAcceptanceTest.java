@@ -74,7 +74,7 @@ public class TruckAcceptanceTest extends AcceptanceTestBase {
                     .body("trucks.name", contains(expected.getName()));
         }
 
-        @DisplayName("할 떄 사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")
+        @DisplayName("할 때, 사이즈와 페이지를 지정하지 않으면 첫 20개를 조회한다.")
         @Test
         void findFirst20_withNoPageAndSize() {
             // given

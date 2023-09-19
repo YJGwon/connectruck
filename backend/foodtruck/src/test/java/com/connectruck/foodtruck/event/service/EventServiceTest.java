@@ -39,7 +39,7 @@ class EventServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("할 떄, 해당하는 행사가 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 해당하는 행사가 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenEventNotFound() {
             // given

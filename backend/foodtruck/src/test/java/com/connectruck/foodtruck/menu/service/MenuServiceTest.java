@@ -103,7 +103,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> menuService.updateDescription(request, savedMenu.getId(), owner.getId()));
         }
 
-        @DisplayName("할 떄, 존재하지 않는 메뉴면 예외가 발생한다.")
+        @DisplayName("할 때, 존재하지 않는 메뉴면 예외가 발생한다.")
         @Test
         void throwException_ifMenuNotFound() {
             // given
@@ -116,7 +116,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .withMessageContainingAll("메뉴", "존재하지 않습니다.");
         }
 
-        @DisplayName("할 떄, 소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given

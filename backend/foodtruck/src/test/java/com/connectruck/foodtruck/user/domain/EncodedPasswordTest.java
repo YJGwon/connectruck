@@ -12,11 +12,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class EncodedPasswordTest {
 
-    @DisplayName("평문 비밀번호를 암호화한다.")
+    @DisplayName("평문 비밀번호 암호화")
     @Nested
     class fromPlainText {
 
-        @DisplayName("평문 비밀번호를 암호화한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -29,7 +29,7 @@ class EncodedPasswordTest {
             assertThat(encodedPassword.isSamePassword(plainText)).isTrue();
         }
 
-        @DisplayName("비밀번호 형식이 잘못되었을 경우 예외가 발생한다.")
+        @DisplayName("할 때, 비밀번호 형식이 잘못되었으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {"new1234", "12345678!", "newpass!", "newpw1!", "123456789a123456789a123456789a!"})
         void throwsException_whenFormatInvalid(final String invalidText) {

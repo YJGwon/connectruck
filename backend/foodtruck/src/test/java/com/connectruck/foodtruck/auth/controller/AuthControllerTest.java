@@ -22,7 +22,7 @@ public class AuthControllerTest extends ControllerTestBase {
 
         private static final String URI = BASE_URI + "/signin";
 
-        @DisplayName("아이디가 비어있을 경우 Bad Request를 응답한다.")
+        @DisplayName("할 때, 아이디가 비어있으면 Bad Request를 응답한다.")
         @ParameterizedTest
         @NullAndEmptySource
         void returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
@@ -37,7 +37,7 @@ public class AuthControllerTest extends ControllerTestBase {
                     .andExpect(jsonPath("detail", stringContainsInOrder("필수", "아이디")));
         }
 
-        @DisplayName("비밀번호가 비어있을 경우 Bad Request를 응답한다.")
+        @DisplayName("할 때, 비밀번호가 비어있으면 Bad Request를 응답한다.")
         @ParameterizedTest
         @NullAndEmptySource
         void returnBadRequest_whenPasswordIsBlank(final String blank) throws Exception {

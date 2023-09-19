@@ -61,7 +61,7 @@ public class AuthServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> authService.signIn(request));
         }
 
-        @DisplayName("할 떄, 비밀번호가 일치하지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 비밀번호가 일치하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongPassword() {
             // given

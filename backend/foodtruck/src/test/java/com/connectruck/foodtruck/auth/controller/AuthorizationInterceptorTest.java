@@ -64,7 +64,7 @@ class AuthorizationInterceptorTest {
 
         private final String validToken = jwtTokenProvider.create(Long.toString(ID), REQUIRED_ROLE.name());
 
-        @DisplayName("사장님 권한이 있으면 요청에 성공한다.")
+        @DisplayName("하여 권한이 있으면 요청을 처리한다.")
         @Test
         void success() throws Exception {
             // given
@@ -79,7 +79,7 @@ class AuthorizationInterceptorTest {
             resultActions.andExpect(status().isOk());
         }
 
-        @DisplayName("토큰이 유효하지 않으면 요청에 실패한다.")
+        @DisplayName("할 때, 토큰이 유효하지 않으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void returnUnauthorized_whenTokenInvalid(final String uri) throws Exception {
@@ -95,7 +95,7 @@ class AuthorizationInterceptorTest {
                     .andExpect(jsonPath("detail").value("유효하지 않은 토큰입니다."));
         }
 
-        @DisplayName("사장님 권한이 없으면 요청에 실패한다.")
+        @DisplayName("할 때, 사장님 권한이 없으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void returnForbidden_whenNotOwnerToken(final String uri) throws Exception {
@@ -111,7 +111,7 @@ class AuthorizationInterceptorTest {
             resultActions.andExpect(status().isForbidden());
         }
 
-        @DisplayName("토큰에만 사장님 권한이 있으면 요청에 실패한다.")
+        @DisplayName("할 때, 토큰에만 사장님 권한이 있으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void returnForbidden_whenNotOwnerAccount(final String uri) throws Exception {

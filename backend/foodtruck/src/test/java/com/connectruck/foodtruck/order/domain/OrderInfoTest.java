@@ -36,7 +36,7 @@ class OrderInfoTest {
     @Nested
     class changeStatus {
 
-        @DisplayName("접수 대기 상태가 아닌 주문을 조리중 상태로 변경하면 예외가 발생한다.")
+        @DisplayName("할 때, 접수 대기 상태가 아닌 주문을 조리중 상태로 변경하면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {"COOKING", "COOKED", "COMPLETE", "CANCELED"})
         void toCooking(final String unacceptableStatus) {
@@ -53,7 +53,7 @@ class OrderInfoTest {
                     .withMessageContaining("변경할 수 없습니다");
         }
 
-        @DisplayName("조리중 상태가 아닌 주문을 조리 완료 상태로 변경하면 예외가 발생한다.")
+        @DisplayName("할 때, 조리중 상태가 아닌 주문을 조리 완료 상태로 변경하면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {"CREATED", "COOKED", "COMPLETE", "CANCELED"})
         void toCooked(final String notCookingStatus) {
@@ -70,7 +70,7 @@ class OrderInfoTest {
                     .withMessageContaining("변경할 수 없습니다");
         }
 
-        @DisplayName("조리 완료 상태가 아닌 주문을 픽업 완료 상태로 변경하면 예외가 발생한다.")
+        @DisplayName("할 때, 조리 완료 상태가 아닌 주문을 픽업 완료 상태로 변경하면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {"CREATED", "COOKING", "COMPLETE", "CANCELED"})
         void toComplete(final String notCookedStatus) {
@@ -87,7 +87,7 @@ class OrderInfoTest {
                     .withMessageContaining("변경할 수 없습니다");
         }
 
-        @DisplayName("진행중이 아닌 주문을 취소 상태로 변경하면 예외가 발생한다.")
+        @DisplayName("할 때, 진행중이 아닌 주문을 취소 상태로 변경하면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {"COMPLETE", "CANCELED"})
         void toCanceled(final String notInProgressStatus) {

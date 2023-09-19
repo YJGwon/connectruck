@@ -131,7 +131,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("메뉴");
         }
 
-        @DisplayName("할 떄, 해당 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
+        @DisplayName("할 때, 해당 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
         @Test
         void throwsException_whenMenuOfOtherTruck() {
             // given
@@ -216,7 +216,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.findByIdAndOrdererInfo(fakeId, request));
         }
 
-        @DisplayName("할 떄, 주문자 정보가 다르면 예외가 발생한다.")
+        @DisplayName("할 때, 주문자 정보가 다르면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongPhone() {
             // given
@@ -259,7 +259,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("접수된 주문");
         }
 
-        @DisplayName("할 떄, 주문이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 주문이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongId() {
             // given
@@ -272,7 +272,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.cancel(fakeId, request));
         }
 
-        @DisplayName("할 떄, 주문자 정보가 다르면 예외가 발생한다.")
+        @DisplayName("할 때, 주문자 정보가 다르면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongPhone() {
             // given
@@ -315,7 +315,7 @@ class OrderServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("할 떄, 소유하지 않은 푸드트럭의 주문이면 예외가 발생한다.")
+        @DisplayName("할 때, 소유하지 않은 푸드트럭의 주문이면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
@@ -328,7 +328,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
 
-        @DisplayName("할 떄, 해당 주문이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 해당 주문이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenOrderInfoNotFound() {
             // given
@@ -391,7 +391,7 @@ class OrderServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("할 떄, 소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
