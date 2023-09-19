@@ -6,6 +6,8 @@ TRUNCATE TABLE order_info;
 
 TRUNCATE TABLE menu;
 
+TRUNCATE TABLE push_subscription;
+
 TRUNCATE TABLE truck;
 
 TRUNCATE TABLE schedule;
