@@ -44,7 +44,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
     @Nested
     class subscribeOrders {
 
-        @DisplayName("소유한 푸드트럭의 주문 알림을 구독한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -58,7 +58,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> pushNotificationService.subscribeOrders(request, owner.getId()));
         }
 
-        @DisplayName("소유 푸드트럭에 대해 이미 구독된 기기이면 새 구독 정보를 생성하지 않는다.")
+        @DisplayName("할 때, 이미 구독된 기기이면 새 구독 정보를 생성하지 않는다.")
         @Test
         void success_whenAlreadySubscribed() {
             // given
@@ -74,7 +74,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> pushNotificationService.subscribeOrders(request, owner.getId()));
         }
 
-        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
@@ -104,12 +104,12 @@ class PushNotificationServiceTest extends ServiceTestBase {
                 .isThrownBy(() -> pushNotificationService.unsubscribeOrders(request, owner.getId()));
     }
 
-    @DisplayName("사장님 주문 알림 발송")
+    @DisplayName("해당 푸드트럭 구독 기기에 주문 알림 발송")
     @Nested
     class notifyOrderToOwner {
 
         @Test
-        @DisplayName("해당 푸드트럭의 주문 알림 구독자에게 알림을 발송한다.")
+        @DisplayName("할 수 있다.")
         void success() {
             // given
             // 구독 정보 저장
@@ -135,7 +135,7 @@ class PushNotificationServiceTest extends ServiceTestBase {
         }
 
         @Test
-        @DisplayName("발송에 실패한 토큰이 있을 경우 해당 구독 정보를 삭제한다.")
+        @DisplayName("할 때, 발송에 실패한 토큰이 있을 경우 해당 구독 정보를 삭제한다.")
         void deleteSubscription_whenTokenFailed() {
             // given
             // 구독 정보 저장

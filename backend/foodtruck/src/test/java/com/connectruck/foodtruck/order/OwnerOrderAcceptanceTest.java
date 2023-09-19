@@ -1,4 +1,4 @@
-package com.connectruck.foodtruck.order.controller;
+package com.connectruck.foodtruck.order;
 
 import static com.connectruck.foodtruck.common.fixture.data.EventFixture.밤도깨비_야시장;
 import static org.hamcrest.Matchers.contains;
@@ -44,13 +44,13 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
         savedMenu = dataSetup.saveMenu(owningTruck);
     }
 
-    @DisplayName("소유 푸드트럭의 상태별 주문 목록 조회")
+    @DisplayName("소유 푸드트럭의 상태별 주문 목록 페이지 조회")
     @Nested
     class findMyOrders {
 
         private static final String URI = BASE_URI + "/my";
 
-        @DisplayName("모든 주문을 최신순으로 정렬하여 특정 페이지를 조회한다.")
+        @DisplayName("할 때, 상태를 지정하지 않으면 모든 주문을 최신순으로 정렬하여 조회한다.")
         @Test
         void all_perPage() {
             // given
@@ -73,7 +73,7 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
                     .body("orders.id", contains(expected.getId().intValue()));
         }
 
-        @DisplayName("특정 상태의 주문을 조회한다.")
+        @DisplayName("할 때, 상태를 지정하면 해당 상태의 주문을 최신순으로 정렬하여 조회한다.")
         @Test
         void byStatus_perPage() {
             // given
@@ -99,7 +99,7 @@ public class OwnerOrderAcceptanceTest extends AcceptanceTestBase {
                     .body("orders.status", contains("접수 대기"));
         }
 
-        @DisplayName("페이지와 사이즈를 지정하지 않으면 첫 20개를 조회한다.")
+        @DisplayName("할 때, 페이지와 사이즈를 지정하지 않으면 첫 20개를 조회한다.")
         @Test
         void findFirst20_withNoPageAndSize() {
             // given & when

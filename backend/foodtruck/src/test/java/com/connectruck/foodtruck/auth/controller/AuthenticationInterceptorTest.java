@@ -58,7 +58,7 @@ class AuthenticationInterceptorTest {
 
         private final String validToken = jwtTokenProvider.create("1", Role.OWNER.name());
 
-        @DisplayName("토큰이 유효하면 요청에 성공한다.")
+        @DisplayName("하여 토큰이 유효하면 요청을 처리한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void success(final String uri) throws Exception {
@@ -71,7 +71,7 @@ class AuthenticationInterceptorTest {
             resultActions.andExpect(status().isOk());
         }
 
-        @DisplayName("토큰이 없으면 요청에 실패한다.")
+        @DisplayName("할 때, 토큰이 없으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void returnUnauthorized_withoutToken(final String uri) throws Exception {
@@ -86,7 +86,7 @@ class AuthenticationInterceptorTest {
                     .andExpect(jsonPath("detail").value("토큰이 존재하지 않습니다."));
         }
 
-        @DisplayName("토큰 형식이 잘못되었으면 요청에 실패한다.")
+        @DisplayName("할 때, 토큰 형식이 잘못되었으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void returnUnauthorized_whenTokenIsNotBearer(final String uri) throws Exception {
@@ -102,7 +102,7 @@ class AuthenticationInterceptorTest {
                     .andExpect(jsonPath("detail").value("식별할 수 없는 형식의 토큰입니다."));
         }
 
-        @DisplayName("토큰이 유효하지 않으면 요청에 실패한다.")
+        @DisplayName("할 때, 토큰이 유효하지 않으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {URI_METHOD_ANNOTATED, URI_TYPE_ANNOTATED})
         void returnUnauthorized_whenTokenInvalid(final String uri) throws Exception {

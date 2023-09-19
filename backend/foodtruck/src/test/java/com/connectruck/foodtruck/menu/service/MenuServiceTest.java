@@ -37,11 +37,11 @@ class MenuServiceTest extends ServiceTestBase {
         savedTruck = dataSetup.saveTruck(savedEvent, owner.getId());
     }
 
-    @DisplayName("푸드트럭 메뉴 목록 조회")
+    @DisplayName("푸드트럭 id로 메뉴 목록 조회")
     @Nested
     class findByTruckId {
 
-        @DisplayName("푸드트럭의 id로 메뉴 목록을 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -56,11 +56,11 @@ class MenuServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("사장님 소유 푸드트럭 메뉴 목록 조회")
+    @DisplayName("사장님 id로 소유 푸드트럭 메뉴 목록 조회")
     @Nested
     class findByOwnerId {
 
-        @DisplayName("사장님 id로 소유한 푸드트럭의 메뉴 목록을 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -74,7 +74,7 @@ class MenuServiceTest extends ServiceTestBase {
             assertThat(response.menus()).hasSize(2);
         }
 
-        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
@@ -91,7 +91,7 @@ class MenuServiceTest extends ServiceTestBase {
     @Nested
     class updateDetail {
 
-        @DisplayName("소유한 푸드트럭 메뉴의 설명을 수정한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -103,7 +103,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> menuService.updateDescription(request, savedMenu.getId(), owner.getId()));
         }
 
-        @DisplayName("해당하는 메뉴가 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 존재하지 않는 메뉴면 예외가 발생한다.")
         @Test
         void throwException_ifMenuNotFound() {
             // given
@@ -116,7 +116,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .withMessageContainingAll("메뉴", "존재하지 않습니다.");
         }
 
-        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
@@ -132,7 +132,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
-        @DisplayName("소유한 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfMenu() {
             // given
@@ -151,7 +151,7 @@ class MenuServiceTest extends ServiceTestBase {
     @Nested
     class updateSoldOut {
 
-        @DisplayName("소유한 푸드트럭 메뉴의 품절 상태를 수정한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -163,7 +163,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> menuService.updateSoldOut(request, savedMenu.getId(), owner.getId()));
         }
 
-        @DisplayName("해당하는 메뉴가 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 존재하지 않는 메뉴면 예외가 발생한다.")
         @Test
         void throwException_ifMenuNotFound() {
             // given
@@ -176,7 +176,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .withMessageContainingAll("메뉴", "존재하지 않습니다.");
         }
 
-        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
@@ -192,7 +192,7 @@ class MenuServiceTest extends ServiceTestBase {
                     .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
-        @DisplayName("소유한 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfMenu() {
             // given

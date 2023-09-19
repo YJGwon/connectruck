@@ -32,7 +32,7 @@ public class UserServiceTest extends ServiceTestBase {
     @Nested
     class checkUsername {
 
-        @DisplayName("사용 가능한 아이디일 경우 true를 반환한다.")
+        @DisplayName("하면 사용 가능한 아이디일 경우 true를 반환한다.")
         @Test
         void returnTrue_whenUsernameAvailable() {
             // given & when
@@ -43,7 +43,7 @@ public class UserServiceTest extends ServiceTestBase {
             assertThat(response.isAvailable()).isTrue();
         }
 
-        @DisplayName("사용 중인 아이디일 경우 false를 반환한다.")
+        @DisplayName("하면 사용 중인 아이디일 경우 false를 반환한다.")
         @Test
         void returnFalse_whenUsernameAlreadyExists() {
             // given
@@ -62,7 +62,7 @@ public class UserServiceTest extends ServiceTestBase {
     @Nested
     class checkPhone {
 
-        @DisplayName("사용 가능한 아이디일 경우 true를 반환한다.")
+        @DisplayName("하면 사용 가능한 아이디일 경우 true를 반환한다.")
         @Test
         void returnTrue_whenPhoneAvailable() {
             // given & when
@@ -73,7 +73,7 @@ public class UserServiceTest extends ServiceTestBase {
             assertThat(response.isAvailable()).isTrue();
         }
 
-        @DisplayName("사용 중인 휴대폰 번호일 경우 false를 반환한다.")
+        @DisplayName("하면 사용 중인 휴대폰 번호일 경우 false를 반환한다.")
         @Test
         void returnFalse_whenPhoneAlreadyExists() {
             // given
@@ -92,7 +92,7 @@ public class UserServiceTest extends ServiceTestBase {
     @Nested
     class create {
 
-        @DisplayName("사장님 회원 정보를 생성한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void asOwner() {
             final UserRequest request = new UserRequest(username, password, phone, Role.OWNER);
@@ -100,7 +100,7 @@ public class UserServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> userService.create(request));
         }
 
-        @DisplayName("사용중인 아이디일 경우 예외가 발생한다.")
+        @DisplayName("할 때, 사용중인 아이디면 예외가 발생한다.")
         @Test
         void throwsException_whenUsernameExist() {
             // given
@@ -114,7 +114,7 @@ public class UserServiceTest extends ServiceTestBase {
                     .withMessageContaining("존재하는 아이디");
         }
 
-        @DisplayName("사용중인 휴대폰 번호일 경우 예외가 발생한다.")
+        @DisplayName("할 떄, 사용중인 휴대폰 번호면 예외가 발생한다.")
         @Test
         void throwsException_whenPhoneExist() {
             // given

@@ -24,7 +24,7 @@ public class UserControllerTest extends ControllerTestBase {
     private final String password = "test1234!";
     private final String phone = "01000000000";
 
-    @DisplayName("아이디 검사 요청 시, 아이디가 비어있을 경우 Bad Request를 응답한다.")
+    @DisplayName("아이디 검사 요청 할 때, 아이디가 비어있을 경우 Bad Request를 응답한다.")
     @ParameterizedTest
     @NullAndEmptySource
     void checkUsername_returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
@@ -39,7 +39,7 @@ public class UserControllerTest extends ControllerTestBase {
                 .andExpect(jsonPath("detail", stringContainsInOrder("필수", "아이디")));
     }
 
-    @DisplayName("휴대폰 번호 검사 요청 시, 휴대폰 번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
+    @DisplayName("휴대폰 번호 검사 요청 할 때, 휴대폰 번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
     @ParameterizedTest
     @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
     void checkPhone_returnBadRequest_whenPhoneInvalid(final String invalidPhone) throws Exception {
@@ -58,7 +58,7 @@ public class UserControllerTest extends ControllerTestBase {
     @Nested
     class create {
 
-        @DisplayName("아이디가 비어있을 경우 Bad Request를 응답한다.")
+        @DisplayName("할 때, 아이디가 비어있으면 Bad Request를 응답한다.")
         @ParameterizedTest
         @NullAndEmptySource
         void returnBadRequest_whenUsernameIsBlank(final String blank) throws Exception {
@@ -73,7 +73,7 @@ public class UserControllerTest extends ControllerTestBase {
                     .andExpect(jsonPath("detail", stringContainsInOrder("필수", "아이디")));
         }
 
-        @DisplayName("비밀번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
+        @DisplayName("할 때, 비밀번호 형식이 잘못되었으면 Bad Request를 응답한다.")
         @ParameterizedTest
         @ValueSource(strings = {"new1234", "12345678!", "newpass!", "newpw1!", "123456789a123456789a123456789a!"})
         void returnBadRequest_whenPasswordInvalid(final String invalidPassword) throws Exception {
@@ -88,7 +88,7 @@ public class UserControllerTest extends ControllerTestBase {
                     .andExpect(jsonPath("detail", stringContainsInOrder("형식", "비밀번호")));
         }
 
-        @DisplayName("휴대폰 번호 형식이 잘못되었을 경우 Bad Request를 응답한다.")
+        @DisplayName("할 때, 휴대폰 번호 형식이 잘못되었으면 Bad Request를 응답한다.")
         @ParameterizedTest
         @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
         void returnBadRequest_whenPhoneInvalid(final String invalidPhone) throws Exception {
@@ -103,7 +103,7 @@ public class UserControllerTest extends ControllerTestBase {
                     .andExpect(jsonPath("detail", stringContainsInOrder("형식", "휴대폰 번호")));
         }
 
-        @DisplayName("계정 권한이 비어있는 경우 Bad Request를 응답한다.")
+        @DisplayName("할 때, 계정 권한이 비어있으면 Bad Request를 응답한다.")
         @Test
         void returnBadRequest_whenRoleIsNull() throws Exception {
             // given & when

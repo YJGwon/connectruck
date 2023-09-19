@@ -16,7 +16,7 @@ class ValidatorTest {
     @Nested
     class validatePhone {
 
-        @DisplayName("형식에 맞을 경우 예외가 발생하지 않는다.")
+        @DisplayName("하여 형식에 맞으면 성공한다.")
         @ParameterizedTest
         @ValueSource(strings = {"01000000000", "01112341234", "0161231234", "01912341234"})
         void success(final String validPhone) {
@@ -24,7 +24,7 @@ class ValidatorTest {
                     .isThrownBy(() -> Validator.validatePhone(validPhone));
         }
 
-        @DisplayName("형식이 잘못되었을 경우 예외가 발생한다.")
+        @DisplayName("할 때, 형식이 잘못되었으면 예외가 발생한다.")
         @ParameterizedTest
         @ValueSource(strings = {"11012341234", "01212341234", "010121234", "010a1231234", "010-1234-1234"})
         void throwsException_whenPhoneInvalid(final String invalidPhone) {

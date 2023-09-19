@@ -57,11 +57,11 @@ class TruckServiceTest extends ServiceTestBase {
         );
     }
 
-    @DisplayName("푸드트럭 정보 조회")
+    @DisplayName("id로 푸드트럭 정보 조회")
     @Nested
     class findById {
 
-        @DisplayName("특정 푸드트럭의 정보를 id로 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -77,7 +77,7 @@ class TruckServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenTruckNotFound() {
             // given
@@ -91,11 +91,11 @@ class TruckServiceTest extends ServiceTestBase {
 
     }
 
-    @DisplayName("사장님 소유 푸드트럭 정보 조회")
+    @DisplayName("사장님 id로 소유 푸드트럭 정보 조회")
     @Nested
     class findByOwnerId {
 
-        @DisplayName("특정 푸드트럭의 정보를 사장님 계정 id로 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -115,7 +115,7 @@ class TruckServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 해당하는 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenTruckNotFound() {
             // given
