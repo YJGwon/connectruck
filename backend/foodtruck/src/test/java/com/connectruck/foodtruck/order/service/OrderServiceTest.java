@@ -63,7 +63,7 @@ class OrderServiceTest extends ServiceTestBase {
             dataSetup.setEventOpen(savedEvent);
         }
 
-        @DisplayName("주문을 생성한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given & when
@@ -78,7 +78,7 @@ class OrderServiceTest extends ServiceTestBase {
             assertThat(id).isNotNull();
         }
 
-        @DisplayName("행사가 열려있지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 행사가 열려있지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenEventIsClosed() {
             // given
@@ -97,7 +97,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("운영 시간");
         }
 
-        @DisplayName("존재하지 않는 푸드트럭에 주문하면 예외가 발생한다.")
+        @DisplayName("할 떄, 푸드트럭이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenTruckNotFound() {
             // given
@@ -114,7 +114,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("푸드트럭");
         }
 
-        @DisplayName("존재하지 않는 메뉴를 주문하면 예외가 발생한다.")
+        @DisplayName("할 떄, 존재하지 않는 메뉴면 예외가 발생한다.")
         @Test
         void throwsException_whenMenuNotFound() {
             // given
@@ -131,7 +131,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("메뉴");
         }
 
-        @DisplayName("해당 푸드트럭의 메뉴가 아닌 메뉴를 주문하면 예외가 발생한다.")
+        @DisplayName("할 떄, 해당 푸드트럭의 메뉴가 아니면 예외가 발생한다.")
         @Test
         void throwsException_whenMenuOfOtherTruck() {
             // given
@@ -150,7 +150,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("다른 푸드트럭");
         }
 
-        @DisplayName("품절된 메뉴를 주문하면 예외가 발생한다.")
+        @DisplayName("할 때, 품절된 메뉴면 예외가 발생한다.")
         @Test
         void throwsException_whenMenuSoldOut() {
             // given
@@ -169,11 +169,11 @@ class OrderServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("주문자 주문 상세 정보 조회")
+    @DisplayName("id와 주문자 정보로 상세 정보 조회")
     @Nested
     class findByIdAndOrdererInfo {
 
-        @DisplayName("주문 상세 정보를 id와 주문자 정보로 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -203,7 +203,7 @@ class OrderServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("id가 옳지 않으면 예외가 발생한다.")
+        @DisplayName("할 때, 해당하는 주문이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongId() {
             // given
@@ -216,7 +216,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.findByIdAndOrdererInfo(fakeId, request));
         }
 
-        @DisplayName("휴대폰 번호가 옳지 않으면 예외가 발생한다.")
+        @DisplayName("할 떄, 주문자 정보가 다르면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongPhone() {
             // given
@@ -234,7 +234,7 @@ class OrderServiceTest extends ServiceTestBase {
     @Nested
     class cancel {
 
-        @DisplayName("주문을 취소한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -246,7 +246,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.cancel(order.getId(), request));
         }
 
-        @DisplayName("이미 접수된 주문을 취소하면 예외가 발생한다.")
+        @DisplayName("할 때, 이미 접수된 주문이면 예외가 발생한다.")
         @Test
         void throwsException_whenOrderAccepted() {
             // given
@@ -259,7 +259,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("접수된 주문");
         }
 
-        @DisplayName("id가 옳지 않으면 예외가 발생한다.")
+        @DisplayName("할 떄, 주문이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongId() {
             // given
@@ -272,7 +272,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.cancel(fakeId, request));
         }
 
-        @DisplayName("휴대폰 번호가 옳지 않으면 예외가 발생한다.")
+        @DisplayName("할 떄, 주문자 정보가 다르면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongPhone() {
             // given
@@ -286,11 +286,11 @@ class OrderServiceTest extends ServiceTestBase {
         }
     }
 
-    @DisplayName("사장님 소유 푸드트럭의 특정 주문 정보 조회")
+    @DisplayName("id로 사장님 소유 푸드트럭의 특정 주문 정보 조회")
     @Nested
     class findByIdAndOwnerId {
 
-        @DisplayName("소유한 푸드트럭의 주문 정보를 id로 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -315,7 +315,7 @@ class OrderServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("소유하지 않은 푸드트럭의 주문 정보를 조회하면 예외가 발생한다.")
+        @DisplayName("할 떄, 소유하지 않은 푸드트럭의 주문이면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given
@@ -328,7 +328,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContaining("소유하지 않은 푸드트럭의 주문");
         }
 
-        @DisplayName("해당하는 주문 정보가 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 떄, 해당 주문이 존재하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenOrderInfoNotFound() {
             // given
@@ -345,7 +345,7 @@ class OrderServiceTest extends ServiceTestBase {
     @Nested
     class findOrdersByOwnerIdAndStatus {
 
-        @DisplayName("특정 주문 상태의 주문 목록을 최신순으로 정렬하여 page 단위로 조회한다.")
+        @DisplayName("하면 최신순으로 정렬하여 페이지 단위로 조회한다.")
         @Test
         void latest_perPage() {
             // given
@@ -365,7 +365,7 @@ class OrderServiceTest extends ServiceTestBase {
             assertThat(response.orders()).hasSize(1);
         }
 
-        @DisplayName("상태가 ALL이면 모든 주문을 최신순으로 정렬하여 page 단위로 조회한다.")
+        @DisplayName("할 때, 상태가 ALL이면 모든 주문을 최신순으로 정렬하여 page 단위로 조회한다.")
         @Test
         void all_latest_perPage() {
             // given
@@ -391,7 +391,7 @@ class OrderServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 떄, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
@@ -410,7 +410,7 @@ class OrderServiceTest extends ServiceTestBase {
     @Nested
     class changeStatus {
 
-        @DisplayName("주문 상태를 변경한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -422,7 +422,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> orderService.changeStatus(request, orderInfo.getId(), owner.getId()));
         }
 
-        @DisplayName("소유한 푸드트럭이 없으면 예외가 발생한다.")
+        @DisplayName("할 때, 소유한 푸드트럭이 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenNoOwningTruck() {
             // given
@@ -437,7 +437,7 @@ class OrderServiceTest extends ServiceTestBase {
                     .withMessageContainingAll("소유한 푸드트럭", "존재하지 않습니다.");
         }
 
-        @DisplayName("소유하지 않은 푸드트럭의 주문 상태를 변경하면 예외가 발생한다.")
+        @DisplayName("할 떄, 소유하지 않은 푸드트럭의 주문이면 예외가 발생한다.")
         @Test
         void throwsException_whenNotOwnerOfOrder() {
             // given

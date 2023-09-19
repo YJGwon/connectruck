@@ -31,7 +31,7 @@ public class AuthServiceTest extends ServiceTestBase {
         final String username = "test";
         final String password = "test1234!";
 
-        @DisplayName("로그인에 성공하면 access token을 발급한다.")
+        @DisplayName("한 뒤 access token을 발급받는다.")
         @Test
         void returnAccessToken() {
             // given
@@ -53,7 +53,7 @@ public class AuthServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("아이디가 잘못되었을 경우 예외가 발생한다.")
+        @DisplayName("할 때, 잘못된 아이디면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongUsername() {
             final SignInRequest request = new SignInRequest("test", "test1234!");
@@ -61,7 +61,7 @@ public class AuthServiceTest extends ServiceTestBase {
                     .isThrownBy(() -> authService.signIn(request));
         }
 
-        @DisplayName("비밀번호가 일치하지 않을 경우 예외가 발생한다.")
+        @DisplayName("할 떄, 비밀번호가 일치하지 않으면 예외가 발생한다.")
         @Test
         void throwsException_whenWrongPassword() {
             // given

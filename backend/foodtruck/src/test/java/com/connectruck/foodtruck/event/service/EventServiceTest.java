@@ -19,11 +19,11 @@ class EventServiceTest extends ServiceTestBase {
     @Autowired
     private EventService eventService;
 
-    @DisplayName("행사 정보 조회")
+    @DisplayName("id로 행사 정보 단건 조회")
     @Nested
     class findById {
 
-        @DisplayName("특정 행사의 정보를 id로 조회한다.")
+        @DisplayName("할 수 있다.")
         @Test
         void success() {
             // given
@@ -39,7 +39,7 @@ class EventServiceTest extends ServiceTestBase {
             );
         }
 
-        @DisplayName("해당하는 행사가 존재하지 않으면 예외가 발생한다.")
+        @DisplayName("할 떄, 해당하는 행사가 없으면 예외가 발생한다.")
         @Test
         void throwsException_whenEventNotFound() {
             // given
