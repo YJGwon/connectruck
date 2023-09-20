@@ -46,22 +46,22 @@ jobs:
 
       - name: Deliver to AWS S3
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
         run: |
           aws s3 cp \
           --region ap-northeast-2 \
           --acl private \
-          ${{ vars.BACKEND_ZIP_FILE }} s3://${{ secrets.AWS_S3_BUCKET }}/
+          ${{ vars.BACKEND_ZIP_FILE }} s3://${{ secrets.AWS_S3_BUCKET_DEV }}/
 
       - name: Deploy with AWS CodeDeploy
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
         run: |
           aws deploy create-deployment \
           --application-name ${{ secrets.AWS_CODEDEPLOY_APP }} \
-          --deployment-group-name connectruck \
+          --deployment-group-name connectruck-be \
           --file-exists-behavior OVERWRITE \
-          --s3-location bucket=${{ secrets.AWS_S3_BUCKET }},bundleType=zip,key=${{ vars.BACKEND_ZIP_FILE }} \
+          --s3-location bucket=${{ secrets.AWS_S3_BUCKET_DEV }},bundleType=zip,key=${{ vars.BACKEND_ZIP_FILE }} \
           --region ap-northeast-2
