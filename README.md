@@ -27,25 +27,17 @@
 
 ### 사용자
 
-[사용해보기](https://connectruck.site/events/1)
-
 - 행사에 등록된 푸드트럭 목록 및 메뉴 조회
 - 메뉴 주문/취소
 - 주문 처리 상태 조회
 
 ### 사장님
 
-[사용해보기](https://connectruck.site/owner) - 아이디 owner1, 비밀번호 test1234!
-
 - 회원가입/로그인
 - 처리 상태별 주문 목록 조회
 - 주문 처리 상태 변경
 - 메뉴 관리(품절 처리)
 - 새 주문 push 알림
-
-### API 명세
-
-[Swagger UI Api Definition](https://connectruck.site/swagger-ui/index.html)
 
 
 ## System Architecture
